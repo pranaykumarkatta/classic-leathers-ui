@@ -4,17 +4,38 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <style>
-      .classicTheamColor {
+          .classicTheamColor {
         background-image: linear-gradient(to bottom , #ecf6ff, #99d8ea91);
-      }
-      .blueTextColor{
-        color:blue;
-      }
-      .menu_div{
-        border: 2px solid #a7a8ab;
-        border-radius: 5px;
-        padding: 5px;
-      }
+     }
+     .header_div{
+        padding: 15px;
+        border-radius:10px;
+        border-bottom: 2px solid #a7a8ab;
+     }
+     .header_div img{
+        width:15%;
+     }
+     .menu_div{
+        width:80%;
+        float:right;
+        margin-top:1.5%;
+        text-align: right;
+
+     }
+     .menu_div label{
+        font-weight:900;
+        float: left;
+        padding-left: 23%;
+        margin-top:0.8%;
+     }
+     .menu_div a{
+        font-weight:700;
+     }
+
+
+
+
+
 
     </style>
 
@@ -22,20 +43,13 @@
 </head>
 <body class="classicTheamColor" ng-app="classicLeathers">
 
-<div class="blueTextColor">
-    <h3 class="text-center">WELCOME TO CLASSIC LEATHERS</h3>
-</div>
-<div>
+<div class="header_div">
+    <img class="images" src="./classic_logo.png"/>
     <div class="menu_div container">
-        <span class="btn btn-success">Use menu to navigate through pages</span>&nbsp<span class="btn btn-success">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"></path>
-            </svg>
-        </span>
+        <label class="welcome_label">RETAIL STORE TIRUPATI</label>
         <a href="D:\WORKSPACE\classic-leathers-ui\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
         <a href="D:\WORKSPACE\classic-leathers-ui\ClassicLeathers_welcomePage.html" class="btn btn-primary">Sales</a>
     </div>
-
 </div>
 </body>
 </html>
