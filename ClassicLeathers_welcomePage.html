@@ -3,50 +3,8 @@
     <title>Classic Leathers</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <style>
-     .classicTheamColor {
-        background-image: linear-gradient(to bottom , #ecf6ff, #99d8ea91);
-     }
-     .header_div{
-        padding: 15px;
-        border-radius:10px;
-        border-bottom: 2px solid #a7a8ab;
-     }
-     .header_div img{
-        width:15%;
-     }
-     .menu_div{
-        width:80%;
-        float:right;
-        margin-top:1.5%;
-        text-align: right;
-     }
-     .menu_div label{
-        font-weight:900;
-        float: left;
-        padding-left: 23%;
-        margin-top:0.8%;
-     }
-     .menu_div a{
-        font-weight:700;
-     }
-      .working_div{
-        height:75%;
-        overflow: auto;
-      }
-      .table-font{
-         font-size:12px;
-       }
-      .text_input_width {
-         width:90px;
-       }
-       .number_input_width {
-         width:30px;
-       }
-       .table tbody tr th{
-        padding:2px;
-       }
-    </style>
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/body.css">
 
     <script>
       var app = angular.module("classicLeathers", []);
@@ -121,15 +79,13 @@
 <body class="classicTheamColor" ng-app="classicLeathers">
 
 <div class="header_div">
-    <img class="images" src="./classic_logo.png"/>
+    <img class="images" src="./resource/classic_logo.png"/>
     <div class="menu_div container">
         <label class="welcome_label">RETAIL STORE TIRUPATI</label>
-<!--        <a href="D:\WORKSPACE\classic-leathers-ui\ClassicLeathersMenu.html" class="btn btn-primary">Home</a>-->
-<!--        <a href="D:\WORKSPACE\classic-leathers-ui\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time-->
-<!--            Sheet</a>-->
-        <a href="" class="btn btn-primary">Home</a>
-        <a href="" class="btn btn-primary">Time Sheet</a>
-        <a href="" class="btn btn-primary">Expense</a>
+        <a href="D:\WORKSPACE\classic-leathers-ui\ClassicLeathersMenu.html" class="btn btn-primary">Home</a>
+        <a href="D:\WORKSPACE\classic-leathers-ui\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time
+            Sheet</a>
+        <a href="D:\WORKSPACE\classic-leathers-ui\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
     </div>
 </div>
 <div ng-controller="retailController">

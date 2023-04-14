@@ -1,0 +1,16 @@
+  .working_div{
+        height:75%;
+        overflow: auto;
+      }
+      .table-font{
+         font-size:12px;
+       }
+      .text_input_width {
+         width:90px;
+       }
+       .number_input_width {
+         width:30px;
+       }
+       .table tbody tr th{
+        padding:2px;
+       }
