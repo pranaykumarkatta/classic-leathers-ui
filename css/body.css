@@ -14,3 +14,6 @@
        .table tbody tr th{
         padding:2px;
        }
+       .table tr th select{
+        height: 23.14px;
+       }
