@@ -1,19 +1,32 @@
-  .working_div{
-        height:75%;
-        overflow: auto;
-      }
-      .table-font{
-         font-size:12px;
-       }
-      .text_input_width {
-         width:90px;
-       }
-       .number_input_width {
-         width:30px;
-       }
-       .table tbody tr th{
-        padding:2px;
-       }
-       .table tr th select{
-        height: 23.14px;
-       }
+  .working_div {
+    height:75%;
+    overflow: auto;
+    margin-top: 1%;
+    font-size:12px;
+  }
+
+  .working_div select {
+    height:33.3px;
+    font-weight:bold;
+    font-size:12px;
+  }
+
+  .table-font {
+    font-size:12px;
+  }
+
+  .text_input_width {
+    width:90px;
+  }
+
+  .number_input_width {
+    width:30px;
+  }
+
+  .table tbody tr th {
+    padding:2px;
+  }
+
+  .table tr th select {
+    height: 23.14px;
+  }

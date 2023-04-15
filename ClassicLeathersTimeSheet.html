@@ -6,6 +6,42 @@
     <link rel="shortcut icon" type="image/png" href="./resource/classic_logo_icon.png">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/body.css">
+    <script>
+        var app = angular.module("classicLeathers", []);
+
+        app.controller("timeSheetController", function($scope,$http) {
+            $scope.employeeList = ["Select","PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
+            $scope.selectedEmployeeName=$scope.employeeList[0];
+             $scope.saveInTime = function() {
+                var data={
+                    "employeeName": $scope.selectedEmployeeName,
+                    "entryType": "In",
+                }
+                $http.post('http://localhost:8080/timeSheet',data,{})
+                .then(data => {
+                          $scope.message="Data Saved Successfully for In Time"
+                })
+                .catch(error => {
+                        console.log(error.value);
+                });
+            }
+             $scope.saveOutTime = function() {
+                var data={
+                    "employeeName": $scope.selectedEmployeeName,
+                    "entryType": "Out",
+                }
+                $http.post('http://localhost:8080/timeSheet',data,{})
+                .then(data => {
+                           $scope.message="Data Saved Successfully for Out Time"
+                })
+                .catch(error => {
+                        console.log(error.value);
+                });
+            }
+         });
+
+
+    </script>
 
 </head>
 <body class="classicTheamColor" ng-app="classicLeathers">
@@ -17,6 +53,19 @@
         <a href=".\ClassicLeathers_welcomePage.html" class="btn btn-primary">Sales</a>
         <a href=".\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
     </div>
+</div>
+
+<div ng-controller="timeSheetController" class="working_div container">
+    <h4><label ng-bind="selectedEmployeeName "></label> <label> : </label> <label ng-bind="message"></label></label>
+    </h4>
+    <h4><label>Employee Name:</label> <select class="btn btn-primary" ng-model="selectedEmployeeName"
+                                              ng-options="x for x in employeeList"></select>
+        &nbsp&nbsp&nbsp<input type="button" href=".\ClassicLeathersMenu.html" class="btn btn-primary"
+                              ng-click="saveInTime()" value="Stepping In"></input>
+        <input type="button" href=".\ClassicLeathersMenu.html" class="btn btn-primary" ng-click="saveOutTime()"
+               value="Stepping Out"></input>
+    </h4>
+
 </div>
 </body>
 </html>
