@@ -11,6 +11,11 @@
     font-size:12px;
   }
 
+  .working_div p{
+    font-weight:600;
+    font-size:14px;
+  }
+
   .table-font {
     font-size:12px;
   }
@@ -23,10 +28,14 @@
     width:30px;
   }
 
-  .table tbody tr th {
+  .table tbody tr th td{
     padding:2px;
   }
 
   .table tr th select {
     height: 23.14px;
+  }
+
+  tbody > :first-child{
+  font-weight:600;
   }

@@ -1,0 +1,239 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/body.css">
+    <script>
+      var app = angular.module("classicLeathersProduction", []);
+      app.controller("purchaseOrderController", function($scope,$http) {
+        $http({method: 'GET', url: 'http://localhost:8080/twPurchaseOrder/getArticles'})
+            .then(function successCallback(response) {
+					$scope.articleList=response.data;
+					var skus=[];
+					for(var i = 0, size = response.data.length; i < size ; i++){
+                        var item = response.data[i];
+                        skus[i]=item.teakWoodSku;
+                    }
+                    $scope.skus=skus;
+            },
+            function errorCallback(response) {
+					console.log(error.value);
+            }
+        );
+        var purchaseOrderEntries =[];
+            purchaseOrderEntries[0]={"classicSku": "CLASSIC_SKU",
+            "teakWoodSku": "TW_SKU",
+            "leather": "LEATHER",
+            "size_40_quantity":"40",
+            "size_41_quantity":"41",
+            "size_42_quantity":"42",
+            "size_43_quantity":"43",
+            "size_44_quantity":"44",
+            "size_45_quantity":"45",
+            "size_46_quantity":"46",
+            "handStitchingPattern": "HS",
+            "style": "STYLE",
+            "lining": "LINING",
+            "sole": "SOLE",
+            "totalQuantity": "TOTAL"
+            };
+        $scope.purchaseOrderEntryList=purchaseOrderEntries;
+        var count=1;
+        $scope.addPurchaseOrderEntry = function(){
+            purchaseOrderEntries[count]={"classicSku": $scope.selectedArticle.classicSku,
+            "teakWoodSku": $scope.selectedArticle.teakWoodSku,
+            "leather": $scope.selectedArticle.leather,
+            "size_40_quantity":$scope.size_40_quantity,
+            "size_41_quantity":$scope.size_41_quantity,
+            "size_42_quantity":$scope.size_42_quantity,
+            "size_43_quantity":$scope.size_43_quantity,
+            "size_44_quantity":$scope.size_44_quantity,
+            "size_45_quantity":$scope.size_45_quantity,
+            "size_46_quantity":$scope.size_46_quantity,
+            "handStitchingPattern": $scope.selectedArticle.handStitchingPattern,
+            "style": $scope.selectedArticle.style,
+            "lining": $scope.selectedArticle.lining,
+            "sole": $scope.selectedArticle.sole,
+            "totalQuantity": Number($scope.size_40_quantity)+Number($scope.size_41_quantity)
+            +Number($scope.size_42_quantity)+Number($scope.size_43_quantity)+Number($scope.size_44_quantity)
+            +Number($scope.size_45_quantity)+Number($scope.size_46_quantity)
+            };
+            count++;
+            $scope.purchaseOrderEntryList=purchaseOrderEntries;
+
+        console.log($scope.purchaseOrderEntryList);
+        }
+
+        $scope.savePurchaseOrder =function(){
+        console.log($scope.purchaseOrderEntryList);
+            $http.post('http://localhost:8080/twPurchaseOrder/savePO?fileName='+$scope.fileName,$scope.purchaseOrderEntryList,{})
+                .then(data => {
+                        // data received by server
+                          window.location.reload();
+                })
+                .catch(error => {
+                        console.log(error.value);
+                });
+        }
+      });
+
+    </script>
+
+</head>
+<body class="classicTheamColor" ng-app="classicLeathersProduction">
+
+<div class="header_div">
+    <img class="images" src="../resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">PRODUCTION UNIT @ AMBUR</label>
+        <a href=".\ClassicLeathersProductionMenu.html" class="btn btn-primary">Home</a>
+    </div>
+</div>
+<div ng-controller="purchaseOrderController" class="working_div container">
+    <p>CREATE PURCHASE ORDER</p>
+    <table class="table table-font">
+        <tr>
+            <th>TW_SKU</th>
+            <th>CLASSIC_SKU</th>
+            <th>LEATHER</th>
+            <th>40</th>
+            <th>41</th>
+            <th>42</th>
+            <th>43</th>
+            <th>44</th>
+            <th>45</th>
+            <th>46</th>
+            <th>46</th>
+            <th>HS</th>
+            <th>STYLE</th>
+            <th>LINING</th>
+            <th>SOLE</th>
+            <th>CREATE</th>
+        </tr>
+        <tr>
+            <td>
+                <select ng-model="selectedArticle">
+                    <option ng-repeat="x in articleList" ng-value="{{x}}">{{x.teakWoodSku}}</option>
+                </select>
+            </td>
+            <td>
+                {{selectedArticle.classicSku}}
+            </td>
+            <td>
+                {{selectedArticle.leather}}
+            </td>
+            <td>
+                <input type="text" ng-model="size_40_quantity" class="number_input_width">
+            </td>
+            <td>
+                <input type="text" ng-model="size_41_quantity" class="number_input_width">
+            </td>
+            <td>
+                <input type="text" ng-model="size_42_quantity" class="number_input_width">
+            </td>
+            <td>
+                <input type="text" ng-model="size_43_quantity" class="number_input_width">
+            </td>
+            <td>
+                <input type="text" ng-model="size_44_quantity" class="number_input_width">
+            </td>
+            <td>
+                <input type="text" ng-model="size_45_quantity" class="number_input_width">
+            </td>
+            <td>
+                <input type="text" ng-model="size_46_quantity" class="number_input_width">
+            </td>
+            <td>
+                {{selectedArticle.handStitchingPattern}}
+            </td>
+            <td>
+                {{selectedArticle.style}}
+            </td>
+            <td>
+                {{selectedArticle.lining}}
+            </td>
+            <td>
+                {{selectedArticle.sole}}
+            </td>
+            <td>
+                <input type="button" ng-click="addPurchaseOrderEntry()" value="add"
+                       class="text_input_width btn btn-primary">
+            </td>
+        </tr>
+    </table>
+    <p>PURCHASE ORDER DETAILS</p>
+        <p> <label>File Name : </label><input type="text" ng-model="fileName">
+        <input type="button" ng-click="savePurchaseOrder()" value="Save PO"
+                                     class="text_input_width btn btn-primary"></p>
+    <table class="table table-font">
+<!--        <tr>-->
+<!--            <th>TW_SKU</th>-->
+<!--            <th>CLASSIC_SKU</th>-->
+<!--            <th>LEATHER</th>-->
+<!--            <th>40</th>-->
+<!--            <th>41</th>-->
+<!--            <th>42</th>-->
+<!--            <th>43</th>-->
+<!--            <th>44</th>-->
+<!--            <th>45</th>-->
+<!--            <th>46</th>-->
+<!--            <TH>TOTAL</TH>-->
+<!--            <th>HS</th>-->
+<!--            <th>STYLE</th>-->
+<!--            <th>LINING</th>-->
+<!--            <th>SOLE</th>-->
+<!--        </tr>-->
+        <tr ng-repeat="purchaseOrderEntry in purchaseOrderEntryList">
+            <td>
+                {{purchaseOrderEntry.teakWoodSku}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.classicSku}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.leather}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.size_40_quantity}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.size_41_quantity}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.size_42_quantity}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.size_43_quantity}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.size_44_quantity}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.size_45_quantity}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.size_46_quantity}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.totalQuantity}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.handStitchingPattern}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.style}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.lining}}
+            </td>
+            <td>
+                {{purchaseOrderEntry.sole}}
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
