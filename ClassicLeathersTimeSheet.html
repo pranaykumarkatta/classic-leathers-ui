@@ -13,30 +13,54 @@
             $scope.employeeList = ["Select","PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
             $scope.selectedEmployeeName=$scope.employeeList[0];
              $scope.saveInTime = function() {
-                var data={
-                    "employeeName": $scope.selectedEmployeeName,
-                    "entryType": "In",
+                if($scope.selectedEmployeeName=="Select"){
+                    confirm("Invalid Employee Name");
+                }else{
+                    var confirmation = confirm("Saving In Time For : " +$scope.selectedEmployeeName);
+                    if(confirmation==true){
+                        var data={
+                            "employeeName": $scope.selectedEmployeeName,
+                            "entryType": "In",
+                        }
+                        $http.post('http://localhost:8080/timeSheet',data,{})
+                        .then(data => {
+                            $scope.message="Data Saved Successfully for In Time"
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        })
+                        .catch(error => {
+                            console.log(error.value);
+                        });
+                    }else{
+                         window.location.reload();
+                    }
                 }
-                $http.post('http://localhost:8080/timeSheet',data,{})
-                .then(data => {
-                          $scope.message="Data Saved Successfully for In Time"
-                })
-                .catch(error => {
-                        console.log(error.value);
-                });
             }
              $scope.saveOutTime = function() {
-                var data={
-                    "employeeName": $scope.selectedEmployeeName,
-                    "entryType": "Out",
+                if($scope.selectedEmployeeName=="Select"){
+                    confirm("Invalid Employee Name");
+                }else{
+                    var confirmation = confirm("Saving Out Time For : " +$scope.selectedEmployeeName);
+                    if(confirmation==true){
+                        var data={
+                            "employeeName": $scope.selectedEmployeeName,
+                            "entryType": "Out",
+                        }
+                        $http.post('http://localhost:8080/timeSheet',data,{})
+                        .then(data => {
+                            $scope.message="Data Saved Successfully for Out Time"
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        })
+                        .catch(error => {
+                            console.log(error.value);
+                        });
+                    }else{
+                         window.location.reload();
+                    }
                 }
-                $http.post('http://localhost:8080/timeSheet',data,{})
-                .then(data => {
-                           $scope.message="Data Saved Successfully for Out Time"
-                })
-                .catch(error => {
-                        console.log(error.value);
-                });
             }
          });
 
