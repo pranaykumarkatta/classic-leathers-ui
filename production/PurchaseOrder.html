@@ -3,29 +3,21 @@
     <title>Classic Leathers</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel ="stylesheet" href ="https://unpkg.com/ngx-bootstrap/datepicker/bs-datepicker.css">
     <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/body.css">
     <script>
       var app = angular.module("classicLeathersProduction", []);
       app.controller("purchaseOrderController", function($scope,$http) {
-        $http({method: 'GET', url: 'http://localhost:8080/twPurchaseOrder/getArticles'})
-            .then(function successCallback(response) {
-					$scope.articleList=response.data;
-					var skus=[];
-					for(var i = 0, size = response.data.length; i < size ; i++){
-                        var item = response.data[i];
-                        skus[i]=item.teakWoodSku;
-                    }
-                    $scope.skus=skus;
-            },
-            function errorCallback(response) {
-					console.log(error.value);
-            }
-        );
-        var purchaseOrderEntries =[];
-            purchaseOrderEntries[0]={"classicSku": "CLASSIC_SKU",
-            "teakWoodSku": "TW_SKU",
+      $scope.customerList = ["Classic Leathers Retail","TeakWood"];
+      $scope.selectedCustomer=$scope.customerList[0];
+      $scope.brandList = ["99CRAFTS","TEAKWOOD"];
+      $scope.selectedBrand=$scope.brandList[0];
+      $scope.jobWorkVendorList = ["Self","Noor Shoes"];
+      $scope.selectedJobWorkVendor=$scope.jobWorkVendorList[0];
+      var purchaseOrderEntries =[];
+            purchaseOrderEntries[0]={"sku": "SKU",
             "leather": "LEATHER",
             "size_40_quantity":"40",
             "size_41_quantity":"41",
@@ -42,9 +34,26 @@
             };
         $scope.purchaseOrderEntryList=purchaseOrderEntries;
         var count=1;
+
+        $http({method: 'GET', url: 'http://localhost:8080/purchaseOrder/getArticles?sheetIndex=0'})
+            .then(function successCallback(response) {
+					$scope.teakWoodArticleList=response.data;
+            },
+            function errorCallback(response) {
+					console.log(error.value);
+            }
+        );
+        $http({method: 'GET', url: 'http://localhost:8080/purchaseOrder/getArticles?sheetIndex=1'})
+            .then(function successCallback(response) {
+					$scope.classicArticleList=response.data;
+            },
+            function errorCallback(response) {
+					console.log(error.value);
+            }
+        );
+
         $scope.addPurchaseOrderEntry = function(){
-            purchaseOrderEntries[count]={"classicSku": $scope.selectedArticle.classicSku,
-            "teakWoodSku": $scope.selectedArticle.teakWoodSku,
+            purchaseOrderEntries[count]={"sku": $scope.selectedArticle.sku,
             "leather": $scope.selectedArticle.leather,
             "size_40_quantity":$scope.size_40_quantity,
             "size_41_quantity":$scope.size_41_quantity,
@@ -63,15 +72,15 @@
             };
             count++;
             $scope.purchaseOrderEntryList=purchaseOrderEntries;
-
-        console.log($scope.purchaseOrderEntryList);
         }
 
         $scope.savePurchaseOrder =function(){
         console.log($scope.purchaseOrderEntryList);
-            $http.post('http://localhost:8080/twPurchaseOrder/savePO?fileName='+$scope.fileName,$scope.purchaseOrderEntryList,{})
+            $http.post('http://localhost:8080/purchaseOrder/savePO?fileName='+$scope.fileName+
+            '&customer='+$scope.selectedCustomer+'&brand='+$scope.selectedBrand+
+            '&poNumber='+$scope.poNumber+'&poDate='+$scope.poDate+'&jobWorkVendor='+$scope.selectedJobWorkVendor,
+            $scope.purchaseOrderEntryList,{})
                 .then(data => {
-                        // data received by server
                           window.location.reload();
                 })
                 .catch(error => {
@@ -96,8 +105,18 @@
     <p>CREATE PURCHASE ORDER</p>
     <table class="table table-font">
         <tr>
-            <th>TW_SKU</th>
-            <th>CLASSIC_SKU</th>
+            <td><label>File Name : &nbsp</label><input type="text" ng-model="fileName"></td>
+            <td>Customer Name : <select ng-model="selectedCustomer" ng-options="x for x in customerList"></select></td>
+            <td>Brand Name : <select ng-model="selectedBrand" ng-options="x for x in brandList"></select></td>
+            <td>PO Number : &nbsp <input type="text" ng-model="poNumber"></td>
+            <td>PO Date : &nbsp <input type ="date" ng-model="poDate"></td>
+            <td>Job Work : <select ng-model="selectedJobWorkVendor" ng-options="x for x in jobWorkVendorList"></select></td>
+        </tr>
+
+    </table>
+    <table class="table table-font">
+        <tr>
+            <th>SKU</th>
             <th>LEATHER</th>
             <th>40</th>
             <th>41</th>
@@ -105,7 +124,6 @@
             <th>43</th>
             <th>44</th>
             <th>45</th>
-            <th>46</th>
             <th>46</th>
             <th>HS</th>
             <th>STYLE</th>
@@ -115,12 +133,12 @@
         </tr>
         <tr>
             <td>
-                <select ng-model="selectedArticle">
-                    <option ng-repeat="x in articleList" ng-value="{{x}}">{{x.teakWoodSku}}</option>
+                <select ng-model="selectedArticle" ng-show="selectedBrand == 'TEAKWOOD'">
+                    <option ng-repeat="x in teakWoodArticleList" ng-value="{{x}}">{{x.sku}}</option>
                 </select>
-            </td>
-            <td>
-                {{selectedArticle.classicSku}}
+                <select ng-model="selectedArticle" ng-show="selectedBrand != 'TEAKWOOD'">
+                    <option ng-repeat="x in classicArticleList" ng-value="{{x}}">{{x.sku}}</option>
+                </select>
             </td>
             <td>
                 {{selectedArticle.leather}}
@@ -164,17 +182,23 @@
             </td>
         </tr>
     </table>
-    <p>PURCHASE ORDER DETAILS</p>
-        <p> <label>File Name : </label><input type="text" ng-model="fileName">
+    <p>PURCHASE ORDER DETAILS : {{fileName}}.xlsx &nbsp
         <input type="button" ng-click="savePurchaseOrder()" value="Save PO"
-                                     class="text_input_width btn btn-primary"></p>
+               class="text_input_width btn btn-primary"></p>
+
+    <table class="table table-font">
+        <tr>
+            <td>Client : &nbsp {{selectedCustomer}}</td>
+            <td>Brand : &nbsp {{selectedBrand}}</td>
+            <td>PO Number : &nbsp {{poNumber}}</td>
+            <td>PO Date : &nbsp {{poDate}}</td>
+            <td>JobWork : &nbsp {{selectedJobWorkVendor}}</td>
+        </tr>
+    </table>
     <table class="table table-font">
         <tr ng-repeat="purchaseOrderEntry in purchaseOrderEntryList">
             <td>
-                {{purchaseOrderEntry.teakWoodSku}}
-            </td>
-            <td>
-                {{purchaseOrderEntry.classicSku}}
+                {{purchaseOrderEntry.sku}}
             </td>
             <td>
                 {{purchaseOrderEntry.leather}}
