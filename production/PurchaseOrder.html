@@ -16,6 +16,9 @@
       $scope.selectedBrand=$scope.brandList[0];
       $scope.jobWorkVendorList = ["Self","Noor Shoes"];
       $scope.selectedJobWorkVendor=$scope.jobWorkVendorList[0];
+
+      $scope.showPurchaseOrderDetails=false;
+
       var purchaseOrderEntries =[];
             purchaseOrderEntries[0]={"sku": "SKU",
             "leather": "LEATHER",
@@ -53,38 +56,68 @@
         );
 
         $scope.addPurchaseOrderEntry = function(){
-            purchaseOrderEntries[count]={"sku": $scope.selectedArticle.sku,
-            "leather": $scope.selectedArticle.leather,
-            "size_40_quantity":$scope.size_40_quantity,
-            "size_41_quantity":$scope.size_41_quantity,
-            "size_42_quantity":$scope.size_42_quantity,
-            "size_43_quantity":$scope.size_43_quantity,
-            "size_44_quantity":$scope.size_44_quantity,
-            "size_45_quantity":$scope.size_45_quantity,
-            "size_46_quantity":$scope.size_46_quantity,
-            "handStitchingPattern": $scope.selectedArticle.handStitchingPattern,
-            "style": $scope.selectedArticle.style,
-            "lining": $scope.selectedArticle.lining,
-            "sole": $scope.selectedArticle.sole,
-            "totalQuantity": Number($scope.size_40_quantity)+Number($scope.size_41_quantity)
-            +Number($scope.size_42_quantity)+Number($scope.size_43_quantity)+Number($scope.size_44_quantity)
-            +Number($scope.size_45_quantity)+Number($scope.size_46_quantity)
-            };
-            count++;
-            $scope.purchaseOrderEntryList=purchaseOrderEntries;
+            $scope.saveMessage="";
+            if(($scope.fileName!=null && $scope.fileName!=null) &&
+                ($scope.poNumber!=null && $scope.poNumber!="") &&
+                ($scope.poDate!=null && $scope.poDate!="") &&
+                ($scope.selectedArticle!=null && $scope.selectedArticle!=""))
+            {
+                $scope.showPurchaseOrderDetails=true;
+                purchaseOrderEntries[count]={"sku": $scope.selectedArticle.sku,
+                "leather": $scope.selectedArticle.leather,
+                "size_40_quantity":$scope.size_40_quantity,
+                "size_41_quantity":$scope.size_41_quantity,
+                "size_42_quantity":$scope.size_42_quantity,
+                "size_43_quantity":$scope.size_43_quantity,
+                "size_44_quantity":$scope.size_44_quantity,
+                "size_45_quantity":$scope.size_45_quantity,
+                "size_46_quantity":$scope.size_46_quantity,
+                "handStitchingPattern": $scope.selectedArticle.handStitchingPattern,
+                "style": $scope.selectedArticle.style,
+                "lining": $scope.selectedArticle.lining,
+                "sole": $scope.selectedArticle.sole,
+                "totalQuantity": Number($scope.size_40_quantity)+Number($scope.size_41_quantity)
+                +Number($scope.size_42_quantity)+Number($scope.size_43_quantity)+Number($scope.size_44_quantity)
+                +Number($scope.size_45_quantity)+Number($scope.size_46_quantity)
+                };
+                count++;
+                $scope.purchaseOrderEntryList=purchaseOrderEntries;
+                $scope.selectedArticle="";
+            }else{
+                window.alert("Invalid data");
+            }
+
         }
 
         $scope.savePurchaseOrder =function(){
-        console.log($scope.purchaseOrderEntryList);
             $http.post('http://localhost:8080/purchaseOrder/savePO?fileName='+$scope.fileName+
             '&customer='+$scope.selectedCustomer+'&brand='+$scope.selectedBrand+
             '&poNumber='+$scope.poNumber+'&poDate='+$scope.poDate+'&jobWorkVendor='+$scope.selectedJobWorkVendor,
             $scope.purchaseOrderEntryList,{})
                 .then(data => {
-                          window.location.reload();
+                purchaseOrderEntries =[];
+            purchaseOrderEntries[0]={"sku": "SKU",
+            "leather": "LEATHER",
+            "size_40_quantity":"40",
+            "size_41_quantity":"41",
+            "size_42_quantity":"42",
+            "size_43_quantity":"43",
+            "size_44_quantity":"44",
+            "size_45_quantity":"45",
+            "size_46_quantity":"46",
+            "handStitchingPattern": "HS",
+            "style": "STYLE",
+            "lining": "LINING",
+            "sole": "SOLE",
+            "totalQuantity": "TOTAL"
+            };
+                    $scope.purchaseOrderEntryList=purchaseOrderEntries;
+                    $scope.selectedArticle="";
+                    $scope.saveMessage="PO created successfully";
+                    $scope.showPurchaseOrderDetails=false;
                 })
                 .catch(error => {
-                        console.log(error.value);
+                    $scope.saveMessage="Error while creating PO";
                 });
         }
       });
@@ -183,11 +216,12 @@
             </td>
         </tr>
     </table>
-    <p>PURCHASE ORDER DETAILS : {{fileName}}.xlsx &nbsp
+    <p>{{saveMessage}}</p>
+    <p ng-show="showPurchaseOrderDetails">PURCHASE ORDER DETAILS : {{fileName}}.xlsx &nbsp
         <input type="button" ng-click="savePurchaseOrder()" value="Save PO"
                class="text_input_width btn btn-primary"></p>
 
-    <table class="table table-font">
+    <table class="table table-font" ng-show="showPurchaseOrderDetails">
         <tr>
             <td>Client : &nbsp {{selectedCustomer}}</td>
             <td>Brand : &nbsp {{selectedBrand}}</td>
@@ -196,7 +230,7 @@
             <td>JobWork : &nbsp {{selectedJobWorkVendor}}</td>
         </tr>
     </table>
-    <table class="table table-font">
+    <table class="table table-font" ng-show="showPurchaseOrderDetails">
         <tr ng-repeat="purchaseOrderEntry in purchaseOrderEntryList">
             <td>
                 {{purchaseOrderEntry.sku}}
