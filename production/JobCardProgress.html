@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="../css/body.css">
     <script>
       var app = angular.module("classicLeathersProduction", []);
-      app.controller("purchaseOrderProgressController", function($scope,$http) {
+      app.controller("jobCardProgressController", function($scope,$http) {
       $scope.showUpdateJobCardProgressDiv=false;
       $scope.showOverallJobCardProgressDiv=false;
       $scope.productionDepartments = ["CUTTING", "JOB WORK"];
       $scope.productionDepartment= $scope.productionDepartments[0];
 
-       $http({method: 'GET', url: 'http://localhost:8080/purchaseOrder/getJobCardFiles'})
+       $http({method: 'GET', url: 'http://localhost:8080/jobCard/getJobCardFiles'})
        .then(function successCallback(response) {
 	        $scope.jobCardFileNames=response.data;
        },function errorCallback(response) {
@@ -31,7 +31,7 @@
             $scope.showOverallJobCardProgressDiv=false;
 
             if($scope.selectedJobCardFile != null){
-                $http({method: 'GET', url: 'http://localhost:8080/purchaseOrder/jobCardProgressSkus?jobCardFileName='+$scope.selectedJobCardFile})
+                $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressSkus?jobCardFileName='+$scope.selectedJobCardFile})
                 .then(function successCallback(response) {
 	                $scope.jobCardProgressSkus=response.data;
 	                console.log(jobCardProgressSkus);
@@ -60,12 +60,12 @@
         <a href=".\JobCard.html" class="btn btn-primary">Create Job Card</a>
     </div>
 </div>
-<div ng-controller="purchaseOrderProgressController" class="working_div container">
-    <p>PURCHASE ORDER PROGRESS</p>
+<div ng-controller="jobCardProgressController" class="working_div container">
+    <p>JOB CARD PROGRESS</p>
     <table class="table table-font">
         <tr>
             <td><label>Select Job Card</label>  <select ng-model="selectedJobCardFile" ng-options="x for x in jobCardFileNames"
-                        ng-change="getJobCardProgressDetails()"></select></td>
+                                                        ng-change="getJobCardProgressDetails()"></select></td>
             <td><input type="button" ng-click="updateJobCardProgress()" value="Update Progress"
                        class="btn btn-primary"></td>
             <td><input type="button" ng-click="getOverAllJobCardProgress()" value="Get Overall Job Card Progress"
@@ -75,7 +75,7 @@
     <div ng-show="showUpdateJobCardProgressDiv">
         <table class="table table-font">
             <tr>
-                <th>PURCHASE ORDER :
+                <th>JOB CARD :
                     <label>{{selectedJobCardFile}}</label>
                 </th>
                 <th>Department Name
