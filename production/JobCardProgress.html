@@ -1,0 +1,95 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/body.css">
+    <script>
+      var app = angular.module("classicLeathersProduction", []);
+      app.controller("purchaseOrderProgressController", function($scope,$http) {
+      $scope.showUpdateJobCardProgressDiv=false;
+      $scope.showOverallJobCardProgressDiv=false;
+      $scope.productionDepartments = ["CUTTING", "JOB WORK"];
+      $scope.productionDepartment= $scope.productionDepartments[0];
+
+       $http({method: 'GET', url: 'http://localhost:8080/purchaseOrder/getJobCardFiles'})
+       .then(function successCallback(response) {
+	        $scope.jobCardFileNames=response.data;
+       },function errorCallback(response) {
+			console.log(error.value);
+         }
+       );
+
+        $scope.getJobCardProgressDetails = function(){
+            $scope.showUpdateJobCardProgressDiv=false;
+            $scope.showOverallJobCardProgressDiv=false;
+        }
+        $scope.updateJobCardProgress = function(){
+            $scope.showUpdateJobCardProgressDiv=true;
+            $scope.showOverallJobCardProgressDiv=false;
+
+            if($scope.selectedJobCardFile != null){
+                $http({method: 'GET', url: 'http://localhost:8080/purchaseOrder/jobCardProgressSkus?jobCardFileName='+$scope.selectedJobCardFile})
+                .then(function successCallback(response) {
+	                $scope.jobCardProgressSkus=response.data;
+	                console.log(jobCardProgressSkus);
+                },function errorCallback(response) {
+			        console.log(error.value);
+                  }
+                );
+            }
+        }
+        $scope.getOverAllJobCardProgress = function(){
+            $scope.showUpdateJobCardProgressDiv=false;
+            $scope.showOverallJobCardProgressDiv=true;
+        }
+
+      });
+
+    </script>
+</head>
+<body class="classicTheamColor" ng-app="classicLeathersProduction">
+
+<div class="header_div">
+    <img class="images" src="../resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">PRODUCTION UNIT @ AMBUR</label>
+        <a href=".\ClassicLeathersProductionMenu.html" class="btn btn-primary">Home</a>
+        <a href=".\JobCard.html" class="btn btn-primary">Create Job Card</a>
+    </div>
+</div>
+<div ng-controller="purchaseOrderProgressController" class="working_div container">
+    <p>PURCHASE ORDER PROGRESS</p>
+    <table class="table table-font">
+        <tr>
+            <td><label>Select Job Card</label>  <select ng-model="selectedJobCardFile" ng-options="x for x in jobCardFileNames"
+                        ng-change="getJobCardProgressDetails()"></select></td>
+            <td><input type="button" ng-click="updateJobCardProgress()" value="Update Progress"
+                       class="btn btn-primary"></td>
+            <td><input type="button" ng-click="getOverAllJobCardProgress()" value="Get Overall Job Card Progress"
+                       class="btn btn-primary"></td>
+        </tr>
+    </table>
+    <div ng-show="showUpdateJobCardProgressDiv">
+        <table class="table table-font">
+            <tr>
+                <th>PURCHASE ORDER :
+                    <label>{{selectedJobCardFile}}</label>
+                </th>
+                <th>Department Name
+                    <select ng-model="productionDepartment" ng-options="x for x in productionDepartments"></select>
+                </th>
+                <th><input type="button" ng-click="saveSalesEntry()" value="save"
+                           class="text_input_width btn btn-primary">
+                </th>
+            </tr>
+        </table>
+    </div>
+    <div ng-show="showOverallJobCardProgressDiv">
+        Show Job Card progress based on daily progress details
+    </div>
+</div>
+</body>
+</html>

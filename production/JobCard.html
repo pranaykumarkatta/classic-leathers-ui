@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/body.css">
     <script>
       var app = angular.module("classicLeathersProduction", []);
-      app.controller("purchaseOrderController", function($scope,$http) {
+      app.controller("jobCardController", function($scope,$http) {
       $scope.customerList = ["Classic Leathers Retail","TeakWood"];
       $scope.selectedCustomer=$scope.customerList[0];
       $scope.brandList = ["99CRAFTS","TEAKWOOD"];
@@ -17,10 +17,10 @@
       $scope.jobWorkVendorList = ["Self","Noor Shoes"];
       $scope.selectedJobWorkVendor=$scope.jobWorkVendorList[0];
 
-      $scope.showPurchaseOrderDetails=false;
+      $scope.showJobCardDetails=false;
 
-      var purchaseOrderEntries =[];
-            purchaseOrderEntries[0]={"sku": "SKU",
+      var jobCardEntries =[];
+            jobCardEntries[0]={"sku": "SKU",
             "leather": "LEATHER",
             "size_40_quantity":"40",
             "size_41_quantity":"41",
@@ -35,10 +35,10 @@
             "sole": "SOLE",
             "totalQuantity": "TOTAL"
             };
-        $scope.purchaseOrderEntryList=purchaseOrderEntries;
+        $scope.jobCardEntryList=jobCardEntries;
         var count=1;
 
-        $http({method: 'GET', url: 'http://localhost:8080/purchaseOrder/getArticles?sheetIndex=0'})
+        $http({method: 'GET', url: 'http://localhost:8080/jobCard/getArticles?sheetIndex=0'})
             .then(function successCallback(response) {
 					$scope.teakWoodArticleList=response.data;
             },
@@ -46,7 +46,7 @@
 					console.log(error.value);
             }
         );
-        $http({method: 'GET', url: 'http://localhost:8080/purchaseOrder/getArticles?sheetIndex=1'})
+        $http({method: 'GET', url: 'http://localhost:8080/jobCard/getArticles?sheetIndex=1'})
             .then(function successCallback(response) {
 					$scope.classicArticleList=response.data;
             },
@@ -55,15 +55,15 @@
             }
         );
 
-        $scope.addPurchaseOrderEntry = function(){
+        $scope.addJobCardEntry = function(){
             $scope.saveMessage="";
             if(($scope.fileName!=null && $scope.fileName!=null) &&
                 ($scope.poNumber!=null && $scope.poNumber!="") &&
                 ($scope.poDate!=null && $scope.poDate!="") &&
                 ($scope.selectedArticle!=null && $scope.selectedArticle!=""))
             {
-                $scope.showPurchaseOrderDetails=true;
-                purchaseOrderEntries[count]={"sku": $scope.selectedArticle.sku,
+                $scope.showJobCardDetails=true;
+                jobCardEntries[count]={"sku": $scope.selectedArticle.sku,
                 "leather": $scope.selectedArticle.leather,
                 "size_40_quantity":$scope.size_40_quantity,
                 "size_41_quantity":$scope.size_41_quantity,
@@ -81,7 +81,7 @@
                 +Number($scope.size_45_quantity)+Number($scope.size_46_quantity)
                 };
                 count++;
-                $scope.purchaseOrderEntryList=purchaseOrderEntries;
+                $scope.jobCardEntryList=jobCardEntries;
                 $scope.selectedArticle="";
             }else{
                 window.alert("Invalid data");
@@ -89,14 +89,14 @@
 
         }
 
-        $scope.savePurchaseOrder =function(){
-            $http.post('http://localhost:8080/purchaseOrder/savePO?fileName='+$scope.fileName+
+        $scope.saveJobCard =function(){
+            $http.post('http://localhost:8080/jobCard/saveJo?fileName='+$scope.fileName+
             '&customer='+$scope.selectedCustomer+'&brand='+$scope.selectedBrand+
             '&poNumber='+$scope.poNumber+'&poDate='+$scope.poDate+'&jobWorkVendor='+$scope.selectedJobWorkVendor,
-            $scope.purchaseOrderEntryList,{})
+            $scope.jobCardEntryList,{})
                 .then(data => {
-                purchaseOrderEntries =[];
-            purchaseOrderEntries[0]={"sku": "SKU",
+                jobCardEntries =[];
+            jobCardEntries[0]={"sku": "SKU",
             "leather": "LEATHER",
             "size_40_quantity":"40",
             "size_41_quantity":"41",
@@ -111,13 +111,13 @@
             "sole": "SOLE",
             "totalQuantity": "TOTAL"
             };
-                    $scope.purchaseOrderEntryList=purchaseOrderEntries;
+                    $scope.jobCardEntryList=jobCardEntries;
                     $scope.selectedArticle="";
-                    $scope.saveMessage="PO created successfully";
-                    $scope.showPurchaseOrderDetails=false;
+                    $scope.saveMessage="JobCard created successfully";
+                    $scope.showJobCardDetails=false;
                 })
                 .catch(error => {
-                    $scope.saveMessage="Error while creating PO";
+                    $scope.saveMessage="Error while creating Job Card";
                 });
         }
       });
@@ -132,11 +132,11 @@
     <div class="menu_div container">
         <label class="welcome_label">PRODUCTION UNIT @ AMBUR</label>
         <a href=".\ClassicLeathersProductionMenu.html" class="btn btn-primary">Home</a>
-        <a href=".\PurchaseOrderProgress.html" class="btn btn-primary">Purchase Order Progress</a>
+        <a href=".\JobCardProgress.html" class="btn btn-primary">Job Card Progress</a>
     </div>
 </div>
-<div ng-controller="purchaseOrderController" class="working_div container">
-    <p>CREATE PURCHASE ORDER</p>
+<div ng-controller="jobCardController" class="working_div container">
+    <p>CREATE JOB CARD</p>
     <table class="table table-font">
         <tr>
             <td><label>File Name : &nbsp</label><input type="text" ng-model="fileName"></td>
@@ -211,17 +211,17 @@
                 {{selectedArticle.sole}}
             </td>
             <td>
-                <input type="button" ng-click="addPurchaseOrderEntry()" value="add"
+                <input type="button" ng-click="addJobCardEntry()" value="add"
                        class="text_input_width btn btn-primary">
             </td>
         </tr>
     </table>
     <p>{{saveMessage}}</p>
-    <p ng-show="showPurchaseOrderDetails">PURCHASE ORDER DETAILS : {{fileName}}.xlsx &nbsp
-        <input type="button" ng-click="savePurchaseOrder()" value="Save PO"
-               class="text_input_width btn btn-primary"></p>
+    <p ng-show="showJobCardDetails">Job Card DETAILS : {{fileName}}.xlsx &nbsp
+        <input type="button" ng-click="saveJobCard()" value="Save Job Card"
+               class="btn btn-primary"></p>
 
-    <table class="table table-font" ng-show="showPurchaseOrderDetails">
+    <table class="table table-font" ng-show="showJobCardDetails">
         <tr>
             <td>Client : &nbsp {{selectedCustomer}}</td>
             <td>Brand : &nbsp {{selectedBrand}}</td>
@@ -230,49 +230,49 @@
             <td>JobWork : &nbsp {{selectedJobWorkVendor}}</td>
         </tr>
     </table>
-    <table class="table table-font" ng-show="showPurchaseOrderDetails">
-        <tr ng-repeat="purchaseOrderEntry in purchaseOrderEntryList">
+    <table class="table table-font" ng-show="showJobCardDetails">
+        <tr ng-repeat="jobCardEntry in jobCardEntryList">
             <td>
-                {{purchaseOrderEntry.sku}}
+                {{jobCardEntry.sku}}
             </td>
             <td>
-                {{purchaseOrderEntry.leather}}
+                {{jobCardEntry.leather}}
             </td>
             <td>
-                {{purchaseOrderEntry.size_40_quantity}}
+                {{jobCardEntry.size_40_quantity}}
             </td>
             <td>
-                {{purchaseOrderEntry.size_41_quantity}}
+                {{jobCardEntry.size_41_quantity}}
             </td>
             <td>
-                {{purchaseOrderEntry.size_42_quantity}}
+                {{jobCardEntry.size_42_quantity}}
             </td>
             <td>
-                {{purchaseOrderEntry.size_43_quantity}}
+                {{jobCardEntry.size_43_quantity}}
             </td>
             <td>
-                {{purchaseOrderEntry.size_44_quantity}}
+                {{jobCardEntry.size_44_quantity}}
             </td>
             <td>
-                {{purchaseOrderEntry.size_45_quantity}}
+                {{jobCardEntry.size_45_quantity}}
             </td>
             <td>
-                {{purchaseOrderEntry.size_46_quantity}}
+                {{jobCardEntry.size_46_quantity}}
             </td>
             <td>
-                {{purchaseOrderEntry.totalQuantity}}
+                {{jobCardEntry.totalQuantity}}
             </td>
             <td>
-                {{purchaseOrderEntry.handStitchingPattern}}
+                {{jobCardEntry.handStitchingPattern}}
             </td>
             <td>
-                {{purchaseOrderEntry.style}}
+                {{jobCardEntry.style}}
             </td>
             <td>
-                {{purchaseOrderEntry.lining}}
+                {{jobCardEntry.lining}}
             </td>
             <td>
-                {{purchaseOrderEntry.sole}}
+                {{jobCardEntry.sole}}
             </td>
         </tr>
     </table>
