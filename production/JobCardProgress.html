@@ -10,9 +10,10 @@
       var app = angular.module("classicLeathersProduction", []);
       app.controller("jobCardProgressController", function($scope,$http) {
       $scope.showUpdateJobCardProgressDiv=false;
-      $scope.showOverallJobCardProgressDiv=false;
-      $scope.productionDepartments = ["CUTTING", "JOB WORK"];
-      $scope.productionDepartment= $scope.productionDepartments[0];
+      $scope.showOverallProgressDiv=false;
+      $scope.productionStages = ["CUTTING", "JOB WORK"];
+      $scope.productionStage= $scope.productionStages[0];
+      var jobCardProgressList;
 
        $http({method: 'GET', url: 'http://localhost:8080/jobCard/getJobCardFiles'})
        .then(function successCallback(response) {
@@ -24,29 +25,79 @@
 
         $scope.getJobCardProgressDetails = function(){
             $scope.showUpdateJobCardProgressDiv=false;
-            $scope.showOverallJobCardProgressDiv=false;
+            $scope.showOverallProgressDiv=false;
         }
         $scope.updateJobCardProgress = function(){
-            $scope.showUpdateJobCardProgressDiv=true;
-            $scope.showOverallJobCardProgressDiv=false;
-
             if($scope.selectedJobCardFile != null){
+                $scope.showUpdateJobCardProgressDiv=true;
+                $scope.showOverallProgressDiv=false;
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressSkus?jobCardFileName='+$scope.selectedJobCardFile})
                 .then(function successCallback(response) {
 	                $scope.jobCardProgressSkus=response.data;
-	                console.log(jobCardProgressSkus);
                 },function errorCallback(response) {
 			        console.log(error.value);
                   }
                 );
+
+                $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressList?jobCardFileName='+$scope.selectedJobCardFile})
+                .then(function successCallback(response) {
+                    jobCardProgressList=response.data;
+	                $scope.jobCardProgressList=response.data;
+                },function errorCallback(response) {
+			        console.log(error.value);
+                  }
+                );
+
+            }else{
+                window.alert("Select Job Card");
             }
         }
-        $scope.getOverAllJobCardProgress = function(){
+
+        $scope.saveJobCardProgressEntry = function(){
+        if($scope.selectedSku!=null&&$scope.selectedProductionStage!=null&&$scope.count!=null&&
+        $scope.selectedSku!=""&&$scope.selectedProductionStage!=""&&$scope.count!=""){
+            var data= {"sku": $scope.selectedSku,
+                      "productionStage": $scope.selectedProductionStage,
+                      "count": $scope.count
+                      };
+            $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
+                    .then(data => {
+                        $scope.selectedSku="";
+                        $scope.selectedProductionStage="";
+                        $scope.count="";
+                    })
+                    .catch(error => {
+                        console.log(error.value);
+                    });
+            $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressList?jobCardFileName='+$scope.selectedJobCardFile})
+                .then(function successCallback(response) {
+	                var rowCount=0;
+	                 if($scope.jobCardProgressList.length !=0){
+	                  rowCount=$scope.jobCardProgressList.length;
+	                  }
+	                jobCardProgressList[rowCount]={"date": "",
+	                  "sku": $scope.selectedSku,
+                      "productionStage": $scope.selectedProductionStage,
+                      "count": $scope.count
+                      }
+                      $scope.jobCardProgressList=jobCardProgressList;
+                },function errorCallback(response) {
+			        console.log(error.value);
+                  }
+                );
+            }else{
+                window.alert("Invalid data");
+            }
+        }
+
+        $scope.getOverAllProgress = function(){
             $scope.showUpdateJobCardProgressDiv=false;
-            $scope.showOverallJobCardProgressDiv=true;
+            $scope.showOverallProgressDiv=true;
         }
 
       });
+
+
 
     </script>
 </head>
@@ -64,11 +115,12 @@
     <p>JOB CARD PROGRESS</p>
     <table class="table table-font">
         <tr>
-            <td><label>Select Job Card</label>  <select ng-model="selectedJobCardFile" ng-options="x for x in jobCardFileNames"
-                                                        ng-change="getJobCardProgressDetails()"></select></td>
+            <td><label>Select Job Card</label> <select ng-model="selectedJobCardFile"
+                                                       ng-options="x for x in jobCardFileNames"
+                                                       ng-change="getJobCardProgressDetails()"></select></td>
             <td><input type="button" ng-click="updateJobCardProgress()" value="Update Progress"
                        class="btn btn-primary"></td>
-            <td><input type="button" ng-click="getOverAllJobCardProgress()" value="Get Overall Job Card Progress"
+            <td><input type="button" ng-click="getOverAllProgress()" value="Get Overall Progress"
                        class="btn btn-primary"></td>
         </tr>
     </table>
@@ -78,16 +130,36 @@
                 <th>JOB CARD :
                     <label>{{selectedJobCardFile}}</label>
                 </th>
-                <th>Department Name
-                    <select ng-model="productionDepartment" ng-options="x for x in productionDepartments"></select>
+                <th>SKU
+                    <select ng-model="selectedSku" ng-options="x for x in jobCardProgressSkus"></select>
                 </th>
-                <th><input type="button" ng-click="saveSalesEntry()" value="save"
+                <th>Production Stage
+                    <select ng-model="selectedProductionStage" ng-options="x for x in productionStages"></select>
+                </th>
+                <th>Count
+                    <input type="text" ng-model="count" class="text_input_width">
+                </th>
+                <th>
+                    <input type="button" ng-click="saveJobCardProgressEntry()" value="save"
                            class="text_input_width btn btn-primary">
                 </th>
+
+            </tr>
+        </table>
+        <table class="table table-font" ng-model="jobCardProgressList">
+            <tr>
+                <th>Sku</th>
+                <th>Production Stage</th>
+                <th>count</th>
+            </tr>
+            <tr ng-repeat="jobCardProgressEntry in jobCardProgressList">
+                <td>{{jobCardProgressEntry.sku}}</td>
+                <td>{{jobCardProgressEntry.productionStage}}</td>
+                <td>{{jobCardProgressEntry.count}}</td>
             </tr>
         </table>
     </div>
-    <div ng-show="showOverallJobCardProgressDiv">
+    <div ng-show="showOverallProgressDiv">
         Show Job Card progress based on daily progress details
     </div>
 </div>

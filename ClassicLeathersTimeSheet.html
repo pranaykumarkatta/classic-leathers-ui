@@ -67,7 +67,6 @@
             $http({method: 'GET', url: 'http://localhost:8080/timeSheet'})
             .then(function successCallback(response) {
 					$scope.timeSheetEntryList=response.data;
-					console.log(response.data)
                 },function errorCallback(response) {
 					console.log(error.value);
                 }

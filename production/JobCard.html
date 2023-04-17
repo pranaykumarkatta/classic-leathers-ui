@@ -83,6 +83,13 @@
                 count++;
                 $scope.jobCardEntryList=jobCardEntries;
                 $scope.selectedArticle="";
+                $scope.size_40_quantity="",
+                $scope.size_41_quantity="",
+                $scope.size_42_quantity="",
+                $scope.size_43_quantity="",
+                $scope.size_44_quantity="",
+                $scope.size_45_quantity="",
+                $scope.size_46_quantity=""
             }else{
                 window.alert("Invalid data");
             }
@@ -270,6 +277,9 @@
             </td>
             <td>
                 {{jobCardEntry.lining}}
+            </td>
+            <td>
+                {{jobCardEntry.sole}}
             </td>
             <td>
                 {{jobCardEntry.sole}}
