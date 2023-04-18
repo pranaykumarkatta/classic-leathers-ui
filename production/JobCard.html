@@ -16,6 +16,7 @@
       $scope.selectedBrand=$scope.brandList[0];
       $scope.jobWorkVendorList = ["Self","Noor Shoes"];
       $scope.selectedJobWorkVendor=$scope.jobWorkVendorList[0];
+      $scope.poDate=new Date();
 
       $scope.showJobCardDetails=false;
 
@@ -29,6 +30,7 @@
             "size_44_quantity":"44",
             "size_45_quantity":"45",
             "size_46_quantity":"46",
+            "size_47_quantity":"47",
             "handStitchingPattern": "HS",
             "style": "STYLE",
             "lining": "LINING",
@@ -55,9 +57,18 @@
             }
         );
 
+        $http({method: 'GET', url: 'http://localhost:8080/jobCard/getNextJobCardNumber'})
+            .then(function successCallback(response) {
+					$scope.jobCardNumber=response.data;
+            },
+            function errorCallback(response) {
+					console.log(error.value);
+            }
+        );
+
         $scope.addJobCardEntry = function(){
             $scope.saveMessage="";
-            if(($scope.fileName!=null && $scope.fileName!=null) &&
+            if(($scope.jobCardNumber!=null && $scope.jobCardNumber!=null) &&
                 ($scope.poNumber!=null && $scope.poNumber!="") &&
                 ($scope.poDate!=null && $scope.poDate!="") &&
                 ($scope.selectedArticle!=null && $scope.selectedArticle!=""))
@@ -72,13 +83,14 @@
                 "size_44_quantity":$scope.size_44_quantity,
                 "size_45_quantity":$scope.size_45_quantity,
                 "size_46_quantity":$scope.size_46_quantity,
+                "size_47_quantity":$scope.size_47_quantity,
                 "handStitchingPattern": $scope.selectedArticle.handStitchingPattern,
                 "style": $scope.selectedArticle.style,
                 "lining": $scope.selectedArticle.lining,
                 "sole": $scope.selectedArticle.sole,
                 "totalQuantity": Number($scope.size_40_quantity)+Number($scope.size_41_quantity)
                 +Number($scope.size_42_quantity)+Number($scope.size_43_quantity)+Number($scope.size_44_quantity)
-                +Number($scope.size_45_quantity)+Number($scope.size_46_quantity)
+                +Number($scope.size_45_quantity)+Number($scope.size_46_quantity)+Number($scope.size_47_quantity)
                 };
                 count++;
                 $scope.jobCardEntryList=jobCardEntries;
@@ -89,7 +101,8 @@
                 $scope.size_43_quantity="",
                 $scope.size_44_quantity="",
                 $scope.size_45_quantity="",
-                $scope.size_46_quantity=""
+                $scope.size_46_quantity="",
+                $scope.size_47_quantity=""
             }else{
                 window.alert("Invalid data");
             }
@@ -97,7 +110,7 @@
         }
 
         $scope.saveJobCard =function(){
-            $http.post('http://localhost:8080/jobCard/saveJobCard?fileName='+$scope.fileName+
+            $http.post('http://localhost:8080/jobCard/saveJobCard?jobCardNumber='+$scope.jobCardNumber+
             '&customer='+$scope.selectedCustomer+'&brand='+$scope.selectedBrand+
             '&poNumber='+$scope.poNumber+'&poDate='+$scope.poDate+'&jobWorkVendor='+$scope.selectedJobWorkVendor,
             $scope.jobCardEntryList,{})
@@ -112,6 +125,7 @@
             "size_44_quantity":"44",
             "size_45_quantity":"45",
             "size_46_quantity":"46",
+            "size_47_quantity":"47",
             "handStitchingPattern": "HS",
             "style": "STYLE",
             "lining": "LINING",
@@ -120,6 +134,7 @@
             };
                     $scope.jobCardEntryList=jobCardEntries;
                     $scope.selectedArticle="";
+                    $scope.jobCardNumber = $scope.jobCardNumber+1;
                     $scope.saveMessage="JobCard created successfully";
                     $scope.showJobCardDetails=false;
                 })
@@ -146,7 +161,7 @@
     <p>CREATE JOB CARD</p>
     <table class="table table-font">
         <tr>
-            <td><label>File Name : &nbsp</label><input type="text" ng-model="fileName"></td>
+            <td><label>Job Card Number: {{$scope.jobCardNumber}}&nbsp</label><input type="text" ng-model="jobCardNumber"></td>
             <td>Customer Name : <select ng-model="selectedCustomer" ng-options="x for x in customerList"></select></td>
             <td>Brand Name : <select ng-model="selectedBrand" ng-options="x for x in brandList"></select></td>
             <td>PO Number : &nbsp <input type="text" ng-model="poNumber"></td>
@@ -158,7 +173,7 @@
     <table class="table table-font">
         <tr>
             <th>SKU</th>
-            <th>LEATHER</th>
+            <th ng-show="selectedBrand == 'TEAKWOOD'">LEATHER</th>
             <th>40</th>
             <th>41</th>
             <th>42</th>
@@ -166,6 +181,7 @@
             <th>44</th>
             <th>45</th>
             <th>46</th>
+            <th>47</th>
             <th>HS</th>
             <th>STYLE</th>
             <th>LINING</th>
@@ -178,10 +194,10 @@
                     <option ng-repeat="x in teakWoodArticleList" ng-value="{{x}}">{{x.sku}}</option>
                 </select>
                 <select ng-model="selectedArticle" ng-show="selectedBrand != 'TEAKWOOD'">
-                    <option ng-repeat="x in classicArticleList" ng-value="{{x}}">{{x.sku}}</option>
+                    <option ng-repeat="x in classicArticleList" ng-value="{{x}}">{{x.sku}}_{{x.leather}}</option>
                 </select>
             </td>
-            <td>
+            <td ng-show="selectedBrand == 'TEAKWOOD'">
                 {{selectedArticle.leather}}
             </td>
             <td>
@@ -206,6 +222,9 @@
                 <input type="text" ng-model="size_46_quantity" class="number_input_width">
             </td>
             <td>
+                <input type="text" ng-model="size_47_quantity" class="number_input_width">
+            </td>
+            <td>
                 {{selectedArticle.handStitchingPattern}}
             </td>
             <td>
@@ -224,7 +243,7 @@
         </tr>
     </table>
     <p>{{saveMessage}}</p>
-    <p ng-show="showJobCardDetails">Job Card DETAILS : {{fileName}}.xlsx &nbsp
+    <p ng-show="showJobCardDetails">Job Card DETAILS &nbsp
         <input type="button" ng-click="saveJobCard()" value="Save Job Card"
                class="btn btn-primary"></p>
 
@@ -265,6 +284,9 @@
             </td>
             <td>
                 {{jobCardEntry.size_46_quantity}}
+            </td>
+            <td>
+                {{jobCardEntry.size_47_quantity}}
             </td>
             <td>
                 {{jobCardEntry.totalQuantity}}

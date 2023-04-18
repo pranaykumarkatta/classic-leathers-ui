@@ -11,7 +11,10 @@
       app.controller("jobCardProgressController", function($scope,$http) {
       $scope.showUpdateJobCardProgressDiv=false;
       $scope.showOverallProgressDiv=false;
-      $scope.productionStages = ["CUTTING", "JOB WORK"];
+      $scope.productionStages = ["CUTTING", "JOB WORK" , "HS","FINISHING",
+                                "PACKING","DISPATCH",
+                                "CUTTING_REWORK", "JOB WORK REWORK" , "HS_REWORK","FINISHING_REWORK",
+                                "PACKING_REWORK","DISPATCH_REWORK"];
       $scope.productionStage= $scope.productionStages[0];
       var jobCardProgressList;
 
