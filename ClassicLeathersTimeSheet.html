@@ -102,13 +102,17 @@
     </h4>
     <table class="table table-font">
         <tr>
+            <th colspan="2">Filter by Date, Employee Name, Present Yes/No &nbsp <Input type="text" ng-model="dateFilterTxt"></th>
+        </tr>
+        <tr>
             <th>Date</th>
-            <th>Employee Name</th>
+            <th>Employee Name &nbsp </th>
             <th>Present</th>
             <th>Total Working Hours</th>
         </tr>
 
-        <tr ng-repeat="timeSheetEntry in timeSheetEntryList">
+        <tr ng-repeat="timeSheetEntry in timeSheetEntryList | filter : dateFilterTxt"
+            ng-style="{'background-color': (timeSheetEntry.isTodayEntry=='true') ? '#a7b9bc':null}">
             <td>{{timeSheetEntry.date}}</td>
             <td>{{timeSheetEntry.employeeName}}</td>
             <td>{{timeSheetEntry.present}}</td>
