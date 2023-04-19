@@ -59,7 +59,10 @@
         $scope.saveJobCardProgressEntry = function(){
         if($scope.selectedSku!=null&&$scope.selectedProductionStage!=null&&$scope.count!=null&&
         $scope.selectedSku!=""&&$scope.selectedProductionStage!=""&&$scope.count!=""){
-            var data= {"sku": $scope.selectedSku,
+            var strings =$scope.selectedSku.split("_");
+            var data= {"sku": strings[0],
+                       "leather": strings[1],
+                       "size":strings[2],
                       "productionStage": $scope.selectedProductionStage,
                       "count": $scope.count
                       };
