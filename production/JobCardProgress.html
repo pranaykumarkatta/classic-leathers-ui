@@ -7,24 +7,24 @@
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/body.css">
     <script>
-      var app = angular.module("classicLeathersProduction", []);
-      app.controller("jobCardProgressController", function($scope,$http) {
-      $scope.showUpdateJobCardProgressDiv=false;
-      $scope.showOverallProgressDiv=false;
-      $scope.productionStages = ["CUTTING", "JOB WORK" , "HS","FINISHING",
-                                "PACKING","DISPATCH",
-                                "CUTTING_REWORK", "JOB WORK REWORK" , "HS_REWORK","FINISHING_REWORK",
-                                "PACKING_REWORK","DISPATCH_REWORK"];
-      $scope.productionStage= $scope.productionStages[0];
-      var jobCardProgressList;
+		var app = angular.module("classicLeathersProduction", []);
+		app.controller("jobCardProgressController", function($scope,$http) {
+		$scope.showUpdateJobCardProgressDiv=false;
+		$scope.showOverallProgressDiv=false;
+		$scope.productionStages = ["CUTTING","JOB WORK","HS","FINISHING","PACKING","DISPATCH"];
+		$scope.sizes = ["40","41","42","43","44","45","46","47"];
+		$scope.productionStage= $scope.productionStages[0];
+		var jobCardProgressList;
 
-       $http({method: 'GET', url: 'http://localhost:8080/jobCard/getJobCardFiles'})
-       .then(function successCallback(response) {
-	        $scope.jobCardFileNames=response.data;
-       },function errorCallback(response) {
-			console.log(error.value);
-         }
-       );
+		$http({method: 'GET', url: 'http://localhost:8080/jobCard/getJobCardFiles'})
+		.then(
+			function successCallback(response) {
+				$scope.jobCardFileNames=response.data;
+			},
+			function errorCallback(response) {
+				console.log(error.value);
+			}
+		);
 
         $scope.getJobCardProgressDetails = function(){
             $scope.showUpdateJobCardProgressDiv=false;
@@ -58,39 +58,27 @@
 
         $scope.saveJobCardProgressEntry = function(){
         if($scope.selectedSku!=null&&$scope.selectedProductionStage!=null&&$scope.count!=null&&
-        $scope.selectedSku!=""&&$scope.selectedProductionStage!=""&&$scope.count!=""){
-            var strings =$scope.selectedSku.split("_");
-            var data= {"sku": strings[0],
-                       "leather": strings[1],
-                       "size":strings[2],
-                      "productionStage": $scope.selectedProductionStage,
-                      "count": $scope.count
-                      };
-            $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
-                    .then(data => {
-                        $scope.selectedSku="";
-                        $scope.selectedProductionStage="";
-                        $scope.count="";
-                    })
-                    .catch(error => {
-                        console.log(error.value);
-                    });
-            $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressList?jobCardFileName='+$scope.selectedJobCardFile})
-                .then(function successCallback(response) {
-	                var rowCount=0;
-	                 if($scope.jobCardProgressList.length !=0){
-	                  rowCount=$scope.jobCardProgressList.length;
-	                  }
-	                jobCardProgressList[rowCount]={"date": "",
-	                  "sku": $scope.selectedSku,
-                      "productionStage": $scope.selectedProductionStage,
-                      "count": $scope.count
-                      }
-                      $scope.jobCardProgressList=jobCardProgressList;
-                },function errorCallback(response) {
-			        console.log(error.value);
-                  }
-                );
+            $scope.selectedSku!=""&&$scope.selectedProductionStage!=""&&$scope.count!=""){
+                var strings =$scope.selectedSku.split("_");
+                var data= {
+                    "sku": strings[0],
+                    "leather": strings[1],
+                    "size":$scope.selectedSize,
+                    "productionStage": $scope.selectedProductionStage,
+                    "count": $scope.count
+                };
+                var count=jobCardProgressList.length;
+                $scope.jobCardProgressList[count]=data;
+                $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
+                .then(data => {
+                    $scope.selectedSku="";
+                    $scope.selectedProductionStage="";
+                    $scope.selectedSize="";
+                    $scope.count="";
+                })
+                .catch(error => {
+                    console.log(error.value);
+                });
             }else{
                 window.alert("Invalid data");
             }
@@ -102,6 +90,9 @@
         }
 
       });
+
+
+
 
 
 
@@ -139,6 +130,9 @@
                 <th>SKU
                     <select ng-model="selectedSku" ng-options="x for x in jobCardProgressSkus"></select>
                 </th>
+                <th>Size
+                    <select ng-model="selectedSize" ng-options="x for x in sizes"></select>
+                </th>
                 <th>Production Stage
                     <select ng-model="selectedProductionStage" ng-options="x for x in productionStages"></select>
                 </th>
@@ -155,11 +149,13 @@
         <table class="table table-font" ng-model="jobCardProgressList">
             <tr>
                 <th>Sku</th>
+                <th>Leather</th>
                 <th>Production Stage</th>
                 <th>count</th>
             </tr>
             <tr ng-repeat="jobCardProgressEntry in jobCardProgressList">
                 <td>{{jobCardProgressEntry.sku}}</td>
+                <td>{{jobCardProgressEntry.leather}}</td>
                 <td>{{jobCardProgressEntry.productionStage}}</td>
                 <td>{{jobCardProgressEntry.count}}</td>
             </tr>
