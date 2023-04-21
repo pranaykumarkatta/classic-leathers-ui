@@ -1,0 +1,71 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="./resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/body.css">
+
+    <script>
+      var app = angular.module("classicLeathers", []);
+      app.controller("retailController", function($scope,$http) {
+
+        $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/driving'})
+            .then(function successCallback(response) {
+                    $scope.drivingStockEntries=response.data;
+                },function errorCallback(response) {
+                    console.log(error.value);
+                }
+            );
+      });
+
+    </script>
+</head>
+<body class="classicTheamColor" ng-app="classicLeathers">
+
+<div class="header_div">
+    <img class="images" src="./resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">RETAIL STORE TIRUPATI</label>
+        <a href=".\ClassicLeathersMenu.html" class="btn btn-primary">Home</a>
+        <a href=".\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
+        <a href=".\ClassicLeathers_welcomePage.html" class="btn btn-primary">Sales</a>
+        <a href=".\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
+    </div>
+</div>
+<div ng-controller="retailController" class="working_div container">
+    <p>Driving Shoe Stock Details: &nbsp <Input type="text" ng-model="DrivingShoeFilter"> </p>
+    <table class="table table-font">
+        <tr>
+            <th>SKU</th>
+            <th>LEATHER</th>
+            <th>BRAND</th>
+            <th>40</th>
+            <th>41</th>
+            <th>42</th>
+            <th>43</th>
+            <th>44</th>
+            <th>45</th>
+            <th>46</th>
+            <th>47</th>
+            <th>Total</th>
+        </tr>
+        <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter">
+            <td>{{drivingStockEntry.sku}}</td>
+            <td>{{drivingStockEntry.leather}}</td>
+            <td>{{drivingStockEntry.brand}}</td>
+            <td>{{drivingStockEntry.size_40_quantity}}</td>
+            <td>{{drivingStockEntry.size_41_quantity}}</td>
+            <td>{{drivingStockEntry.size_42_quantity}}</td>
+            <td>{{drivingStockEntry.size_43_quantity}}</td>
+            <td>{{drivingStockEntry.size_44_quantity}}</td>
+            <td>{{drivingStockEntry.size_45_quantity}}</td>
+            <td>{{drivingStockEntry.size_46_quantity}}</td>
+            <td>{{drivingStockEntry.size_47_quantity}}</td>
+            <td>{{drivingStockEntry.totalQuantity}}</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
