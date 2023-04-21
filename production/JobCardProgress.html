@@ -11,7 +11,7 @@
 		app.controller("jobCardProgressController", function($scope,$http) {
 		$scope.showUpdateJobCardProgressDiv=false;
 		$scope.showOverallProgressDiv=false;
-		$scope.productionStages = ["CUTTING","JOB WORK","HS","FINISHING","PACKING","DISPATCH"];
+		$scope.productionStages = ["CUTTING","UPPER","HS","FINISHING","PACKING","DISPATCH"];
 		$scope.sizes = ["40","41","42","43","44","45","46","47"];
 		$scope.productionStage= $scope.productionStages[0];
 		var jobCardProgressList;
@@ -31,7 +31,7 @@
             $scope.showOverallProgressDiv=false;
         }
         $scope.updateJobCardProgress = function(){
-            if($scope.selectedJobCardFile != null){
+            if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=true;
                 $scope.showOverallProgressDiv=false;
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressSkus?jobCardFileName='+$scope.selectedJobCardFile})
@@ -68,6 +68,7 @@
                     "count": $scope.count
                 };
                 var count=jobCardProgressList.length;
+                $scope.saveJobCardProgressEntryErrorMessage="";
                 $scope.jobCardProgressList[count]=data;
                 $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
                 .then(data => {
@@ -75,9 +76,12 @@
                     $scope.selectedProductionStage="";
                     $scope.selectedSize="";
                     $scope.count="";
+                    $scope.saveJobCardProgressEntryErrorMessage="";
                 })
                 .catch(error => {
-                    console.log(error.value);
+                    $scope.jobCardProgressList.pop();
+                    $scope.count="";
+                    $scope.saveJobCardProgressEntryErrorMessage = error.data;
                 });
             }else{
                 window.alert("Invalid data");
@@ -85,13 +89,23 @@
         }
 
         $scope.getOverAllProgress = function(){
-            $scope.showUpdateJobCardProgressDiv=false;
-            $scope.showOverallProgressDiv=true;
+            if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
+                $scope.showUpdateJobCardProgressDiv=false;
+                $scope.showOverallProgressDiv=true;
+                $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardOverAllProgressList?jobCardFileName='+$scope.selectedJobCardFile})
+                    .then(function successCallback(response) {
+                        $scope.overAllJobCardProgressList = response.data;
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                      }
+                    );
+            }else{
+                window.alert("Select Job Card");
+            }
+
         }
 
       });
-
-
 
 
 
@@ -140,6 +154,7 @@
                     <input type="text" ng-model="count" class="text_input_width">
                 </th>
                 <th>
+                    <P>{{saveJobCardProgressEntryErrorMessage}}</P>
                     <input type="button" ng-click="saveJobCardProgressEntry()" value="save"
                            class="text_input_width btn btn-primary">
                 </th>
@@ -148,21 +163,136 @@
         </table>
         <table class="table table-font" ng-model="jobCardProgressList">
             <tr>
-                <th>Sku</th>
+                <th>Sku<Input type="text" ng-model="jobCardProgressEntrySkuFilter"></th>
                 <th>Leather</th>
+                <th>size</th>
                 <th>Production Stage</th>
                 <th>count</th>
             </tr>
             <tr ng-repeat="jobCardProgressEntry in jobCardProgressList">
-                <td>{{jobCardProgressEntry.sku}}</td>
+                <td>{{jobCardProgressEntry.sku | filter:jobCardProgressEntrySkuFilter}}</td>
                 <td>{{jobCardProgressEntry.leather}}</td>
+                <td>{{jobCardProgressEntry.size}}</td>
                 <td>{{jobCardProgressEntry.productionStage}}</td>
                 <td>{{jobCardProgressEntry.count}}</td>
             </tr>
         </table>
     </div>
     <div ng-show="showOverallProgressDiv">
-        Show Job Card progress based on daily progress details
+        <table class="table table-font">
+            <tr>
+                <td>SKU</td>
+                <td>LEATHER</td>
+                <td>SIZE</td>
+                <td>ORDERED</td>
+                <td>CUTTING_COMPLETED</td>
+                <td>UPPER_COMPLETED</td>
+                <td>HS_COMPLETED</td>
+                <td>FINISHED</td>
+                <td>PACKED</td>
+                <td>DISPATCHED</td>
+
+            </tr>
+            <tr ng-repeat="dto in overAllJobCardProgressList">
+                <td>{{dto.sku}}</td>
+                <td>{{dto.leather}}</td>
+                <td>40</td>
+                <td>{{dto.size_40_ordered_quantity}}</td>
+                <td>{{dto.size_40_cutting_quantity}}</td>
+                <td>{{dto.size_40_upperMaking_quantity}}</td>
+                <td>{{dto.size_40_hs_quantity}}</td>
+                <td>{{dto.size_40_finished_quantity}}</td>
+                <td>{{dto.size_40_packed_quantity}}</td>
+                <td>{{dto.size_40_dispatched_quantity}}</td>
+            </tr>
+            <tr ng-repeat="dto in overAllJobCardProgressList">
+                <td>{{dto.sku}}</td>
+                <td>{{dto.leather}}</td>
+                <td>41</td>
+                <td>{{dto.size_41_ordered_quantity}}</td>
+                <td>{{dto.size_41_cutting_quantity}}</td>
+                <td>{{dto.size_41_upperMaking_quantity}}</td>
+                <td>{{dto.size_41_hs_quantity}}</td>
+                <td>{{dto.size_41_finished_quantity}}</td>
+                <td>{{dto.size_41_packed_quantity}}</td>
+                <td>{{dto.size_41_dispatched_quantity}}</td>
+            </tr>
+            <tr ng-repeat="dto in overAllJobCardProgressList">
+                <td>{{dto.sku}}</td>
+                <td>{{dto.leather}}</td>
+                <td>42</td>
+                <td>{{dto.size_42_ordered_quantity}}</td>
+                <td>{{dto.size_42_cutting_quantity}}</td>
+                <td>{{dto.size_42_upperMaking_quantity}}</td>
+                <td>{{dto.size_42_hs_quantity}}</td>
+                <td>{{dto.size_42_finished_quantity}}</td>
+                <td>{{dto.size_42_packed_quantity}}</td>
+                <td>{{dto.size_42_dispatched_quantity}}</td>
+            </tr>
+            <tr ng-repeat="dto in overAllJobCardProgressList">
+                <td>{{dto.sku}}</td>
+                <td>{{dto.leather}}</td>
+                <td>43</td>
+                <td>{{dto.size_43_ordered_quantity}}</td>
+                <td>{{dto.size_43_cutting_quantity}}</td>
+                <td>{{dto.size_43_upperMaking_quantity}}</td>
+                <td>{{dto.size_43_hs_quantity}}</td>
+                <td>{{dto.size_43_finished_quantity}}</td>
+                <td>{{dto.size_43_packed_quantity}}</td>
+                <td>{{dto.size_43_dispatched_quantity}}</td>
+            </tr>
+            <tr ng-repeat="dto in overAllJobCardProgressList">
+                <td>{{dto.sku}}</td>
+                <td>{{dto.leather}}</td>
+                <td>44</td>
+                <td>{{dto.size_44_ordered_quantity}}</td>
+                <td>{{dto.size_44_cutting_quantity}}</td>
+                <td>{{dto.size_44_upperMaking_quantity}}</td>
+                <td>{{dto.size_44_hs_quantity}}</td>
+                <td>{{dto.size_44_finished_quantity}}</td>
+                <td>{{dto.size_44_packed_quantity}}</td>
+                <td>{{dto.size_44_dispatched_quantity}}</td>
+            </tr>
+
+            <tr ng-repeat="dto in overAllJobCardProgressList">
+                <td>{{dto.sku}}</td>
+                <td>{{dto.leather}}</td>
+                <td>45</td>
+                <td>{{dto.size_45_ordered_quantity}}</td>
+                <td>{{dto.size_45_cutting_quantity}}</td>
+                <td>{{dto.size_45_upperMaking_quantity}}</td>
+                <td>{{dto.size_45_hs_quantity}}</td>
+                <td>{{dto.size_45_finished_quantity}}</td>
+                <td>{{dto.size_45_packed_quantity}}</td>
+                <td>{{dto.size_45_dispatched_quantity}}</td>
+            </tr>
+
+            <tr ng-repeat="dto in overAllJobCardProgressList">
+                <td>{{dto.sku}}</td>
+                <td>{{dto.leather}}</td>
+                <td>46</td>
+                <td>{{dto.size_46_ordered_quantity}}</td>
+                <td>{{dto.size_46_cutting_quantity}}</td>
+                <td>{{dto.size_46_upperMaking_quantity}}</td>
+                <td>{{dto.size_46_hs_quantity}}</td>
+                <td>{{dto.size_46_finished_quantity}}</td>
+                <td>{{dto.size_46_packed_quantity}}</td>
+                <td>{{dto.size_46_dispatched_quantity}}</td>
+            </tr>
+
+            <tr ng-repeat="dto in overAllJobCardProgressList">
+                <td>{{dto.sku}}</td>
+                <td>{{dto.leather}}</td>
+                <td>47</td>
+                <td>{{dto.size_47_ordered_quantity}}</td>
+                <td>{{dto.size_47_cutting_quantity}}</td>
+                <td>{{dto.size_47_upperMaking_quantity}}</td>
+                <td>{{dto.size_47_hs_quantity}}</td>
+                <td>{{dto.size_47_finished_quantity}}</td>
+                <td>{{dto.size_47_packed_quantity}}</td>
+                <td>{{dto.size_47_dispatched_quantity}}</td>
+            </tr>
+        </table>
     </div>
 </div>
 </body>
