@@ -44,3 +44,6 @@
   tbody > :first-child{
   font-weight:600;
   }
+  .stockTable tr:nth-child(even) {
+    background-color: #b2d9d9;
+  }
