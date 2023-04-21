@@ -38,6 +38,7 @@
     <p>Driving Shoe Stock Details: &nbsp <Input type="text" ng-model="DrivingShoeFilter"> </p>
     <table class="table table-font">
         <tr>
+            <th>SNO</th>
             <th>SKU</th>
             <th>LEATHER</th>
             <th>BRAND</th>
@@ -52,6 +53,7 @@
             <th>Total</th>
         </tr>
         <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter">
+            <td>{{drivingStockEntry.rowNumber}}</td>
             <td>{{drivingStockEntry.sku}}</td>
             <td>{{drivingStockEntry.leather}}</td>
             <td>{{drivingStockEntry.brand}}</td>
