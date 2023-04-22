@@ -44,8 +44,15 @@
 
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressList?jobCardFileName='+$scope.selectedJobCardFile})
                 .then(function successCallback(response) {
-                    jobCardProgressList=response.data;
-	                $scope.jobCardProgressList=response.data;
+                    var jobCardProgressList=response.data;
+	                $scope.jobCardProgressList=jobCardProgressList;
+	                $scope.batchNumbers = [];
+	                for(var i = 0, size = jobCardProgressList.length ; i < size ; i++){
+                        var item = jobCardProgressList[i];
+                        if (item.batchNumber!= null &&item.batchNumber!= "NA" && item.batchNumber.length > 0 && !$scope.batchNumbers.includes(item.batchNumber)) {
+                            $scope.batchNumbers.push(item.batchNumber);
+                        }
+                    }
                 },function errorCallback(response) {
 			        console.log(error.value);
                   }
@@ -57,43 +64,111 @@
         }
 
         $scope.saveJobCardProgressEntry = function(){
-        if($scope.selectedSku!=null&&$scope.selectedProductionStage!=null&&$scope.count!=null&&
-            $scope.selectedSku!=""&&$scope.selectedProductionStage!=""&&$scope.count!=""){
-                var strings =$scope.selectedSku.split("_");
-                var data= {
-                    "sku": strings[0],
-                    "leather": strings[1],
-                    "size":$scope.selectedSize,
-                    "productionStage": $scope.selectedProductionStage,
-                    "count": $scope.count,
-                    "batchNumber": $scope.batchNumber,
-                    "packingBoxNumber": $scope.packingBoxNumber,
-                    "courierName": $scope.courierName,
-                    "trackingNumber": $scope.trackingNumber
-                };
-                    var count=jobCardProgressList.length;
-                    $scope.saveJobCardProgressEntryErrorMessage="";
-                    $scope.jobCardProgressList[count]=data;
+            if($scope.selectedProductionStage=="CUTTING" || $scope.selectedProductionStage=="UPPER"
+            ||$scope.selectedProductionStage=="HS"||$scope.selectedProductionStage=="FINISHING"){
+                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!=""){
+                    var strings =$scope.selectedSku.split("_");
+                    var data= {
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":$scope.selectedSize,
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count
+                    };
+                        $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
+                        .then(data => {
+                            $scope.selectedSku="";
+                            $scope.selectedProductionStage="";
+                            $scope.selectedSize="";
+                            $scope.count="";
+                            $scope.batchNumber= "";
+                            $scope.packingBoxNumber= "";
+                            $scope.courierName= "";
+                            $scope.trackingNumber= "";
+                            $scope.saveJobCardProgressEntryErrorMessage="";
+                            })
+                        .catch(error => {
+                            $scope.count="";
+                            $scope.saveJobCardProgressEntryErrorMessage = error.data;
+                        });
+                }else{
+                    window.alert("Invalid SKU/Size/Count");
+                }
+            }else if($scope.selectedProductionStage=="PACKING"){
+                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!=""
+                        &&  $scope.batchNumber!=null &&  $scope.batchNumber!="" &&  $scope.packingBoxNumber!=null &&  $scope.packingBoxNumber!=""){
+                    var strings =$scope.selectedSku.split("_");
+                    var data= {
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":$scope.selectedSize,
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count,
+                        "batchNumber": "Batch_"+$scope.batchNumber,
+                        "packingBoxNumber": "Box_"+$scope.packingBoxNumber
+                    };
                     $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
                     .then(data => {
                         $scope.selectedSku="";
                         $scope.selectedProductionStage="";
                         $scope.selectedSize="";
                         $scope.count="";
+                        $scope.batchNumber= "";
+                        $scope.packingBoxNumber= "";
+                        $scope.courierName= "";
+                        $scope.trackingNumber= "";
                         $scope.saveJobCardProgressEntryErrorMessage="";
-                        $scope.batchNumber= "",
-                        $scope.packingBoxNumber= "",
-                        $scope.courierName= "",
-                        $scope.trackingNumber= ""
                     })
                     .catch(error => {
-                        $scope.jobCardProgressList.pop();
                         $scope.count="";
                         $scope.saveJobCardProgressEntryErrorMessage = error.data;
                     });
+                }else{
+                    window.alert("Invalid SKU/Size/Count/Batch Number/Box Number");
+                }
+            }else if($scope.selectedProductionStage=="DISPATCH"){
+                if($scope.selectedBatchNumber!=null &&$scope.courierName!=null &&$scope.trackingNumber!=null &&
+                $scope.selectedBatchNumber!="" &&$scope.courierName!="" &&$scope.trackingNumber!="" ){
+                    var data= {
+                        "productionStage": $scope.selectedProductionStage,
+                        "batchNumber": $scope.selectedBatchNumber,
+                        "courierName": $scope.courierName,
+                        "trackingNumber": $scope.trackingNumber
+                    };
+                    $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
+                    .then(data => {
+                        $scope.selectedSku="";
+                        $scope.selectedProductionStage="";
+                        $scope.selectedSize="";
+                        $scope.count="";
+                        $scope.batchNumber= "";
+                        $scope.packingBoxNumber= "";
+                        $scope.courierName= "";
+                        $scope.trackingNumber= "";
+                        $scope.saveJobCardProgressEntryErrorMessage="";
+                    })
+                    .catch(error => {
+                        $scope.count="";
+                        $scope.saveJobCardProgressEntryErrorMessage = error.data;
+                    });
+                }else{
+                    window.alert("Invalid Batch Number/Courier Name/Tracking Number")
+                }
             }else{
-                window.alert("Invalid data");
+                window.alert("Invalid Production Stage");
             }
+
+            setTimeout(() => {
+                $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressList?jobCardFileName='+$scope.selectedJobCardFile})
+                .then(function successCallback(response) {
+                    console.log(response.data);
+                    var jobCardProgressList=response.data;
+	                $scope.jobCardProgressList=jobCardProgressList;
+                },function errorCallback(response) {
+			        console.log(error.value);
+                  }
+                );
+            }, 500);
         }
 
         $scope.getOverAllProgress = function(){
@@ -114,6 +189,8 @@
         }
 
       });
+
+
 
 
 
@@ -150,16 +227,16 @@
                 <th>JOB CARD :
                     <label>{{selectedJobCardFile}}</label>
                 </th>
-                <th>SKU
-                    <select ng-model="selectedSku" ng-options="x for x in jobCardProgressSkus"></select>
-                </th>
-                <th>Size
-                    <select ng-model="selectedSize" ng-options="x for x in sizes"></select>
-                </th>
                 <th>Production Stage
                     <select ng-model="selectedProductionStage" ng-options="x for x in productionStages"></select>
                 </th>
-                <th>Count
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">SKU
+                    <select ng-model="selectedSku" ng-options="x for x in jobCardProgressSkus"></select>
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size
+                    <select ng-model="selectedSize" ng-options="x for x in sizes"></select>
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Count
                     <input type="text" ng-model="count" class="text_input_width">
                 </th>
                 </th>
@@ -168,6 +245,9 @@
                 </th>
                 <th ng-show="selectedProductionStage == 'PACKING'">Box Number
                     <input type="text" ng-model="packingBoxNumber" class="text_input_width">
+                </th>
+                <th ng-show="selectedProductionStage == 'DISPATCH'">Batch Number
+                    <select ng-model="selectedBatchNumber" ng-options="x for x in batchNumbers"></select>
                 </th>
                 <th ng-show="selectedProductionStage == 'DISPATCH'">Courier Name
                     <input type="text" ng-model="courierName" class="text_input_width">
@@ -188,24 +268,30 @@
                 <th>Filter: <Input class="text_input_width" type="text" ng-model="jobCardProgressEntryFilter"></th>
             </tr>
             <tr>
+                <th>SNo</th>
                 <th>Date</th>
+                <th>Production Stage</th>
                 <th>Sku</th>
                 <th>Leather</th>
                 <th>Size</th>
-                <th>Production Stage</th>
                 <th>count</th>
-                <th>Batch / Courier Number</th>
-                <th>Box Number / Tracking Number</th>
+                <th>Batch</th>
+                <th>Box Number</th>
+                <th>Courier Number</th>
+                <th>Tracking Number</th>
             </tr>
             <tr ng-repeat="jobCardProgressEntry in jobCardProgressList | filter:jobCardProgressEntryFilter">
+                <td>{{jobCardProgressList.length -(jobCardProgressList.indexOf(jobCardProgressEntry))}}</td>
                 <td>{{jobCardProgressEntry.date}}</td>
+                <td>{{jobCardProgressEntry.productionStage}}</td>
                 <td>{{jobCardProgressEntry.sku}}</td>
                 <td>{{jobCardProgressEntry.leather}}</td>
                 <td>{{jobCardProgressEntry.size}}</td>
-                <td>{{jobCardProgressEntry.productionStage}}</td>
                 <td>{{jobCardProgressEntry.count}}</td>
-                <td>{{jobCardProgressEntry.batchNumber}} {{jobCardProgressEntry.courierName}}</td>
-                <td>{{jobCardProgressEntry.packingBoxNumber}} {{jobCardProgressEntry.trackingNumber}}</td>
+                <td>{{jobCardProgressEntry.batchNumber}}</td>
+                <td>{{jobCardProgressEntry.packingBoxNumber}}</td>
+                <td>{{jobCardProgressEntry.courierName}}</td>
+                <td>{{jobCardProgressEntry.trackingNumber}}</td>
             </tr>
         </table>
     </div>
@@ -225,8 +311,6 @@
                 <td>HS_COMPLETED</td>
                 <td>FINISHED</td>
                 <td>PACKED</td>
-                <td>DISPATCHED</td>
-
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -238,7 +322,6 @@
                 <td>{{dto.size_40_hs_quantity}}</td>
                 <td>{{dto.size_40_finished_quantity}}</td>
                 <td>{{dto.size_40_packed_quantity}}</td>
-                <td>{{dto.size_40_dispatched_quantity}}</td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -250,7 +333,6 @@
                 <td>{{dto.size_41_hs_quantity}}</td>
                 <td>{{dto.size_41_finished_quantity}}</td>
                 <td>{{dto.size_41_packed_quantity}}</td>
-                <td>{{dto.size_41_dispatched_quantity}}</td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -262,7 +344,6 @@
                 <td>{{dto.size_42_hs_quantity}}</td>
                 <td>{{dto.size_42_finished_quantity}}</td>
                 <td>{{dto.size_42_packed_quantity}}</td>
-                <td>{{dto.size_42_dispatched_quantity}}</td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -274,7 +355,6 @@
                 <td>{{dto.size_43_hs_quantity}}</td>
                 <td>{{dto.size_43_finished_quantity}}</td>
                 <td>{{dto.size_43_packed_quantity}}</td>
-                <td>{{dto.size_43_dispatched_quantity}}</td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -286,7 +366,6 @@
                 <td>{{dto.size_44_hs_quantity}}</td>
                 <td>{{dto.size_44_finished_quantity}}</td>
                 <td>{{dto.size_44_packed_quantity}}</td>
-                <td>{{dto.size_44_dispatched_quantity}}</td>
             </tr>
 
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
@@ -299,7 +378,6 @@
                 <td>{{dto.size_45_hs_quantity}}</td>
                 <td>{{dto.size_45_finished_quantity}}</td>
                 <td>{{dto.size_45_packed_quantity}}</td>
-                <td>{{dto.size_45_dispatched_quantity}}</td>
             </tr>
 
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
@@ -312,7 +390,6 @@
                 <td>{{dto.size_46_hs_quantity}}</td>
                 <td>{{dto.size_46_finished_quantity}}</td>
                 <td>{{dto.size_46_packed_quantity}}</td>
-                <td>{{dto.size_46_dispatched_quantity}}</td>
             </tr>
 
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
@@ -325,7 +402,6 @@
                 <td>{{dto.size_47_hs_quantity}}</td>
                 <td>{{dto.size_47_finished_quantity}}</td>
                 <td>{{dto.size_47_packed_quantity}}</td>
-                <td>{{dto.size_47_dispatched_quantity}}</td>
             </tr>
         </table>
     </div>
