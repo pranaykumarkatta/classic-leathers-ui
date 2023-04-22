@@ -188,6 +188,7 @@
                 <th>Filter: <Input class="text_input_width" type="text" ng-model="jobCardProgressEntryFilter"></th>
             </tr>
             <tr>
+                <th>Date</th>
                 <th>Sku</th>
                 <th>Leather</th>
                 <th>Size</th>
@@ -197,6 +198,7 @@
                 <th>Box Number / Tracking Number</th>
             </tr>
             <tr ng-repeat="jobCardProgressEntry in jobCardProgressList | filter:jobCardProgressEntryFilter">
+                <td>{{jobCardProgressEntry.date}}</td>
                 <td>{{jobCardProgressEntry.sku}}</td>
                 <td>{{jobCardProgressEntry.leather}}</td>
                 <td>{{jobCardProgressEntry.size}}</td>
