@@ -183,11 +183,11 @@
         </tr>
         <tr ng-repeat="salesEntry in salesEntryList | filter : salesEntryFilter "
             ng-style="{'background-color': (salesEntry.isTodaySale=='true') ? '#a7b9bc':null}">
-            <td>{{salesEntry.customerName}}</td>
+            <td>{{salesEntry.customerName | uppercase}}</td>
             <td>{{salesEntry.gender}}</td>
             <td>{{salesEntry.mobileNumber}}</td>
-            <td>{{salesEntry.category}}</td>
-            <td>{{salesEntry.productDetails}}</td>
+            <td>{{salesEntry.category | uppercase}}</td>
+            <td>{{salesEntry.productDetails | uppercase}}</td>
             <td>{{salesEntry.quantity}}</td>
             <td>{{salesEntry.size}}</td>
             <td>{{salesEntry.mrp}}</td>
