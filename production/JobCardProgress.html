@@ -65,24 +65,32 @@
                     "leather": strings[1],
                     "size":$scope.selectedSize,
                     "productionStage": $scope.selectedProductionStage,
-                    "count": $scope.count
+                    "count": $scope.count,
+                    "batchNumber": $scope.batchNumber,
+                    "packingBoxNumber": $scope.packingBoxNumber,
+                    "courierName": $scope.courierName,
+                    "trackingNumber": $scope.trackingNumber
                 };
-                var count=jobCardProgressList.length;
-                $scope.saveJobCardProgressEntryErrorMessage="";
-                $scope.jobCardProgressList[count]=data;
-                $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
-                .then(data => {
-                    $scope.selectedSku="";
-                    $scope.selectedProductionStage="";
-                    $scope.selectedSize="";
-                    $scope.count="";
+                    var count=jobCardProgressList.length;
                     $scope.saveJobCardProgressEntryErrorMessage="";
-                })
-                .catch(error => {
-                    $scope.jobCardProgressList.pop();
-                    $scope.count="";
-                    $scope.saveJobCardProgressEntryErrorMessage = error.data;
-                });
+                    $scope.jobCardProgressList[count]=data;
+                    $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
+                    .then(data => {
+                        $scope.selectedSku="";
+                        $scope.selectedProductionStage="";
+                        $scope.selectedSize="";
+                        $scope.count="";
+                        $scope.saveJobCardProgressEntryErrorMessage="";
+                        $scope.batchNumber= "",
+                        $scope.packingBoxNumber= "",
+                        $scope.courierName= "",
+                        $scope.trackingNumber= ""
+                    })
+                    .catch(error => {
+                        $scope.jobCardProgressList.pop();
+                        $scope.count="";
+                        $scope.saveJobCardProgressEntryErrorMessage = error.data;
+                    });
             }else{
                 window.alert("Invalid data");
             }
@@ -106,6 +114,7 @@
         }
 
       });
+
 
 
 
@@ -153,8 +162,21 @@
                 <th>Count
                     <input type="text" ng-model="count" class="text_input_width">
                 </th>
+                </th>
+                <th ng-show="selectedProductionStage == 'PACKING'">Batch Number
+                    <input type="text" ng-model="batchNumber" class="text_input_width">
+                </th>
+                <th ng-show="selectedProductionStage == 'PACKING'">Box Number
+                    <input type="text" ng-model="packingBoxNumber" class="text_input_width">
+                </th>
+                <th ng-show="selectedProductionStage == 'DISPATCH'">Courier Name
+                    <input type="text" ng-model="courierName" class="text_input_width">
+                </th>
+                <th ng-show="selectedProductionStage == 'DISPATCH'">Tracking Number
+                    <input type="text" ng-model="trackingNumber" class="text_input_width">
+                </th>
                 <th>
-                    <P>{{saveJobCardProgressEntryErrorMessage}}</P>
+                    <P class="text-danger">{{saveJobCardProgressEntryErrorMessage}}</P>
                     <input type="button" ng-click="saveJobCardProgressEntry()" value="save"
                            class="text_input_width btn btn-primary">
                 </th>
@@ -162,13 +184,17 @@
             </tr>
         </table>
         <table class="table table-font" ng-model="jobCardProgressList">
-            <tr><th>Filter: <Input class="text_input_width" type="text" ng-model="jobCardProgressEntryFilter"></th></tr>
+            <tr>
+                <th>Filter: <Input class="text_input_width" type="text" ng-model="jobCardProgressEntryFilter"></th>
+            </tr>
             <tr>
                 <th>Sku</th>
                 <th>Leather</th>
-                <th>size</th>
+                <th>Size</th>
                 <th>Production Stage</th>
                 <th>count</th>
+                <th>Batch / Courier Number</th>
+                <th>Box Number / Tracking Number</th>
             </tr>
             <tr ng-repeat="jobCardProgressEntry in jobCardProgressList | filter:jobCardProgressEntryFilter">
                 <td>{{jobCardProgressEntry.sku}}</td>
@@ -176,12 +202,17 @@
                 <td>{{jobCardProgressEntry.size}}</td>
                 <td>{{jobCardProgressEntry.productionStage}}</td>
                 <td>{{jobCardProgressEntry.count}}</td>
+                <td>{{jobCardProgressEntry.batchNumber}} {{jobCardProgressEntry.courierName}}</td>
+                <td>{{jobCardProgressEntry.packingBoxNumber}} {{jobCardProgressEntry.trackingNumber}}</td>
             </tr>
         </table>
     </div>
     <div ng-show="showOverallProgressDiv">
         <table class="table table-font">
-            <tr><th>Filter: <Input class="text_input_width" type="text" ng-model="overAllJobCardProgressListFilter"></th></tr>
+            <tr>
+                <th>Filter: <Input class="text_input_width" type="text" ng-model="overAllJobCardProgressListFilter">
+                </th>
+            </tr>
             <tr>
                 <td>SKU</td>
                 <td>LEATHER</td>
