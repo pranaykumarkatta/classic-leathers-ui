@@ -29,11 +29,13 @@
         $scope.getJobCardProgressDetails = function(){
             $scope.showUpdateJobCardProgressDiv=false;
             $scope.showOverallProgressDiv=false;
+            $scope.showDispatchDetailsDiv=false;
         }
         $scope.updateJobCardProgress = function(){
             if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=true;
                 $scope.showOverallProgressDiv=false;
+                $scope.showDispatchDetailsDiv=false;
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressSkus?jobCardFileName='+$scope.selectedJobCardFile})
                 .then(function successCallback(response) {
 	                $scope.jobCardProgressSkus=response.data;
@@ -175,6 +177,7 @@
             if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=false;
                 $scope.showOverallProgressDiv=true;
+                $scope.showDispatchDetailsDiv=false;
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardOverAllProgressList?jobCardFileName='+$scope.selectedJobCardFile})
                     .then(function successCallback(response) {
                         $scope.overAllJobCardProgressList = response.data;
@@ -185,7 +188,23 @@
             }else{
                 window.alert("Select Job Card");
             }
+        }
 
+        $scope.getPackingList = function(){
+            if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
+                $scope.showUpdateJobCardProgressDiv=false;
+                $scope.showOverallProgressDiv=false;
+                $scope.showDispatchDetailsDiv=true;
+                $http({method: 'GET', url: 'http://localhost:8080/jobCard/packingList?jobCardFileName='+$scope.selectedJobCardFile})
+                    .then(function successCallback(response) {
+                        $scope.packingListData = response.data;
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                      }
+                    );
+            }else{
+                window.alert("Select Job Card");
+            }
         }
 
       });
@@ -218,6 +237,8 @@
             <td><input type="button" ng-click="updateJobCardProgress()" value="Update Progress"
                        class="btn btn-primary"></td>
             <td><input type="button" ng-click="getOverAllProgress()" value="Get Overall Progress"
+                       class="btn btn-primary"></td>
+            <td><input type="button" ng-click="getPackingList()" value="Get Dispatch Details"
                        class="btn btn-primary"></td>
         </tr>
     </table>
@@ -292,6 +313,54 @@
                 <td>{{jobCardProgressEntry.packingBoxNumber}}</td>
                 <td>{{jobCardProgressEntry.courierName}}</td>
                 <td>{{jobCardProgressEntry.trackingNumber}}</td>
+            </tr>
+        </table>
+    </div>
+    <div ng-show="showDispatchDetailsDiv">
+        <table class="table table-font">
+            <tr>
+                <th>Filter: <Input class="text_input_width" type="text" ng-model="packingListFilter">
+                </th>
+            </tr>
+            <tr>
+                <th>Batch</th>
+                <th>BoxNumber</th>
+                <th>Brand</th>
+                <th>PO Number</th>
+                <th>SKU</th>
+                <th>Leather</th>
+                <th>40</th>
+                <th>41</th>
+                <th>42</th>
+                <th>43</th>
+                <th>44</th>
+                <th>45</th>
+                <th>46</th>
+                <th>47</th>
+                <th>Total</th>
+                <th>Courier Name</th>
+                <th>Tracking Number</th>
+                <th>Dispatched Date</th>
+            </tr>
+            <tr  ng-repeat="row in packingListData | filter:packingListFilter" >
+                <td>{{row.batchNumber}}</td>
+                <td>{{row.boxNumber}}</td>
+                <td>{{row.brand}}</td>
+                <td>{{row.poNumber}}</td>
+                <td>{{row.sku}}</td>
+                <td>{{row.leather}}</td>
+                <td>{{row.size_40_quantity}}</td>
+                <td>{{row.size_41_quantity}}</td>
+                <td>{{row.size_42_quantity}}</td>
+                <td>{{row.size_43_quantity}}</td>
+                <td>{{row.size_44_quantity}}</td>
+                <td>{{row.size_45_quantity}}</td>
+                <td>{{row.size_46_quantity}}</td>
+                <td>{{row.size_47_quantity}}</td>
+                <td>{{row.total}}</td>
+                <td>{{row.courierName}}</td>
+                <td>{{row.trackingNumber}}</td>
+                <td>{{row.shippedDate}}</td>
             </tr>
         </table>
     </div>
