@@ -360,7 +360,7 @@
                 <th>Tracking Number</th>
                 <th>Dispatched Date</th>
             </tr>
-            <tr  ng-repeat="row in packingListData | filter:packingListFilter" >
+            <tr ng-repeat="row in packingListData | filter:packingListFilter">
                 <td>{{row.batchNumber}}</td>
                 <td>{{row.boxNumber}}</td>
                 <td>{{row.brand}}</td>
@@ -398,6 +398,8 @@
                 <td>HS_COMPLETED</td>
                 <td>FINISHED</td>
                 <td>PACKED</td>
+                <td>PENDING</td>
+                <td>PROGRESS</td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -409,6 +411,13 @@
                 <td>{{dto.size_40_hs_quantity}}</td>
                 <td>{{dto.size_40_finished_quantity}}</td>
                 <td>{{dto.size_40_packed_quantity}}</td>
+                <td>{{dto.size_40_ordered_quantity - dto.size_40_packed_quantity}}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped" role="progressbar"
+                             style="width:{{(dto.size_40_packed_quantity/dto.size_40_ordered_quantity)*100}}%"></div>
+                    </div>
+                </td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -420,6 +429,13 @@
                 <td>{{dto.size_41_hs_quantity}}</td>
                 <td>{{dto.size_41_finished_quantity}}</td>
                 <td>{{dto.size_41_packed_quantity}}</td>
+                <td>{{dto.size_41_ordered_quantity - dto.size_41_packed_quantity}}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                             style="width:{{(dto.size_41_packed_quantity/dto.size_41_ordered_quantity)*100}}%"></div>
+                    </div>
+                </td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -431,6 +447,13 @@
                 <td>{{dto.size_42_hs_quantity}}</td>
                 <td>{{dto.size_42_finished_quantity}}</td>
                 <td>{{dto.size_42_packed_quantity}}</td>
+                <td>{{dto.size_42_ordered_quantity - dto.size_42_packed_quantity}}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                             style="width:{{(dto.size_42_packed_quantity/dto.size_42_ordered_quantity)*100}}%"></div>
+                    </div>
+                </td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -442,6 +465,13 @@
                 <td>{{dto.size_43_hs_quantity}}</td>
                 <td>{{dto.size_43_finished_quantity}}</td>
                 <td>{{dto.size_43_packed_quantity}}</td>
+                <td>{{dto.size_43_ordered_quantity - dto.size_43_packed_quantity}}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                             style="width:{{(dto.size_43_packed_quantity/dto.size_43_ordered_quantity)*100}}%"></div>
+                    </div>
+                </td>
             </tr>
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
                 <td>{{dto.sku}}</td>
@@ -453,6 +483,13 @@
                 <td>{{dto.size_44_hs_quantity}}</td>
                 <td>{{dto.size_44_finished_quantity}}</td>
                 <td>{{dto.size_44_packed_quantity}}</td>
+                <td>{{dto.size_44_ordered_quantity - dto.size_44_packed_quantity}}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                             style="width:{{(dto.size_44_packed_quantity/dto.size_44_ordered_quantity)*100}}%"></div>
+                    </div>
+                </td>
             </tr>
 
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
@@ -465,6 +502,13 @@
                 <td>{{dto.size_45_hs_quantity}}</td>
                 <td>{{dto.size_45_finished_quantity}}</td>
                 <td>{{dto.size_45_packed_quantity}}</td>
+                <td>{{dto.size_45_ordered_quantity - dto.size_45_packed_quantity}}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                             style="width:{{(dto.size_45_packed_quantity/dto.size_45_ordered_quantity)*100}}%"></div>
+                    </div>
+                </td>
             </tr>
 
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
@@ -477,6 +521,13 @@
                 <td>{{dto.size_46_hs_quantity}}</td>
                 <td>{{dto.size_46_finished_quantity}}</td>
                 <td>{{dto.size_46_packed_quantity}}</td>
+                <td>{{dto.size_46_ordered_quantity - dto.size_46_packed_quantity}}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                             style="width:{{(dto.size_46_packed_quantity/dto.size_46_ordered_quantity)*100}}%"></div>
+                    </div>
+                </td>
             </tr>
 
             <tr ng-repeat="dto in overAllJobCardProgressList | filter:overAllJobCardProgressListFilter">
@@ -489,6 +540,13 @@
                 <td>{{dto.size_47_hs_quantity}}</td>
                 <td>{{dto.size_47_finished_quantity}}</td>
                 <td>{{dto.size_47_packed_quantity}}</td>
+                <td>{{dto.size_47_ordered_quantity - dto.size_47_packed_quantity}}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                             style="width:{{(dto.size_47_packed_quantity/dto.size_47_ordered_quantity)*100}}%"></div>
+                    </div>
+                </td>
             </tr>
         </table>
     </div>
