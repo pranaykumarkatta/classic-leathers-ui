@@ -29,12 +29,14 @@
         $scope.getJobCardProgressDetails = function(){
             $scope.showUpdateJobCardProgressDiv=false;
             $scope.showOverallProgressDiv=false;
+            $scope.showPackingListDiv=false;
             $scope.showDispatchDetailsDiv=false;
         }
         $scope.updateJobCardProgress = function(){
             if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=true;
                 $scope.showOverallProgressDiv=false;
+                $scope.showPackingListDiv=false;
                 $scope.showDispatchDetailsDiv=false;
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardProgressSkus?jobCardFileName='+$scope.selectedJobCardFile})
                 .then(function successCallback(response) {
@@ -177,6 +179,7 @@
             if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=false;
                 $scope.showOverallProgressDiv=true;
+                $scope.showPackingListDiv=false;
                 $scope.showDispatchDetailsDiv=false;
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/jobCardOverAllProgressList?jobCardFileName='+$scope.selectedJobCardFile})
                     .then(function successCallback(response) {
@@ -194,7 +197,8 @@
             if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=false;
                 $scope.showOverallProgressDiv=false;
-                $scope.showDispatchDetailsDiv=true;
+                $scope.showPackingListDiv=true;
+                $scope.showDispatchDetailsDiv=false;
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/packingList?jobCardFileName='+$scope.selectedJobCardFile})
                     .then(function successCallback(response) {
                         $scope.packingListData = response.data;
@@ -210,8 +214,9 @@
             if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=false;
                 $scope.showOverallProgressDiv=false;
+                $scope.showPackingListDiv=false;
                 $scope.showDispatchDetailsDiv=true;
-                $http({method: 'GET', url: 'http://localhost:8080/jobCard/dispatch?jobCardFileName='+$scope.selectedJobCardFile})
+                $http({method: 'GET', url: 'http://localhost:8080/jobCard/dispatchDetails?jobCardFileName='+$scope.selectedJobCardFile})
                     .then(function successCallback(response) {
                         $scope.dispatchListData = response.data;
                     },function errorCallback(response) {
@@ -224,6 +229,7 @@
         }
 
       });
+
 
 
 
@@ -334,7 +340,7 @@
             </tr>
         </table>
     </div>
-    <div ng-show="showDispatchDetailsDiv">
+    <div ng-show="showPackingListDiv">
         <table class="table table-font">
             <tr>
                 <th>Filter: <Input class="text_input_width" type="text" ng-model="packingListFilter">
@@ -382,6 +388,48 @@
             </tr>
         </table>
     </div>
+    <div ng-show="showDispatchDetailsDiv">
+        <table class="table table-font">
+            <tr>
+                <th>Filter: <Input class="text_input_width" type="text" ng-model="dispatchListFilter">
+                </th>
+            </tr>
+            <tr>
+                <th>Batch</th>
+                <th>Brand</th>
+                <th>PO Number</th>
+                <th>SKU</th>
+                <th>Leather</th>
+                <th>40</th>
+                <th>41</th>
+                <th>42</th>
+                <th>43</th>
+                <th>44</th>
+                <th>45</th>
+                <th>46</th>
+                <th>47</th>
+                <th>Total</th>
+                <th>Dispatched Date</th>
+            </tr>
+            <tr ng-repeat="row in dispatchListData | filter:dispatchListFilter">
+                <td>{{row.batchNumber}}</td>
+                <td>{{row.brand}}</td>
+                <td>{{row.poNumber}}</td>
+                <td>{{row.sku}}</td>
+                <td>{{row.leather}}</td>
+                <td>{{row.size_40_quantity}}</td>
+                <td>{{row.size_41_quantity}}</td>
+                <td>{{row.size_42_quantity}}</td>
+                <td>{{row.size_43_quantity}}</td>
+                <td>{{row.size_44_quantity}}</td>
+                <td>{{row.size_45_quantity}}</td>
+                <td>{{row.size_46_quantity}}</td>
+                <td>{{row.size_47_quantity}}</td>
+                <td>{{row.total}}</td>
+                <td>{{row.shippedDate}}</td>
+            </tr>
+        </table>
+    </div>
     <div ng-show="showOverallProgressDiv">
         <table class="table table-font">
             <tr>
@@ -413,9 +461,12 @@
                 <td>{{dto.size_40_packed_quantity}}</td>
                 <td>{{dto.size_40_ordered_quantity - dto.size_40_packed_quantity}}</td>
                 <td>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped" role="progressbar"
-                             style="width:{{(dto.size_40_packed_quantity/dto.size_40_ordered_quantity)*100}}%"></div>
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="{{((dto.size_40_cutting_quantity + dto.size_40_upperMaking_quantity + dto.size_40_hs_quantity +
+                             dto.size_40_finished_quantity + dto.size_40_packed_quantity)/(dto.size_40_ordered_quantity * 5))*100}}%">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+                             style="width:{{((dto.size_40_cutting_quantity + dto.size_40_upperMaking_quantity + dto.size_40_hs_quantity +
+                             dto.size_40_finished_quantity + dto.size_40_packed_quantity)/(dto.size_40_ordered_quantity * 5))*100}}%">
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -431,9 +482,12 @@
                 <td>{{dto.size_41_packed_quantity}}</td>
                 <td>{{dto.size_41_ordered_quantity - dto.size_41_packed_quantity}}</td>
                 <td>
-                    <div class="progress">
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="{{((dto.size_41_cutting_quantity + dto.size_41_upperMaking_quantity + dto.size_41_hs_quantity +
+                             dto.size_41_finished_quantity + dto.size_41_packed_quantity)/(dto.size_41_ordered_quantity * 5))*100}}%">
                         <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                             style="width:{{(dto.size_41_packed_quantity/dto.size_41_ordered_quantity)*100}}%"></div>
+                             style="width:{{((dto.size_41_cutting_quantity + dto.size_41_upperMaking_quantity + dto.size_41_hs_quantity +
+                             dto.size_41_finished_quantity + dto.size_41_packed_quantity)/(dto.size_41_ordered_quantity * 5))*100}}%">
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -449,9 +503,12 @@
                 <td>{{dto.size_42_packed_quantity}}</td>
                 <td>{{dto.size_42_ordered_quantity - dto.size_42_packed_quantity}}</td>
                 <td>
-                    <div class="progress">
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="{{((dto.size_42_cutting_quantity + dto.size_42_upperMaking_quantity + dto.size_42_hs_quantity +
+                             dto.size_42_finished_quantity + dto.size_42_packed_quantity)/(dto.size_42_ordered_quantity * 5))*100}}%">
                         <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                             style="width:{{(dto.size_42_packed_quantity/dto.size_42_ordered_quantity)*100}}%"></div>
+                             style="width:{{((dto.size_42_cutting_quantity + dto.size_42_upperMaking_quantity + dto.size_42_hs_quantity +
+                             dto.size_42_finished_quantity + dto.size_42_packed_quantity)/(dto.size_42_ordered_quantity * 5))*100}}%">
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -467,9 +524,12 @@
                 <td>{{dto.size_43_packed_quantity}}</td>
                 <td>{{dto.size_43_ordered_quantity - dto.size_43_packed_quantity}}</td>
                 <td>
-                    <div class="progress">
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="{{((dto.size_43_cutting_quantity + dto.size_43_upperMaking_quantity + dto.size_43_hs_quantity +
+                             dto.size_43_finished_quantity + dto.size_43_packed_quantity)/(dto.size_43_ordered_quantity * 5))*100}}%">
                         <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                             style="width:{{(dto.size_43_packed_quantity/dto.size_43_ordered_quantity)*100}}%"></div>
+                             style="width:{{((dto.size_43_cutting_quantity + dto.size_43_upperMaking_quantity + dto.size_43_hs_quantity +
+                             dto.size_43_finished_quantity + dto.size_43_packed_quantity)/(dto.size_43_ordered_quantity * 5))*100}}%">
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -485,9 +545,12 @@
                 <td>{{dto.size_44_packed_quantity}}</td>
                 <td>{{dto.size_44_ordered_quantity - dto.size_44_packed_quantity}}</td>
                 <td>
-                    <div class="progress">
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="{{((dto.size_44_cutting_quantity + dto.size_44_upperMaking_quantity + dto.size_44_hs_quantity +
+                             dto.size_44_finished_quantity + dto.size_44_packed_quantity)/(dto.size_44_ordered_quantity * 5))*100}}%">
                         <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                             style="width:{{(dto.size_44_packed_quantity/dto.size_44_ordered_quantity)*100}}%"></div>
+                             style="width:{{((dto.size_44_cutting_quantity + dto.size_44_upperMaking_quantity + dto.size_44_hs_quantity +
+                             dto.size_44_finished_quantity + dto.size_44_packed_quantity)/(dto.size_44_ordered_quantity * 5))*100}}%">
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -504,9 +567,12 @@
                 <td>{{dto.size_45_packed_quantity}}</td>
                 <td>{{dto.size_45_ordered_quantity - dto.size_45_packed_quantity}}</td>
                 <td>
-                    <div class="progress">
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="{{((dto.size_45_cutting_quantity + dto.size_45_upperMaking_quantity + dto.size_45_hs_quantity +
+                             dto.size_45_finished_quantity + dto.size_45_packed_quantity)/(dto.size_45_ordered_quantity * 5))*100}}%">
                         <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                             style="width:{{(dto.size_45_packed_quantity/dto.size_45_ordered_quantity)*100}}%"></div>
+                             style="width:{{((dto.size_45_cutting_quantity + dto.size_45_upperMaking_quantity + dto.size_45_hs_quantity +
+                             dto.size_45_finished_quantity + dto.size_45_packed_quantity)/(dto.size_45_ordered_quantity * 5))*100}}%">
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -523,9 +589,12 @@
                 <td>{{dto.size_46_packed_quantity}}</td>
                 <td>{{dto.size_46_ordered_quantity - dto.size_46_packed_quantity}}</td>
                 <td>
-                    <div class="progress">
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="{{((dto.size_46_cutting_quantity + dto.size_46_upperMaking_quantity + dto.size_46_hs_quantity +
+                             dto.size_46_finished_quantity + dto.size_46_packed_quantity)/(dto.size_46_ordered_quantity * 5))*100}}%">
                         <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                             style="width:{{(dto.size_46_packed_quantity/dto.size_46_ordered_quantity)*100}}%"></div>
+                             style="width:{{((dto.size_46_cutting_quantity + dto.size_46_upperMaking_quantity + dto.size_46_hs_quantity +
+                             dto.size_46_finished_quantity + dto.size_46_packed_quantity)/(dto.size_46_ordered_quantity * 5))*100}}%">
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -542,9 +611,12 @@
                 <td>{{dto.size_47_packed_quantity}}</td>
                 <td>{{dto.size_47_ordered_quantity - dto.size_47_packed_quantity}}</td>
                 <td>
-                    <div class="progress">
+                    <div class="progress" data-toggle="tooltip" data-placement="top" title="{{((dto.size_47_cutting_quantity + dto.size_47_upperMaking_quantity + dto.size_47_hs_quantity +
+                             dto.size_47_finished_quantity + dto.size_47_packed_quantity)/(dto.size_47_ordered_quantity * 5))*100}}%">
                         <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                             style="width:{{(dto.size_47_packed_quantity/dto.size_47_ordered_quantity)*100}}%"></div>
+                             style="width:{{((dto.size_47_cutting_quantity + dto.size_47_upperMaking_quantity + dto.size_47_hs_quantity +
+                             dto.size_47_finished_quantity + dto.size_47_packed_quantity)/(dto.size_47_ordered_quantity * 5))*100}}%">
+                        </div>
                     </div>
                 </td>
             </tr>
