@@ -206,6 +206,22 @@
                 window.alert("Select Job Card");
             }
         }
+        $scope.getDispatchList = function(){
+            if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
+                $scope.showUpdateJobCardProgressDiv=false;
+                $scope.showOverallProgressDiv=false;
+                $scope.showDispatchDetailsDiv=true;
+                $http({method: 'GET', url: 'http://localhost:8080/jobCard/dispatch?jobCardFileName='+$scope.selectedJobCardFile})
+                    .then(function successCallback(response) {
+                        $scope.dispatchListData = response.data;
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                      }
+                    );
+            }else{
+                window.alert("Select Job Card");
+            }
+        }
 
       });
 
@@ -238,7 +254,9 @@
                        class="btn btn-primary"></td>
             <td><input type="button" ng-click="getOverAllProgress()" value="Get Overall Progress"
                        class="btn btn-primary"></td>
-            <td><input type="button" ng-click="getPackingList()" value="Get Dispatch Details"
+            <td><input type="button" ng-click="getPackingList()" value="Get Packing List Details"
+                       class="btn btn-primary"></td>
+            <td><input type="button" ng-click="getDispatchList()" value="Get Dispatch Details"
                        class="btn btn-primary"></td>
         </tr>
     </table>
