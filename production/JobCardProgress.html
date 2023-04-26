@@ -70,14 +70,16 @@
         $scope.saveJobCardProgressEntry = function(){
             if($scope.selectedProductionStage=="CUTTING" || $scope.selectedProductionStage=="UPPER"
             ||$scope.selectedProductionStage=="HS"||$scope.selectedProductionStage=="FINISHING"){
-                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!=""){
+                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!=""
+                &&  $scope.vendor!=null &&  $scope.vendor!=""){
                     var strings =$scope.selectedSku.split("_");
                     var data= {
                         "sku": strings[0],
                         "leather": strings[1],
                         "size":$scope.selectedSize,
                         "productionStage": $scope.selectedProductionStage,
-                        "count": $scope.count
+                        "count": $scope.count,
+                        "vendor": $scope.vendor
                     };
                         $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
                         .then(data => {
@@ -85,6 +87,7 @@
                             $scope.selectedProductionStage="";
                             $scope.selectedSize="";
                             $scope.count="";
+                            $scope.vendor="";
                             $scope.batchNumber= "";
                             $scope.packingBoxNumber= "";
                             $scope.courierName= "";
@@ -96,10 +99,10 @@
                             $scope.saveJobCardProgressEntryErrorMessage = error.data;
                         });
                 }else{
-                    window.alert("Invalid SKU/Size/Count");
+                    window.alert("Invalid SKU/Size/Count/Vendor");
                 }
             }else if($scope.selectedProductionStage=="PACKING"){
-                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!=""
+                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!="" &&  $scope.vendor!=null &&  $scope.vendor!=""
                         &&  $scope.batchNumber!=null &&  $scope.batchNumber!="" &&  $scope.packingBoxNumber!=null &&  $scope.packingBoxNumber!=""){
                     var strings =$scope.selectedSku.split("_");
                     var data= {
@@ -108,6 +111,7 @@
                         "size":$scope.selectedSize,
                         "productionStage": $scope.selectedProductionStage,
                         "count": $scope.count,
+                        "vendor": $scope.vendor,
                         "batchNumber": "Batch_"+$scope.batchNumber,
                         "packingBoxNumber": "Box_"+$scope.packingBoxNumber
                     };
@@ -117,6 +121,7 @@
                         $scope.selectedProductionStage="";
                         $scope.selectedSize="";
                         $scope.count="";
+                        $scope.vendor="";
                         $scope.batchNumber= "";
                         $scope.packingBoxNumber= "";
                         $scope.courierName= "";
@@ -128,7 +133,7 @@
                         $scope.saveJobCardProgressEntryErrorMessage = error.data;
                     });
                 }else{
-                    window.alert("Invalid SKU/Size/Count/Batch Number/Box Number");
+                    window.alert("Invalid SKU/Size/Count/Vendor/Batch Number/Box Number");
                 }
             }else if($scope.selectedProductionStage=="DISPATCH"){
                 if($scope.selectedBatchNumber!=null &&$scope.courierName!=null &&$scope.trackingNumber!=null &&
@@ -145,6 +150,7 @@
                         $scope.selectedProductionStage="";
                         $scope.selectedSize="";
                         $scope.count="";
+                        $scope.vendor="";
                         $scope.batchNumber= "";
                         $scope.packingBoxNumber= "";
                         $scope.courierName= "";
@@ -283,6 +289,9 @@
                 </th>
                 <th ng-show="!(selectedProductionStage == 'DISPATCH')">Count
                     <input type="text" ng-model="count" class="text_input_width">
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Vendor
+                    <input type="text" ng-model="vendor" class="text_input_width">
                 </th>
                 </th>
                 <th ng-show="selectedProductionStage == 'PACKING'">Batch Number
