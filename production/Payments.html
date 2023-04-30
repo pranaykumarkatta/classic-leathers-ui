@@ -1,0 +1,34 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel ="stylesheet" href ="https://unpkg.com/ngx-bootstrap/datepicker/bs-datepicker.css">
+    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/body.css">
+    <script>
+      var app = angular.module("classicLeathersProduction", []);
+      app.controller("paymentsController", function($scope,$http) {
+      $scope.brandList = ["99CRAFTS","TEAKWOOD","Hush Puppies","Gucci","NA"];
+      $scope.selectedBrand=$scope.brandList[0];
+
+    </script>
+
+</head>
+<body class="classicTheamColor" ng-app="classicLeathersProduction">
+
+<div class="header_div">
+    <img class="images" src="../resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">PRODUCTION UNIT @ AMBUR</label>
+        <a href=".\ClassicLeathersProductionMenu.html" class="btn btn-primary">Home</a>
+        <a href=".\JobCardProgress.html" class="btn btn-primary">Job Card Progress</a>
+    </div>
+</div>
+<div ng-controller="paymentsController" class="working_div container">
+    <p>PAYMENTS</p>
+
+</div>
+</body>
+</html>

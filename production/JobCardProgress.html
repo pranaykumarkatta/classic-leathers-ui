@@ -238,6 +238,54 @@
             }
         }
 
+        $scope.UpdateTotalCount = function(){
+            var totalOrderedCount=0;
+            var totalCutCount=0;
+            var totalUpperCount=0;
+            var totalHsCount=0;
+            var totalFinishedCount=0;
+            var totalPackedCount=0;
+
+            for(var i = 0, size =  $scope.overAllJobCardProgressList.length ; i < size ; i++){
+                var item =  $scope.overAllJobCardProgressList[i];
+                var filterString = item.sku + "@" + item.leather;
+
+                if(filterString.includes($scope.overAllJobCardProgressListFilter)){
+                     totalOrderedCount+=(Number(item.size_40_ordered_quantity)+Number(item.size_41_ordered_quantity)+
+                                    Number(item.size_42_ordered_quantity)+Number(item.size_43_ordered_quantity)+
+                                    Number(item.size_44_ordered_quantity)+Number(item.size_45_ordered_quantity)+
+                                    Number(item.size_46_ordered_quantity)+Number(item.size_47_ordered_quantity));
+                    totalCutCount+=(Number(item.size_40_cutting_quantity)+Number(item.size_41_cutting_quantity)+
+                                    Number(item.size_42_cutting_quantity)+Number(item.size_43_cutting_quantity)+
+                                    Number(item.size_44_cutting_quantity)+Number(item.size_45_cutting_quantity)+
+                                    Number(item.size_46_cutting_quantity)+Number(item.size_47_cutting_quantity));
+                    totalUpperCount+=(Number(item.size_40_upperMaking_quantity)+Number(item.size_41_upperMaking_quantity)+
+                                    Number(item.size_42_upperMaking_quantity)+Number(item.size_43_upperMaking_quantity)+
+                                    Number(item.size_44_upperMaking_quantity)+Number(item.size_45_upperMaking_quantity)+
+                                    Number(item.size_46_upperMaking_quantity)+Number(item.size_47_upperMaking_quantity));
+                    totalHsCount+=(Number(item.size_40_hs_quantity)+Number(item.size_41_hs_quantity)+
+                                    Number(item.size_42_hs_quantity)+Number(item.size_43_hs_quantity)+
+                                    Number(item.size_44_hs_quantity)+Number(item.size_45_hs_quantity)+
+                                    Number(item.size_46_hs_quantity)+Number(item.size_47_hs_quantity));
+                    totalFinishedCount+=(Number(item.size_40_finished_quantity)+Number(item.size_41_finished_quantity)+
+                                    Number(item.size_42_finished_quantity)+Number(item.size_43_finished_quantity)+
+                                    Number(item.size_44_finished_quantity)+Number(item.size_45_finished_quantity)+
+                                    Number(item.size_46_finished_quantity)+Number(item.size_47_finished_quantity));
+                    totalPackedCount+=(Number(item.size_40_packed_quantity)+Number(item.size_41_packed_quantity)+
+                                    Number(item.size_42_packed_quantity)+Number(item.size_43_packed_quantity)+
+                                    Number(item.size_44_packed_quantity)+Number(item.size_45_packed_quantity)+
+                                    Number(item.size_46_packed_quantity)+Number(item.size_47_packed_quantity));
+                }
+            $scope.totalOrderedCount = totalOrderedCount;
+            $scope.totalCutCount = totalCutCount;
+            $scope.totalUpperCount = totalUpperCount;
+            $scope.totalHsCount = totalHsCount;
+            $scope.totalFinishedCount = totalFinishedCount;
+            $scope.totalPackedCount = totalPackedCount;
+
+            }
+        }
+
         $scope.getPackingList = function(){
             if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=false;
@@ -486,7 +534,7 @@
     <div ng-show="showOverallProgressDiv">
         <table class="table table-font">
             <tr>
-                <th colspan="2"><label>Filter : &nbsp </label><Input type="text" ng-model="overAllJobCardProgressListFilter" placeholder="Sku@Leather">
+                <th colspan="2"><label>Filter : &nbsp </label><Input type="text" ng-model="overAllJobCardProgressListFilter" placeholder="Sku@Leather" ng-change="UpdateTotalCount()">
                 </th>
                 <th>Total</th>
                 <th><label ng-bind="totalOrderedCount"></label></th>
