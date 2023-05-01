@@ -39,6 +39,7 @@
 
   .table tr td select {
     height: 23.14px;
+    width:300px;
   }
 
   tbody > :first-child{

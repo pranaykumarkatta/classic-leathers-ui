@@ -33,6 +33,9 @@
             $scope.showDispatchDetailsDiv=false;
         }
         $scope.updateJobCardProgress = function(){
+            if(!$scope.selectedJobCardFile.includes("Self")){
+                $scope.productionStages = ["CUTTING","PACKING","DISPATCH"];
+            }
             if($scope.selectedJobCardFile != null && $scope.selectedJobCardFile != ""){
                 $scope.showUpdateJobCardProgressDiv=true;
                 $scope.showOverallProgressDiv=false;
@@ -102,7 +105,7 @@
                     window.alert("Invalid SKU/Size/Count/Vendor");
                 }
             }else if($scope.selectedProductionStage=="PACKING"){
-                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!="" &&  $scope.vendor!=null &&  $scope.vendor!=""
+                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!=""
                         &&  $scope.batchNumber!=null &&  $scope.batchNumber!="" &&  $scope.packingBoxNumber!=null &&  $scope.packingBoxNumber!=""){
                     var strings =$scope.selectedSku.split("_");
                     var data= {
@@ -379,7 +382,7 @@
                 <th ng-show="!(selectedProductionStage == 'DISPATCH')">Count
                     <input type="text" ng-model="count" class="text_input_width">
                 </th>
-                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Vendor
+                <th ng-show="!(selectedProductionStage == 'DISPATCH'|| selectedProductionStage == 'PACKING')">Vendor
                     <input type="text" ng-model="vendor" class="text_input_width">
                 </th>
                 </th>
