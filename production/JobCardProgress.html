@@ -324,6 +324,16 @@
             }
         }
 
+        $scope.closeJobCard = function(){
+            $http.post('http://localhost:8080/jobCard/closeJobCard?jobCardFileName='+$scope.selectedJobCardFile,{},{})
+                    .then(data => {
+                            window.alert("Done");
+                    })
+                    .catch(error => {
+                            window.alert("Error");
+                    });
+        }
+
       });
 
 
@@ -345,6 +355,7 @@
         <label class="welcome_label">PRODUCTION UNIT @ AMBUR</label>
         <a href=".\ClassicLeathersProductionMenu.html" class="btn btn-primary">Home</a>
         <a href=".\JobCard.html" class="btn btn-primary">Create Job Card</a>
+        <a href=".\ViewJobCard.html" class="btn btn-primary">View Job Card</a>
     </div>
 </div>
 <div ng-controller="jobCardProgressController" class="working_div container">
@@ -361,6 +372,8 @@
             <td><input type="button" ng-click="getPackingList()" value="Get Packing List Details"
                        class="btn btn-primary"></td>
             <td><input type="button" ng-click="getDispatchList()" value="Get Dispatch Details"
+                       class="btn btn-primary"></td>
+            <td><input type="button" ng-click="closeJobCard()" value="Close JobCard"
                        class="btn btn-primary"></td>
         </tr>
     </table>

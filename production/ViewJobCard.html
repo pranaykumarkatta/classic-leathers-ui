@@ -1,0 +1,100 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/body.css">
+    <script>
+		var app = angular.module("classicLeathersProduction", []);
+		app.controller("jobCardViewController", function($scope,$http) {
+            $http({method: 'GET', url: 'http://localhost:8080/jobCard/getJobCardFiles'})
+            .then(
+                function successCallback(response) {
+                    $scope.jobCardFileNames=response.data;
+                },
+                function errorCallback(response) {
+                    console.log(error.value);
+                }
+            );
+
+            $scope.getJobCardDetails = function(){
+                $http({method: 'GET', url: 'http://localhost:8080/jobCard/getJobCardDetails?fileName='+$scope.selectedJobCardFile})
+                 .then(
+                function successCallback(response) {
+                    $scope.jobCardData=response.data;
+                    $scope.client=$scope.jobCardData[0].client;
+                    $scope.brand=$scope.jobCardData[0].brand;
+                    $scope.poDate=$scope.jobCardData[0].poDate;
+                },
+                function errorCallback(response) {
+                    console.log(error.value);
+                }
+            );
+            }
+		});
+    </script>
+</head>
+<body class="classicTheamColor" ng-app="classicLeathersProduction">
+
+<div class="header_div">
+    <img class="images" src="../resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">PRODUCTION UNIT @ AMBUR</label>
+        <a href=".\ClassicLeathersProductionMenu.html" class="btn btn-primary">Home</a>
+        <a href=".\JobCardProgress.html" class="btn btn-primary">Job Card Progress</a>
+        <a href=".\JobCard.html" class="btn btn-primary">Create Job Card</a>
+    </div>
+</div>
+<div ng-controller="jobCardViewController" class="working_div container">
+
+    <br>
+    <table class="table table-font">
+        <tr>
+            <td colspan="7"><label>Select Job Card</label> <select ng-model="selectedJobCardFile"
+                                                       ng-options="x for x in jobCardFileNames"
+                                                       ng-change="getJobCardDetails()"></select></td>
+            <td colspan="4"><label ng-bind="client"></label></td>
+            <td colspan="2"><label ng-bind="brand"></label></td>
+            <td colspan="2"><label ng-bind="poDate"></label></td>
+        </tr>
+        <tr>
+            <th>SKU</th>
+            <th>LEATHER</th>
+            <th>40</th>
+            <th>41</th>
+            <th>42</th>
+            <th>43</th>
+            <th>44</th>
+            <th>45</th>
+            <th>46</th>
+            <th>47</th>
+            <th>TOTAL</th>
+            <th>HS</th>
+            <th>STYLE</th>
+            <th>LINING</th>
+            <th>SOLE</th>
+        </tr>
+        <tr ng-repeat="dto in jobCardData">
+            <td>{{dto.sku}}</td>
+            <td>{{dto.leather}}</td>
+            <td>{{dto.size_40_quantity}}</td>
+            <td>{{dto.size_41_quantity}}</td>
+            <td>{{dto.size_42_quantity}}</td>
+            <td>{{dto.size_43_quantity}}</td>
+            <td>{{dto.size_44_quantity}}</td>
+            <td>{{dto.size_45_quantity}}</td>
+            <td>{{dto.size_46_quantity}}</td>
+            <td>{{dto.size_47_quantity}}</td>
+            <td>{{dto.totalQuantity}}</td>
+            <td>{{dto.handStitchingPattern}}</td>
+            <td>{{dto.style}}</td>
+            <td>{{dto.lining}}</td>
+            <td>{{dto.sole}}</td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>
