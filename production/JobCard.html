@@ -56,6 +56,22 @@
 					console.log(error.value);
             }
         );
+        $scope.loadArticles=function(){
+           var sheetIndex = 1;
+
+<!--           if($scope.customerList[2]==$scope.selectedCustomer){-->
+<!--                sheetIndex = 2;-->
+<!--           }-->
+
+           $http({method: 'GET', url: 'http://localhost:8080/jobCard/getArticles?sheetIndex='+sheetIndex})
+            .then(function successCallback(response) {
+					$scope.classicArticleList=response.data;
+            },
+            function errorCallback(response) {
+					console.log(error.value);
+            }
+        );
+        }
 
         $http({method: 'GET', url: 'http://localhost:8080/jobCard/getNextJobCardNumber'})
             .then(function successCallback(response) {
