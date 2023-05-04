@@ -15,23 +15,42 @@
                     $scope.jobCardFileNames=response.data;
                 },
                 function errorCallback(response) {
-                    console.log(error.value);
+                    console.log(response.value);
                 }
             );
 
             $scope.getJobCardDetails = function(){
-                $http({method: 'GET', url: 'http://localhost:8080/jobCard/getJobCardDetails?fileName='+$scope.selectedJobCardFile})
-                 .then(
-                function successCallback(response) {
-                    $scope.jobCardData=response.data;
-                    $scope.client=$scope.jobCardData[0].client;
-                    $scope.brand=$scope.jobCardData[0].brand;
-                    $scope.poDate=$scope.jobCardData[0].poDate;
-                },
-                function errorCallback(response) {
-                    console.log(error.value);
+                $scope.exportResponse="";
+                if($scope.selectedJobCardFile==null || $scope.selectedJobCardFile ==""){
+                    window.alert("Select job Card");
+                }else{
+                    $http({method: 'GET', url: 'http://localhost:8080/jobCard/getJobCardDetails?fileName='+$scope.selectedJobCardFile})
+                     .then(
+                        function successCallback(response) {
+                            $scope.jobCardData=response.data;
+                            $scope.client=$scope.jobCardData[0].client;
+                            $scope.brand=$scope.jobCardData[0].brand;
+                            $scope.poDate=$scope.jobCardData[0].poDate;
+                        },
+                        function errorCallback(response) {
+                            console.log(response.value);
+                        }
+                    );
                 }
-            );
+            }
+
+            $scope.exportJobCard = function(){
+                if($scope.selectedJobCardFile==null || $scope.selectedJobCardFile ==""){
+                    window.alert("Select job Card");
+                }else{
+                    $http.post('http://localhost:8080/jobCard/exportJobCard?jobCardFileName='+$scope.selectedJobCardFile,{},{})
+                        .then(data => {
+                            $scope.exportResponse="JobCard Saved Successfully"
+                        })
+                        .catch(error => {
+                            console.log(error.value);
+                        });
+                }
             }
 		});
     </script>
@@ -50,11 +69,14 @@
 <div ng-controller="jobCardViewController" class="working_div container">
 
     <br>
+    <label ng-bind="exportResponse"></label>
     <table class="table table-font">
         <tr>
             <td colspan="7"><label>Select Job Card</label> <select ng-model="selectedJobCardFile"
                                                        ng-options="x for x in jobCardFileNames"
-                                                       ng-change="getJobCardDetails()"></select></td>
+                                                       ng-change="getJobCardDetails()"></select>
+                <input type="button" class="btn btn-primary" value="Save" ng-click="exportJobCard()">
+            </td>
             <td colspan="4"><label ng-bind="client"></label></td>
             <td colspan="2"><label ng-bind="brand"></label></td>
             <td colspan="2"><label ng-bind="poDate"></label></td>
