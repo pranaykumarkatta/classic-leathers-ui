@@ -63,8 +63,12 @@
                 }
             }
 
-
-            $http({method: 'GET', url: 'http://localhost:8080/timeSheet'})
+             var monthNumber = (new Date()).getMonth()+1;
+            var month = decodeURIComponent((new RegExp('[?|&]' + 'month' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+            if(month!=null){
+                monthNumber=month;
+            }
+            $http({method: 'GET', url: 'http://localhost:8080/timeSheet?monthNumber='+monthNumber})
             .then(function successCallback(response) {
 					$scope.timeSheetEntryList=response.data;
                 },function errorCallback(response) {

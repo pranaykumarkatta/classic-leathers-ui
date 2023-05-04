@@ -327,10 +327,11 @@
         $scope.closeJobCard = function(){
             $http.post('http://localhost:8080/jobCard/closeJobCard?jobCardFileName='+$scope.selectedJobCardFile,{},{})
                     .then(data => {
-                            window.alert("Done");
+                        setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
                     })
                     .catch(error => {
-                            window.alert("Error");
                     });
         }
 
