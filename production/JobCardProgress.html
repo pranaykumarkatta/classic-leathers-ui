@@ -295,6 +295,7 @@
                 $scope.showOverallProgressDiv=false;
                 $scope.showPackingListDiv=true;
                 $scope.showDispatchDetailsDiv=false;
+                $scope.exportResponse="";
                 $http({method: 'GET', url: 'http://localhost:8080/jobCard/packingList?jobCardFileName='+$scope.selectedJobCardFile})
                     .then(function successCallback(response) {
                         $scope.packingListData = response.data;
@@ -333,6 +334,16 @@
                     })
                     .catch(error => {
                     });
+        }
+
+        $scope.exportPackingList = function(){
+            $http.post('http://localhost:8080/jobCard/exportPackingList?jobCardFileName='+$scope.selectedJobCardFile,{},{})
+                .then(data => {
+                    $scope.exportResponse="PackingList Saved Successfully"
+                })
+                .catch(error => {
+                    console.log(error.value);
+                });
         }
 
       });
@@ -463,6 +474,8 @@
             <tr>
                 <th>Filter: <Input class="text_input_width" type="text" ng-model="packingListFilter">
                 </th>
+                <th><input type="button" class="btn btn-primary" value="Save" ng-click="exportPackingList()"></th>
+                <th><label ng-bind="exportResponse"></label></th>
             </tr>
             <tr>
                 <th>Batch</th>
