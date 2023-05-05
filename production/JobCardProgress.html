@@ -115,8 +115,8 @@
                         "productionStage": $scope.selectedProductionStage,
                         "count": $scope.count,
                         "vendor": $scope.vendor,
-                        "batchNumber": "Batch_"+$scope.batchNumber,
-                        "packingBoxNumber": "Box_"+$scope.packingBoxNumber
+                        "batchNumber": $scope.batchNumber,
+                        "packingBoxNumber": $scope.packingBoxNumber
                     };
                     $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
                     .then(data => {
