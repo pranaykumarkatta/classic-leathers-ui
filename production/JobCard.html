@@ -58,20 +58,23 @@
             }
         );
         $scope.loadArticles=function(){
-           var sheetIndex = 1;
 
-<!--           if($scope.customerList[2]==$scope.selectedCustomer){-->
-<!--                sheetIndex = 2;-->
-<!--           }-->
-
-           $http({method: 'GET', url: 'http://localhost:8080/jobCard/getArticles?sheetIndex='+sheetIndex})
+           $http({method: 'GET', url: 'http://localhost:8080/jobCard/getArticles?sheetIndex=0'})
+            .then(function successCallback(response) {
+					$scope.teakWoodArticleList=response.data;
+            },
+            function errorCallback(response) {
+					console.log(error.value);
+            }
+            );
+           $http({method: 'GET', url: 'http://localhost:8080/jobCard/getArticles?sheetIndex=1'})
             .then(function successCallback(response) {
 					$scope.classicArticleList=response.data;
             },
             function errorCallback(response) {
 					console.log(error.value);
             }
-        );
+            );
         }
 
         $http({method: 'GET', url: 'http://localhost:8080/jobCard/getNextJobCardNumber'})
@@ -181,7 +184,7 @@
         <tr>
             <td><label>Job Card Number: {{$scope.jobCardNumber}}&nbsp</label><input type="text" ng-model="jobCardNumber"></td>
             <td>Customer Name : <select ng-model="selectedCustomer" ng-options="x for x in customerList"></select></td>
-            <td>Brand Name : <select ng-model="selectedBrand" ng-options="x for x in brandList"></select></td>
+            <td>Brand Name : <select ng-model="selectedBrand" ng-options="x for x in brandList" ng-change="loadArticles()"></select></td>
             <td>PO Number : &nbsp <input type="text" ng-model="poNumber"></td>
             <td>PO Date : &nbsp <input type ="date" ng-model="poDate"></td>
             <td>Job Work : <select ng-model="selectedJobWorkVendor" ng-options="x for x in jobWorkVendorList"></select></td>
