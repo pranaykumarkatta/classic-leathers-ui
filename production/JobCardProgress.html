@@ -9,6 +9,7 @@
     <script>
 		var app = angular.module("classicLeathersProduction", []);
 		app.controller("jobCardProgressController", function($scope,$http) {
+		$scope.isSelectDisabled = false;
 		$scope.showUpdateJobCardProgressDiv=false;
 		$scope.showOverallProgressDiv=false;
 		$scope.productionStages = ["CUTTING","UPPER","HS","FINISHING","PACKING","DISPATCH"];
@@ -33,6 +34,14 @@
             $scope.showDispatchDetailsDiv=false;
         }
         $scope.updateJobCardProgress = function(){
+            $scope.count_40="0";
+            $scope.count_41="0";
+            $scope.count_42="0";
+            $scope.count_43="0";
+            $scope.count_44="0";
+            $scope.count_45="0";
+            $scope.count_46="0";
+            $scope.count_47="0";
             if(!$scope.selectedJobCardFile.includes("Self")){
                 $scope.productionStages = ["CUTTING","PACKING","DISPATCH"];
             }
@@ -71,68 +80,190 @@
         }
 
         $scope.saveJobCardProgressEntry = function(){
+            $scope.isSelectDisabled = true;
             if($scope.selectedProductionStage=="CUTTING" || $scope.selectedProductionStage=="UPPER"
             ||$scope.selectedProductionStage=="HS"||$scope.selectedProductionStage=="FINISHING"){
-                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!=""
-                &&  $scope.vendor!=null &&  $scope.vendor!=""){
+                if($scope.selectedSku!=null &&  $scope.vendor!=null &&  $scope.vendor!=""){
                     var strings =$scope.selectedSku.split("_");
-                    var data= {
+                    var data= [{
                         "sku": strings[0],
                         "leather": strings[1],
-                        "size":$scope.selectedSize,
+                        "size":"40",
                         "productionStage": $scope.selectedProductionStage,
-                        "count": $scope.count,
+                        "count": $scope.count_40,
                         "vendor": $scope.vendor
-                    };
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"41",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_41,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"42",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_42,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"43",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_43,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"44",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_44,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"45",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_45,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"46",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_46,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"47",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_47,
+                        "vendor": $scope.vendor
+                    }];
                         $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
                         .then(data => {
                             $scope.selectedSku="";
                             $scope.selectedProductionStage="";
-                            $scope.selectedSize="";
-                            $scope.count="";
+                            $scope.count_40="0";
+                            $scope.count_41="0";
+                            $scope.count_42="0";
+                            $scope.count_43="0";
+                            $scope.count_44="0";
+                            $scope.count_45="0";
+                            $scope.count_46="0";
+                            $scope.count_47="0";
                             $scope.vendor="";
                             $scope.batchNumber= "";
                             $scope.packingBoxNumber= "";
                             $scope.courierName= "";
                             $scope.trackingNumber= "";
-                            $scope.saveJobCardProgressEntryErrorMessage="";
+                            $scope.saveJobCardProgressEntryErrorMessage="Data Saved";
                             })
                         .catch(error => {
-                            $scope.count="";
+                            $scope.count_40="0";
+                            $scope.count_41="0";
+                            $scope.count_42="0";
+                            $scope.count_43="0";
+                            $scope.count_44="0";
+                            $scope.count_45="0";
+                            $scope.count_46="0";
+                            $scope.count_47="0";
                             $scope.saveJobCardProgressEntryErrorMessage = error.data;
                         });
                 }else{
                     window.alert("Invalid SKU/Size/Count/Vendor");
                 }
             }else if($scope.selectedProductionStage=="PACKING"){
-                if($scope.selectedSku!=null && $scope.selectedSize!=null &&  $scope.count!=null &&  $scope.count!=""
+                if($scope.selectedSku!=null
                         &&  $scope.batchNumber!=null &&  $scope.batchNumber!="" &&  $scope.packingBoxNumber!=null &&  $scope.packingBoxNumber!=""){
                     var strings =$scope.selectedSku.split("_");
-                    var data= {
+                    var data= [{
                         "sku": strings[0],
                         "leather": strings[1],
-                        "size":$scope.selectedSize,
+                        "size":"40",
                         "productionStage": $scope.selectedProductionStage,
-                        "count": $scope.count,
-                        "vendor": $scope.vendor,
-                        "batchNumber": $scope.batchNumber,
-                        "packingBoxNumber": $scope.packingBoxNumber
-                    };
+                        "count": $scope.count_40,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"41",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_41,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"42",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_42,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"43",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_43,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"44",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_44,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"45",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_45,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"46",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_46,
+                        "vendor": $scope.vendor
+                    },{
+                        "sku": strings[0],
+                        "leather": strings[1],
+                        "size":"47",
+                        "productionStage": $scope.selectedProductionStage,
+                        "count": $scope.count_47,
+                        "vendor": $scope.vendor
+                    }];
                     $http.post('http://localhost:8080/jobCard/saveJobCardProgress?jobCardFileName='+$scope.selectedJobCardFile,data,{})
                     .then(data => {
                         $scope.selectedSku="";
                         $scope.selectedProductionStage="";
-                        $scope.selectedSize="";
-                        $scope.count="";
+                        $scope.count_40="0";
+                        $scope.count_41="0";
+                        $scope.count_42="0";
+                        $scope.count_43="0";
+                        $scope.count_44="0";
+                        $scope.count_45="0";
+                        $scope.count_46="0";
+                        $scope.count_47="0";
                         $scope.vendor="";
                         $scope.batchNumber= "";
                         $scope.packingBoxNumber= "";
                         $scope.courierName= "";
                         $scope.trackingNumber= "";
-                        $scope.saveJobCardProgressEntryErrorMessage="";
+                        $scope.saveJobCardProgressEntryErrorMessage="Data Saved";
                     })
                     .catch(error => {
-                        $scope.count="";
+                        $scope.count_40="0";
+                        $scope.count_41="0";
+                        $scope.count_42="0";
+                        $scope.count_43="0";
+                        $scope.count_44="0";
+                        $scope.count_45="0";
+                        $scope.count_46="0";
+                        $scope.count_47="0";
                         $scope.saveJobCardProgressEntryErrorMessage = error.data;
                     });
                 }else{
@@ -151,17 +282,30 @@
                     .then(data => {
                         $scope.selectedSku="";
                         $scope.selectedProductionStage="";
-                        $scope.selectedSize="";
-                        $scope.count="";
+                        $scope.count_40="0";
+                        $scope.count_41="0";
+                        $scope.count_42="0";
+                        $scope.count_43="0";
+                        $scope.count_44="0";
+                        $scope.count_45="0";
+                        $scope.count_46="0";
+                        $scope.count_47="0";
                         $scope.vendor="";
                         $scope.batchNumber= "";
                         $scope.packingBoxNumber= "";
                         $scope.courierName= "";
                         $scope.trackingNumber= "";
-                        $scope.saveJobCardProgressEntryErrorMessage="";
+                        $scope.saveJobCardProgressEntryErrorMessage="Data Saved";
                     })
                     .catch(error => {
-                        $scope.count="";
+                        $scope.count_40="0";
+                        $scope.count_41="0";
+                        $scope.count_42="0";
+                        $scope.count_43="0";
+                        $scope.count_44="0";
+                        $scope.count_45="0";
+                        $scope.count_46="0";
+                        $scope.count_47="0";
                         $scope.saveJobCardProgressEntryErrorMessage = error.data;
                     });
                 }else{
@@ -177,11 +321,12 @@
                     console.log(response.data);
                     var jobCardProgressList=response.data;
 	                $scope.jobCardProgressList=jobCardProgressList;
+	                $scope.isSelectDisabled = false;
                 },function errorCallback(response) {
 			        console.log(error.value);
                   }
                 );
-            }, 500);
+            }, 4000);
         }
 
         $scope.getOverAllProgress = function(){
@@ -390,22 +535,17 @@
         </tr>
     </table>
     <div ng-show="showUpdateJobCardProgressDiv">
+
         <table class="table table-font">
             <tr>
                 <th>JOB CARD :
                     <label>{{selectedJobCardFile}}</label>
                 </th>
-                <th>Production Stage
-                    <select ng-model="selectedProductionStage" ng-options="x for x in productionStages"></select>
-                </th>
                 <th ng-show="!(selectedProductionStage == 'DISPATCH')">SKU
                     <select ng-model="selectedSku" ng-options="x for x in jobCardProgressSkus"></select>
                 </th>
-                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size
-                    <select ng-model="selectedSize" ng-options="x for x in sizes"></select>
-                </th>
-                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Count
-                    <input type="text" ng-model="count" class="text_input_width">
+                <th>Production Stage
+                    <select ng-model="selectedProductionStage" ng-options="x for x in productionStages"></select>
                 </th>
                 <th ng-show="!(selectedProductionStage == 'DISPATCH'|| selectedProductionStage == 'PACKING')">Vendor
                     <input type="text" ng-model="vendor" class="text_input_width">
@@ -426,17 +566,49 @@
                 <th ng-show="selectedProductionStage == 'DISPATCH'">Tracking Number
                     <input type="text" ng-model="trackingNumber" class="text_input_width">
                 </th>
+
+            </tr>
+
+        </table>
+        <table class="table table-font">
+            <tr>
+            <tr>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size 40
+                    <input type="text" ng-model="count_40" class="text_input_width">
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size 41
+                    <input type="text" ng-model="count_41" class="text_input_width">
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size 42
+                    <input type="text" ng-model="count_42" class="text_input_width">
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size 43
+                    <input type="text" ng-model="count_43" class="text_input_width">
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size 44
+                    <input type="text" ng-model="count_44" class="text_input_width">
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size 45
+                    <input type="text" ng-model="count_45" class="text_input_width">
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size 46
+                    <input type="text" ng-model="count_46" class="text_input_width">
+                </th>
+                <th ng-show="!(selectedProductionStage == 'DISPATCH')">Size 47
+                    <input type="text" ng-model="count_47" class="text_input_width">
+                </th>
                 <th>
                     <P class="text-danger">{{saveJobCardProgressEntryErrorMessage}}</P>
-                    <input type="button" ng-click="saveJobCardProgressEntry()" value="save"
+                    <input type="button" ng-click="saveJobCardProgressEntry()" value="save" ng-disabled="isSelectDisabled"
                            class="text_input_width btn btn-primary">
                 </th>
-
+            </tr>
             </tr>
         </table>
         <table class="table table-font" ng-model="jobCardProgressList">
             <tr>
-                <th colspan="5"><label>Filter : &nbsp </label><Input type="text" ng-model="jobCardProgressEntryFilter" placeholder="ProductionStage:Sku@Leather">
+                <th colspan="5"><label>Filter : &nbsp </label><Input type="text" ng-model="jobCardProgressEntryFilter"
+                                                                     placeholder="ProductionStage:Sku@Leather">
                 </th>
             </tr>
             <tr>
@@ -564,7 +736,10 @@
     <div ng-show="showOverallProgressDiv">
         <table class="table table-font">
             <tr>
-                <th colspan="2"><label>Filter : &nbsp </label><Input type="text" ng-model="overAllJobCardProgressListFilter" placeholder="Sku@Leather" ng-change="UpdateTotalCount()">
+                <th colspan="2"><label>Filter : &nbsp </label><Input type="text"
+                                                                     ng-model="overAllJobCardProgressListFilter"
+                                                                     placeholder="Sku@Leather"
+                                                                     ng-change="UpdateTotalCount()">
                 </th>
                 <th>Total</th>
                 <th><label ng-bind="totalOrderedCount"></label></th>
