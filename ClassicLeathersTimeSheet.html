@@ -76,6 +76,25 @@
                 }
             );
 
+         $scope.UpdateTotalWorkingHours = function(){
+            var hoursTotal=0;
+            var filterRowCount=0
+
+            for(var i = 0, size =  $scope.timeSheetEntryList.length ; i < size ; i++){
+                var item =  $scope.timeSheetEntryList[i];
+                var name = item.employeeName;
+                if($scope.timeSheetFilter == name){
+                    hoursTotal=hoursTotal+parseFloat(item.totalWorkingHours);
+                    filterRowCount=filterRowCount+1;
+                }
+            }
+            var averageWorkingHours=(hoursTotal/filterRowCount);
+
+             $scope.showAverage=hoursTotal>0;
+             $scope.hoursTotal=hoursTotal.toFixed(2);
+             $scope.averageWorkingHours=averageWorkingHours.toFixed(2);
+         }
+
 
          });
 
@@ -107,13 +126,15 @@
     </h4>
     <table class="table table-font">
         <tr>
-            <th colspan="2">Filter by Date, Employee Name, Present Yes/No &nbsp <Input type="text" ng-model="timeSheetFilter"></th>
+            <th colspan="2">Filter by Date, Employee Name, Present Yes/No &nbsp
+                <Input type="text" ng-model="timeSheetFilter" ng-change="UpdateTotalWorkingHours()"></th>
+            <th colspan="2" ng-show="showAverage">Total / Average Working Hours : <label ng-bind="hoursTotal"></label> &nbsp / &nbsp <label ng-bind="averageWorkingHours"></label></th>
         </tr>
         <tr>
             <th>Date</th>
             <th>Employee Name &nbsp </th>
             <th>Present</th>
-            <th>Total Working Hours</th>
+            <th>Working Hours</th>
         </tr>
 
         <tr ng-repeat="timeSheetEntry in timeSheetEntryList | filter : timeSheetFilter"
@@ -121,7 +142,7 @@
             <td>{{timeSheetEntry.date}}</td>
             <td>{{timeSheetEntry.employeeName}}</td>
             <td>{{timeSheetEntry.present}}</td>
-            <td>{{timeSheetEntry.totalWorkingHours}}</td>
+            <td>{{timeSheetEntry.totalWorkingHours}} Hrs</td>
         </tr>
 
     </table>
