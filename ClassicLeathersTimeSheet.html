@@ -83,7 +83,7 @@
             for(var i = 0, size =  $scope.timeSheetEntryList.length ; i < size ; i++){
                 var item =  $scope.timeSheetEntryList[i];
                 var name = item.employeeName;
-                if($scope.timeSheetFilter == name){
+                if($scope.timeSheetFilter.toLowerCase() == name.toLowerCase() && item.totalWorkingHours>0){
                     hoursTotal=hoursTotal+parseFloat(item.totalWorkingHours);
                     filterRowCount=filterRowCount+1;
                 }
@@ -91,6 +91,7 @@
             var averageWorkingHours=(hoursTotal/filterRowCount);
 
              $scope.showAverage=hoursTotal>0;
+             $scope.daysPresent=filterRowCount;
              $scope.hoursTotal=hoursTotal.toFixed(2);
              $scope.averageWorkingHours=averageWorkingHours.toFixed(2);
          }
@@ -126,10 +127,13 @@
     </h4>
     <table class="table table-font">
         <tr>
-            <th colspan="2">Filter by Date, Employee Name, Present Yes/No &nbsp
+            <th>Filter by Date, Employee Name, Present Yes/No &nbsp
                 <Input type="text" ng-model="timeSheetFilter" ng-change="UpdateTotalWorkingHours()"></th>
-            <th colspan="2" ng-show="showAverage">Total / Average Working Hours : <label ng-bind="hoursTotal"></label> &nbsp / &nbsp <label ng-bind="averageWorkingHours"></label></th>
+            <th ng-show="showAverage">Total / Average Working Hours : <label ng-bind="hoursTotal"></label> &nbsp / &nbsp <label ng-bind="averageWorkingHours"></label></th>
+            <th ng-show="showAverage">Number of days present : <label ng-bind="daysPresent"></label></th>
         </tr>
+    </table>
+    <table class="table table-font">
         <tr>
             <th>Date</th>
             <th>Employee Name &nbsp </th>
