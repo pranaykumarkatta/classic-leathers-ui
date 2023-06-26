@@ -74,6 +74,15 @@
                 }
             };
 
+            $scope.isPopUpVisible=false;
+            $scope.showSalesEntry = function(salesEntry){
+                $scope.isPopUpVisible=true;
+                $scope.popUpEntry=salesEntry;
+            };
+
+            $scope.hidePopUp = function(){
+                $scope.isPopUpVisible=false;
+            };
 
             var sheetNumber = (new Date()).getMonth()-3;
             var monthNumber = decodeURIComponent((new RegExp('[?|&]' + 'month' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
@@ -133,6 +142,51 @@
         Total / Cash / Online: {{totalBusiness}} / {{totalCashBusiness}} /
         {{totalBusiness-totalCashBusiness}} &nbsp&nbsp&nbsp&nbsp&nbsp Current Month Average: &nbsp{{monthlyAverage}}
         &nbsp&nbsp&nbsp&nbsp&nbsp Today's Sale: &nbsp{{todayTotal}}</label></p>
+    <div class="popUp_div" ng-show="isPopUpVisible">
+         <table class="table popUp_font">
+            <tr  style="text-align:center;font-size:20px;background-color: #ecf6ff;"><td colspan="2">Sale Details
+                <input style="float:right;" type="button" ng-click="hidePopUp()" value="close"
+                       class="text_input_width btn btn-primary"></td></tr>
+            <tr>
+                <td>Customer Name</td><td>{{popUpEntry.customerName}}</td>
+            </tr>
+            <tr>
+                <td>Gender</td><td>{{popUpEntry.gender}}</td>
+            </tr>
+            <tr>
+                <td>Mobile Number</td><td>{{popUpEntry.mobileNumber}}</td>
+            </tr>
+            <tr>
+                <td>Category</td><td>{{popUpEntry.category}}</td>
+            </tr>
+            <tr>
+                <td>Product Details</td><td>{{popUpEntry.productDetails}}</td>
+            </tr>
+            <tr>
+                <td>Quantity</td><td>{{popUpEntry.quantity}}</td>
+            </tr>
+            <tr>
+                <td>Size</td><td>{{popUpEntry.size}}</td>
+            </tr>
+            <tr>
+                <td>MRP</td><td>{{popUpEntry.mrp}}</td>
+            </tr>
+            <tr>
+                <td>Discount</td><td>{{popUpEntry.discount}}</td>
+            </tr>
+            <tr>
+                <td>Sale Price</td><td>{{popUpEntry.salePrice}}</td>
+            </tr>
+            <tr>
+                <td>MOP</td><td>{{popUpEntry.modeOfPayment}}</td>
+            </tr>
+            <tr>
+                <td>Date</td><td>{{popUpEntry.saleDate}}</td>
+            </tr>
+        </table>
+
+
+    </div>
     <table class="table table-font">
         <tr>
             <th colspan="16">Search In Sales Data &nbsp&nbsp<Input type="text" ng-model="salesEntryFilter"></th>
@@ -186,7 +240,8 @@
             </th>
         </tr>
         <tr ng-repeat="salesEntry in salesEntryList | filter : salesEntryFilter "
-            ng-style="{'background-color': (salesEntry.isTodaySale=='true') ? '#a7b9bc':null}">
+            ng-style="{'background-color': (salesEntry.isTodaySale=='true') ? '#ffffff':null,
+            'font-weight': (salesEntry.isTodaySale=='true') ?700:null}" ng-click="showSalesEntry(salesEntry)">
             <td>{{salesEntry.customerName | uppercase}}</td>
             <td>{{salesEntry.gender}}</td>
             <td>{{salesEntry.mobileNumber}}</td>
