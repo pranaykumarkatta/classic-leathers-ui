@@ -82,7 +82,7 @@
 
 .popUp_div {
     width: 50%;
-    height: 83%;
+    height: 90%;
     padding: 5px;
     background: white;
     position: absolute;
@@ -91,6 +91,6 @@
     margin: -10% 20%;
 }
   .popUp_font {
-    font-size:12px;
+    font-size:15px;
     font-weight:400;
   }
