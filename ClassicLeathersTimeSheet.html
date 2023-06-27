@@ -139,14 +139,23 @@
             <th>Employee Name &nbsp </th>
             <th>Present</th>
             <th>Working Hours</th>
+            <th>Latest In Time</th>
+            <th>Latest Out Time</th>
         </tr>
 
         <tr ng-repeat="timeSheetEntry in timeSheetEntryList | filter : timeSheetFilter"
-            ng-style="{'background-color': (timeSheetEntry.isTodayEntry=='true') ? '#a7b9bc':null}">
+            ng-style="{'background-color': (timeSheetEntry.isTodayEntry=='true'&&timeSheetEntry.latestOutTime=='NA') ? '#9be39b':
+            (timeSheetEntry.isTodayEntry=='true')?'#a7b9bc':none}">
             <td>{{timeSheetEntry.date}}</td>
             <td>{{timeSheetEntry.employeeName}}</td>
             <td>{{timeSheetEntry.present}}</td>
-            <td>{{timeSheetEntry.totalWorkingHours}} Hrs</td>
+            <td>
+                <div data-toggle="tooltip" data-placement="top" title="{{timeSheetEntry.eventlogList}}">
+                    {{timeSheetEntry.totalWorkingHours}} Hrs
+                </div>
+            </td>
+            <td>{{timeSheetEntry.latestInTime}}</td>
+            <td>{{timeSheetEntry.latestOutTime}}</td>
         </tr>
 
     </table>
