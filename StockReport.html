@@ -102,7 +102,11 @@
                     {{drivingStockEntry.size_47_quantity}}
                 </div>
             </td>
-            <td>{{drivingStockEntry.totalQuantity}}</td>
+            <td>
+                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.total_Quantity_SalesStockInfo}}">
+                    {{drivingStockEntry.totalQuantity}}
+                </div>
+            </td>
         </tr>
     </table>
 </div>
