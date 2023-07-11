@@ -148,7 +148,9 @@
             (timeSheetEntry.isTodayEntry=='true')?'#a7b9bc':none}">
             <td>{{timeSheetEntry.date}}</td>
             <td>{{timeSheetEntry.employeeName}}</td>
-            <td>{{timeSheetEntry.present}}</td>
+            <td ng-style="{'background-color': (timeSheetEntry.present=='No')?'#e3a7a7':none}">
+                {{timeSheetEntry.present}}
+            </td>
             <td>
                 <div data-toggle="tooltip" data-placement="top" title="{{timeSheetEntry.eventlogList}}">
                     {{timeSheetEntry.totalWorkingHours}} Hrs
