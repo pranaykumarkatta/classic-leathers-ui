@@ -50,7 +50,6 @@
         &nbsp&nbsp&nbsp<label>Number Of Pairs Sold : &nbsp{{actualDrivingOrderedQuantity-totalDrivingStock}}</label></p>
     <table class="table table-font stockTable">
         <tr>
-            <th>SNO</th>
             <th>SKU</th>
             <th>LEATHER</th>
             <th>BRAND</th>
@@ -66,48 +65,45 @@
         </tr>
         <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter"
             ng-style="{'background-color': (drivingStockEntry.totalQuantity=='0')?'#ffcccc':none}">
-            <td ng-style="{'font-weight': (drivingStockEntry.isValidEntry=='false') ? 700:null}">
-                {{drivingStockEntry.rowNumber}}
-            </td>
             <td>{{drivingStockEntry.sku}}</td>
             <td>{{drivingStockEntry.leather}}</td>
             <td>{{drivingStockEntry.brand}}</td>
-            <td ng-style="{'background-color': (drivingStockEntry.size_40_quantity<2)?'#f26e6e':((drivingStockEntry.size_40_quantity>=3)?'#62de6f':none)}">
+            <td ng-style="{'background-color': (drivingStockEntry.size_40_quantity<2)?'#ffcccc':((drivingStockEntry.size_40_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_40_SalesStockInfo}}">
                     {{drivingStockEntry.size_40_quantity}}
                 </div>
             </td>
-            <td ng-style="{'background-color': (drivingStockEntry.size_41_quantity<2)?'#f26e6e':((drivingStockEntry.size_41_quantity>=3)?'#62de6f':none)}">
+            <td ng-style="{'background-color': (drivingStockEntry.size_41_quantity<2)?'#ffcccc':((drivingStockEntry.size_41_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_41_SalesStockInfo}}">
                     {{drivingStockEntry.size_41_quantity}}
                 </div>
             </td>
-            <td ng-style="{'background-color': (drivingStockEntry.size_42_quantity<2)?'#f26e6e':((drivingStockEntry.size_42_quantity>=3)?'#62de6f':none)}">
+            <td ng-style="{'background-color': (drivingStockEntry.size_42_quantity<2)?'#ffcccc':((drivingStockEntry.size_42_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_42_SalesStockInfo}}">
                     {{drivingStockEntry.size_42_quantity}}
                 </div>
             </td>
-            <td ng-style="{'background-color': (drivingStockEntry.size_43_quantity<2)?'#f26e6e':((drivingStockEntry.size_43_quantity>=3)?'#62de6f':none)}">
+            <td ng-style="{'background-color': (drivingStockEntry.size_43_quantity<2)?'#ffcccc':((drivingStockEntry.size_43_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_43_SalesStockInfo}}">
                     {{drivingStockEntry.size_43_quantity}}
                 </div>
             </td>
-            <td ng-style="{'background-color': (drivingStockEntry.size_44_quantity<2)?'#f26e6e':((drivingStockEntry.size_44_quantity>=3)?'#62de6f':none)}">
+            <td ng-style="{'background-color': (drivingStockEntry.size_44_quantity<2)?'#ffcccc':((drivingStockEntry.size_44_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_44_SalesStockInfo}}">
                     {{drivingStockEntry.size_44_quantity}}
                 </div>
             </td>
-            <td ng-style="{'background-color': (drivingStockEntry.size_45_quantity<2)?'#f26e6e':((drivingStockEntry.size_45_quantity>=3)?'#62de6f':none)}">
+            <td ng-style="{'background-color': (drivingStockEntry.size_45_quantity<2)?'#ffcccc':((drivingStockEntry.size_45_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_45_SalesStockInfo}}">
                     {{drivingStockEntry.size_45_quantity}}
                 </div>
             </td>
-            <td ng-style="{'background-color': (drivingStockEntry.size_46_quantity<2)?'#f26e6e':((drivingStockEntry.size_46_quantity>=3)?'#62de6f':none)}">
+            <td ng-style="{'background-color': (drivingStockEntry.size_46_quantity<2)?'#ffcccc':((drivingStockEntry.size_46_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_46_SalesStockInfo}}">
                     {{drivingStockEntry.size_46_quantity}}
                 </div>
             </td>
-            <td ng-style="{'background-color': (drivingStockEntry.size_47_quantity<2)?'#f26e6e':((drivingStockEntry.size_47_quantity>=3)?'#62de6f':none)}">
+            <td ng-style="{'background-color': (drivingStockEntry.size_47_quantity<2)?'#ffcccc':((drivingStockEntry.size_47_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_47_SalesStockInfo}}">
                     {{drivingStockEntry.size_47_quantity}}
                 </div>
