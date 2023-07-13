@@ -10,24 +10,56 @@
     <script>
       var app = angular.module("classicLeathers", []);
       app.controller("retailController", function($scope,$http) {
+      $scope.footWearTypes = ["DRIVING","KORA"];
+      $scope.selectedFootwearType=$scope.footWearTypes[0];
 
+      $scope.filterStock = function(){
+      console.log("retyui");
         $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/driving'})
             .then(function successCallback(response) {
-                    $scope.drivingStockEntries=response.data;
+                    $scope.stockEntries=response.data;
+                    $scope.drivingStockEntries=[];
                     var totalDrivingStock=0;
                     var actualDrivingOrderedQuantity=0;
                     for(var i = 0, size = response.data.length; i < size ; i++){
-                        var item = response.data[i];
-                        totalDrivingStock +=  Number(item.totalQuantity);
-                        actualDrivingOrderedQuantity +=  Number(item.actualOrderedQuantity);
+                        if((response.data[i].sku.includes("LF")&&$scope.selectedFootwearType=="DRIVING")||
+                        (response.data[i].sku.includes("KORA")&&$scope.selectedFootwearType=="KORA")){
+                            $scope.drivingStockEntries.push(response.data[i]);
+                            var item = response.data[i];
+                            totalDrivingStock +=  Number(item.totalQuantity);
+                            actualDrivingOrderedQuantity +=  Number(item.actualOrderedQuantity);
+                        }
                     }
                     $scope.totalDrivingStock=totalDrivingStock;
                     $scope.actualDrivingOrderedQuantity=actualDrivingOrderedQuantity;
                 },function errorCallback(response) {
                     console.log(error.value);
                 }
-            );
-      });
+        );
+      }
+
+       $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/driving'})
+            .then(function successCallback(response) {
+                    $scope.stockEntries=response.data;
+                    $scope.drivingStockEntries=[];
+                    var totalDrivingStock=0;
+                    var actualDrivingOrderedQuantity=0;
+                    for(var i = 0, size = response.data.length; i < size ; i++){
+                        if(response.data[i].sku.includes("LF")){
+                            $scope.drivingStockEntries.push(response.data[i]);
+                            var item = response.data[i];
+                            totalDrivingStock +=  Number(item.totalQuantity);
+                            actualDrivingOrderedQuantity +=  Number(item.actualOrderedQuantity);
+                        }
+                    }
+                    $scope.totalDrivingStock=totalDrivingStock;
+                    $scope.actualDrivingOrderedQuantity=actualDrivingOrderedQuantity;
+                },function errorCallback(response) {
+                    console.log(error.value);
+                }
+       );
+    });
+
 
 
 
@@ -46,7 +78,8 @@
     </div>
 </div>
 <div ng-controller="retailController" class="working_div container">
-    <p>Driving Shoe Stock Details: &nbsp <Input type="text" ng-model="DrivingShoeFilter">
+    <p> Select Category : <select class="btn btn-primary" ng-model="selectedFootwearType" ng-options="x for x in footWearTypes" ng-change="filterStock()"></select>
+        Search by SKU / Leather: &nbsp <Input type="text" ng-model="DrivingShoeFilter">
         &nbsp&nbsp&nbsp<label>Number Of Pairs Sold : &nbsp{{actualDrivingOrderedQuantity-totalDrivingStock}}</label></p>
     <table class="table table-font stockTable">
         <tr>
@@ -109,7 +142,8 @@
                 </div>
             </td>
             <td>
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.total_Quantity_SalesStockInfo}}">
+                <div data-toggle="tooltip" data-placement="top"
+                     title="{{drivingStockEntry.total_Quantity_SalesStockInfo}}">
                     {{drivingStockEntry.totalQuantity}}
                 </div>
             </td>
