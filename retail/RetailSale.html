@@ -1,0 +1,74 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/body.css">
+
+    <script>
+      var app = angular.module("classicLeathers", []);
+      app.controller("retailSaleController", function($scope,$http) {
+
+      <!--------------------------GET CUSTOMERS----------------------------->
+       $http({method: 'GET', url: 'http://localhost:8080/customers'})
+            .then(function successCallback(response) {
+					$scope.customerList=response.data;
+					$scope.filteredCustomerList= response.data;
+                },function errorCallback(response) {
+					console.log(error.value);
+                }
+            );
+
+      $scope.filterCustomers = function(){
+       var filteredCustomerList = [];
+                for(var i = 0, size = $scope.customerList.length; i < size ; i++){
+                        var item = $scope.customerList[i].name.toUpperCase()+"_"+$scope.customerList[i].mobileNumber;
+                         if(item.includes($scope.customerSearchString.toUpperCase())){
+                           filteredCustomerList.push($scope.customerList[i]);
+                         }
+                }
+                $scope.filteredCustomerList=filteredCustomerList;
+       };
+
+       $scope.addCustomer = function(){
+            var newCustomer = { "name": $scope.newCustomerName, "gender": "Male", "mobileNumber": "0000000000" };
+            $http.post('http://localhost:8080/customers',newCustomer,{})
+                .then(data => {
+                          window.location.reload();
+                })
+       };
+      <!--------------------------GET CUSTOMERS----------------------------->
+
+      });
+
+
+
+
+
+
+    </script>
+</head>
+<body class="classicTheamColor" ng-app="classicLeathers">
+
+<div class="header_div">
+    <img class="images" src="../resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">RETAIL STORE TIRUPATI</label>
+        <a href=".\ClassicLeathersMenu.html" class="btn btn-primary">Home</a>
+        <a href=".\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
+        <a href=".\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
+        <a href=".\StockReport.html" class="btn btn-primary">Stock</a>
+    </div>
+</div>
+<div ng-controller="retailSaleController" class="container">
+    <div>
+        <input type="text" ng-model="customerSearchString" ng-change="filterCustomers()">
+        <select ng-model="selectedCustomer" ng-options="c.name.toUpperCase() for c in filteredCustomerList"></select>
+        <input type="text" ng-model="newCustomerName">
+        <input type="submit" value="AddCustomer" ng-click="addCustomer()">
+    </div>
+</div>
+</body>
+</html>

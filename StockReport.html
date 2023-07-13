@@ -14,6 +14,15 @@
         $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/driving'})
             .then(function successCallback(response) {
                     $scope.drivingStockEntries=response.data;
+                    var totalDrivingStock=0;
+                    var actualDrivingOrderedQuantity=0;
+                    for(var i = 0, size = response.data.length; i < size ; i++){
+                        var item = response.data[i];
+                        totalDrivingStock +=  Number(item.totalQuantity);
+                        actualDrivingOrderedQuantity +=  Number(item.actualOrderedQuantity);
+                    }
+                    $scope.totalDrivingStock=totalDrivingStock;
+                    $scope.actualDrivingOrderedQuantity=actualDrivingOrderedQuantity;
                 },function errorCallback(response) {
                     console.log(error.value);
                 }
@@ -37,7 +46,8 @@
     </div>
 </div>
 <div ng-controller="retailController" class="working_div container">
-    <p>Driving Shoe Stock Details: &nbsp <Input type="text" ng-model="DrivingShoeFilter"></p>
+    <p>Driving Shoe Stock Details: &nbsp <Input type="text" ng-model="DrivingShoeFilter">
+        &nbsp&nbsp&nbsp<label>Number Of Pairs Sold : &nbsp{{actualDrivingOrderedQuantity-totalDrivingStock}}</label></p>
     <table class="table table-font stockTable">
         <tr>
             <th>SNO</th>
@@ -52,7 +62,7 @@
             <th>45</th>
             <th>46</th>
             <th>47</th>
-            <th>Total</th>
+            <th>Total : {{totalDrivingStock}} / {{actualDrivingOrderedQuantity}}</th>
         </tr>
         <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter"
             ng-style="{'background-color': (drivingStockEntry.totalQuantity=='0')?'#ffcccc':none}">
