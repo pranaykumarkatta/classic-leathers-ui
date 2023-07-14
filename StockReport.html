@@ -13,6 +13,7 @@
       $scope.footWearTypes = ["DRIVING","KORA","WAVES","A_SERIES","HAND BAG"];
       $scope.selectedFootwearType=$scope.footWearTypes[0];
       $scope.isFootWear=true;
+      var drivingStockEntries = [];
 
       $scope.filterStock = function(){
         $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/driving'})
@@ -42,10 +43,26 @@
                     }
                     $scope.totalDrivingStock=totalDrivingStock;
                     $scope.actualDrivingOrderedQuantity=actualDrivingOrderedQuantity;
+                    drivingStockEntries =  $scope.drivingStockEntries;
                 },function errorCallback(response) {
                     console.log(error.value);
                 }
         );
+      }
+
+      $scope.updateTotalCount = function(){
+      var totalDrivingStock=0;
+      var actualDrivingOrderedQuantity=0;
+        for(var i = 0, size = drivingStockEntries.length; i < size ; i++){
+            var item =  drivingStockEntries[i];
+            var filterString = item.searchString;
+            if(filterString.includes($scope.DrivingShoeFilter.toUpperCase())){
+                totalDrivingStock +=  Number(item.totalQuantity);
+                actualDrivingOrderedQuantity +=  Number(item.actualOrderedQuantity);
+            }
+        }
+        $scope.totalDrivingStock=totalDrivingStock;
+        $scope.actualDrivingOrderedQuantity=actualDrivingOrderedQuantity;
       }
 
        $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/driving'})
@@ -64,6 +81,7 @@
                     }
                     $scope.totalDrivingStock=totalDrivingStock;
                     $scope.actualDrivingOrderedQuantity=actualDrivingOrderedQuantity;
+                    drivingStockEntries =  $scope.drivingStockEntries;
                 },function errorCallback(response) {
                     console.log(error.value);
                 }
@@ -88,14 +106,15 @@
     </div>
 </div>
 <div ng-controller="retailController" class="working_div container">
-    <p> Select Category : <select class="btn btn-primary" ng-model="selectedFootwearType" ng-options="x for x in footWearTypes" ng-change="filterStock()"></select>
-        Search by SKU / Leather: &nbsp <Input type="text" ng-model="DrivingShoeFilter">
+    <p> Select Category : <select class="btn btn-primary" ng-model="selectedFootwearType"
+                                  ng-options="x for x in footWearTypes" ng-change="filterStock()"></select>
+        Search by SKU / Leather: &nbsp <Input type="text" ng-model="DrivingShoeFilter" ng-change="updateTotalCount()" placeholder="BRAND SKU LEATHER">
         &nbsp&nbsp&nbsp<label>Number Of Pairs Sold : &nbsp{{actualDrivingOrderedQuantity-totalDrivingStock}}</label></p>
     <table class="table table-font stockTable" ng-show="isFootWear">
         <tr>
+            <th>BRAND</th>
             <th>SKU</th>
             <th>LEATHER</th>
-            <th>BRAND</th>
             <th>40</th>
             <th>41</th>
             <th>42</th>
@@ -108,9 +127,9 @@
         </tr>
         <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter"
             ng-style="{'background-color': (drivingStockEntry.totalQuantity=='0')?'#ffcccc':none}">
+            <td>{{drivingStockEntry.brand}}</td>
             <td>{{drivingStockEntry.sku}}</td>
             <td>{{drivingStockEntry.leather}}</td>
-            <td>{{drivingStockEntry.brand}}</td>
             <td ng-style="{'background-color': (drivingStockEntry.size_40_quantity<2)?'#ffcccc':((drivingStockEntry.size_40_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_40_SalesStockInfo}}">
                     {{drivingStockEntry.size_40_quantity}}
