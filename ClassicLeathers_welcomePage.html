@@ -14,6 +14,7 @@
             $scope.genderList = ["MALE", "FEMALE"];
             $scope.categoryList = ["NA","LFXOT01","LFXOT02","LFXOT03","LFXOT04","LFXOT05","LFXOT06","LFXOT07","LFXOT08","LFBIN03","LFBOT01","LFBOT02","LFPOT01","S1","S2","WAVES_3","WAVES_4","WAVES_5","WAVES_6","WAVES_7","WAVES_7R","WAVES_8","WAVES_9","WAVES_10","WAVES_11","WAVES_12","WAVES_13","WAVES_14","A_01","A_02","A_03","KORA_V","KORA_C","D21","WLT5","WLT6","WLT7","WLT8","WLT9","WLT10","BLT5","BLT6","BLT7","BLT8","BLT9","LAB3","LAB4","LHB1","LHB2","LHB3","LHB4","OTTO SINGLE","OTTO WEEKLY"];
             $scope.brandList = ["99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","GENUINE LEATHER"];
+            $scope.leatherList = ["BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","GENUINE LEATHER"];
             $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
             $scope.mopList = ["CASH","G-PAY","SWIPE"];
             $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
@@ -28,6 +29,8 @@
                     window.alert("Invalid Brand");
                 }else if($scope.category==null || $scope.category==""){
                     window.alert("Invalid Category");
+                }else if($scope.leather==null || $scope.leather==""){
+                    window.alert("Invalid leather");
                 }else if($scope.productDetails==null || $scope.productDetails==""){
                     window.alert("Invalid Product Details");
                 }else if($scope.quantity==null || $scope.quantity==""){
@@ -64,6 +67,7 @@
                               "swipePayment": $scope.swipePayment,
                               "updatedBy": $scope.updatedBy,
                               "category": $scope.category,
+                              "leather": $scope.leather,
                               "brand": $scope.brand
                     };
                     var headers = { 'content-type': 'application/json'}
@@ -166,7 +170,13 @@
                 <td>Mobile Number</td><td>{{popUpEntry.mobileNumber}}</td>
             </tr>
             <tr>
+                <td>Brand</td><td>{{popUpEntry.brand}}</td>
+            </tr>
+            <tr>
                 <td>Category</td><td>{{popUpEntry.category}}</td>
+            </tr>
+            <tr>
+                <td>Leather</td><td>{{popUpEntry.leather}}</td>
             </tr>
             <tr>
                 <td>Product Details</td><td>{{popUpEntry.productDetails}}</td>
@@ -206,6 +216,7 @@
             <th>Mobile Number</th>
             <th>Brand</th>
             <th>Category</th>
+            <th>Leather</th>
             <th>Product Details</th>
             <th>Quantity</th>
             <th>Size</th>
@@ -230,6 +241,9 @@
             </th>
             <th>
                 <select ng-model="category" ng-options="x for x in categoryList"></select>
+            </th>
+            <th>
+                <select ng-model="leather" ng-options="x for x in leatherList"></select>
             </th>
             <th><input type="text" ng-model="productDetails" class="text_input_width"></th>
             <th><input type="text" ng-model="quantity" class="number_input_width"></th>
@@ -260,6 +274,7 @@
             <td>{{salesEntry.mobileNumber}}</td>
             <td>{{salesEntry.brand | uppercase}}</td>
             <td>{{salesEntry.category | uppercase}}</td>
+            <td>{{salesEntry.leather | uppercase}}</td>
             <td>{{salesEntry.productDetails | uppercase}}</td>
             <td>{{salesEntry.quantity}}</td>
             <td>{{salesEntry.size}}</td>
