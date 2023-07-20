@@ -12,9 +12,9 @@
       app.controller("retailController", function($scope,$http) {
 <!----------------------------------------SALES----------------------------------------------------------------------------->
             $scope.genderList = ["MALE", "FEMALE"];
-            $scope.categoryList = ["NA","LFXOT01","LFXOT02","LFXOT03","LFXOT04","LFXOT05","LFXOT06","LFXOT07","LFXOT08","LFBIN03","LFBOT01","LFBOT02","LFPOT01","S1","S2","WAVES_3","WAVES_4","WAVES_5","WAVES_6","WAVES_7","WAVES_7R","WAVES_8","WAVES_9","WAVES_10","WAVES_11","WAVES_12","WAVES_13","WAVES_14","A_01","A_02","A_03","KORA_V","KORA_C","D21","WLT5","WLT6","WLT7","WLT8","WLT9","WLT10","BLT5","BLT6","BLT7","BLT8","BLT9","LAB3","LAB4","LHB1","LHB2","LHB3","LHB4","OTTO SINGLE","OTTO WEEKLY"];
-            $scope.brandList = ["99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","GENUINE LEATHER"];
-            $scope.leatherList = ["BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","GENUINE LEATHER"];
+            $scope.categoryList = ["NA","LFXOT01","LFXOT02","LFXOT03","LFXOT04","LFXOT05","LFXOT06","LFXOT07","LFXOT08","LFBIN03","LFBOT01","LFBOT02","LFPOT01","LFBOTS02B","LFBOTS02B","LFBOTS02B","LFBOTS-CHT","LFBOTS-CHT","LFBOTS-TAS","LFBOTS-01B","LFBOTS-01B","LFBOTS-01B","LFBOTS02B","S1","S2","WAVES_3","WAVES_4","WAVES_5","WAVES_6","WAVES_7","WAVES_7R","WAVES_8","WAVES_9","WAVES_10","WAVES_11","WAVES_12","WAVES_13","WAVES_14","A_01","A_02","A_03","KORA_V","KORA_C","D21","WLT5","WLT6","WLT7","WLT8","WLT9","WLT10","BLT5","BLT6","BLT7","BLT8","BLT9","LAB3","LAB4","LHB1","LHB2","LHB3","LHB4","OTTO SINGLE","OTTO WEEKLY"];
+            $scope.brandList = ["NA","99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","GENUINE LEATHER"];
+            $scope.leatherList = ["NA","BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","GENUINE LEATHER","NAVY BLUE SUDE","BOTTLE GREEN SUDE","MOCHA GREEN SUDE","MAROON SUDE"];
             $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
             $scope.mopList = ["CASH","G-PAY","SWIPE"];
             $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
@@ -156,7 +156,7 @@
         {{totalBusiness-totalCashBusiness}} &nbsp&nbsp&nbsp&nbsp&nbsp Current Month Average: &nbsp{{monthlyAverage}}
         &nbsp&nbsp&nbsp&nbsp&nbsp Today's Sale: &nbsp{{todayTotal}}</label></p>
     <div class="popUp_div" ng-show="isPopUpVisible">
-         <table class="table popUp_font">
+        <table class="table popUp_font">
             <tr  style="text-align:center;font-size:20px;background-color: #ecf6ff;"><td colspan="2">Sale Details
                 <input style="float:right;" type="button" ng-click="hidePopUp()" value="close"
                        class="text_input_width btn btn-primary"></td></tr>
