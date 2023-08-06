@@ -10,7 +10,7 @@
     <script>
       var app = angular.module("classicLeathers", []);
       app.controller("retailController", function($scope,$http) {
-      $scope.footWearTypes = ["DRIVING","KORA","WAVES","A_SERIES","HAND BAG"];
+      $scope.footWearTypes = ["DRIVING","KORA","WAVES","A_SERIES","HAND BAG","MIRAT"];
       $scope.selectedFootwearType=$scope.footWearTypes[0];
       $scope.isFootWear=true;
       var drivingStockEntries = [];
@@ -30,6 +30,7 @@
                         (response.data[i].sku.includes("KORA")&&$scope.selectedFootwearType=="KORA")||
                         (response.data[i].sku.includes("WAVES")&&$scope.selectedFootwearType=="WAVES")||
                         (response.data[i].sku.includes("A_0")&&$scope.selectedFootwearType=="A_SERIES")||
+                        (response.data[i].sku.includes("MIRAT")&&$scope.selectedFootwearType=="MIRAT")||
                         (response.data[i].sku.includes("HAND_BAG")&&$scope.selectedFootwearType=="HAND BAG")||
                         (response.data[i].sku.includes("SLING_BAG")&&$scope.selectedFootwearType=="HAND BAG")){
                             var item = response.data[i];
@@ -39,7 +40,8 @@
                             actualDrivingOrderedQuantity +=  Number(item.actualOrderedQuantity);
                         }
                         if($scope.selectedFootwearType=="DRIVING"||$scope.selectedFootwearType=="KORA"||
-                        $scope.selectedFootwearType=="WAVES"||$scope.selectedFootwearType=="A_SERIES"){
+                        $scope.selectedFootwearType=="WAVES"||$scope.selectedFootwearType=="A_SERIES"||
+                        $scope.selectedFootwearType=="MIRAT"){
                             $scope.isFootWear=true;
                         }else{
                          $scope.isFootWear=false;
