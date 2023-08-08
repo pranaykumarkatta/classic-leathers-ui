@@ -16,6 +16,12 @@
     font-size:14px;
   }
 
+  .working_div div p{
+    font-weight:600;
+    font-size:14px;
+    text-align:center;
+  }
+
   .table-font {
     font-size:12px;
     border: 2px sold black;

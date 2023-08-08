@@ -10,7 +10,7 @@
         var app = angular.module("classicLeathers", []);
 
         app.controller("timeSheetController", function($scope,$http) {
-            $scope.employeeList = ["Select","PRANAY","KRISHNA","PRASAD","RAJU","MANI","GIRISH"];
+            $scope.employeeList = ["Select","PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
             $scope.selectedEmployeeName=$scope.employeeList[0];
              $scope.saveInTime = function() {
                 if($scope.selectedEmployeeName=="Select"){

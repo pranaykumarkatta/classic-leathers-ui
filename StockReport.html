@@ -31,8 +31,8 @@
                         (response.data[i].sku.includes("WAVES")&&$scope.selectedFootwearType=="WAVES")||
                         (response.data[i].sku.includes("A_0")&&$scope.selectedFootwearType=="A_SERIES")||
                         (response.data[i].sku.includes("MIRAT")&&$scope.selectedFootwearType=="MIRAT")||
-                        (response.data[i].sku.includes("HAND_BAG")&&$scope.selectedFootwearType=="HAND BAG")||
-                        (response.data[i].sku.includes("SLING_BAG")&&$scope.selectedFootwearType=="HAND BAG")){
+                        (response.data[i].sku.includes("_BAG")&&$scope.selectedFootwearType=="HAND BAG")||
+                        (response.data[i].sku.includes("_BAG")&&$scope.selectedFootwearType=="HAND BAG")){
                             var item = response.data[i];
                             item.showEntry=true;
                             $scope.drivingStockEntries.push(item);
