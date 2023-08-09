@@ -11,19 +11,24 @@
      var app = angular.module("classicLeathers", []);
 
      app.controller("presentationController", function($scope,$http) {
+          $scope.showAll=true;
           $scope.showDrivingData = true;
           $scope.showKoraData = true;
           $scope.showWavesData = true;
           $scope.showASeriesData = true;
           $scope.showMiratData = true;
           $scope.showHandBagsData = true;
+          $scope.showBeltAndWalletData = true;
+          $scope.showNAData = true;
 
           $http({method: 'GET', url: 'http://localhost:8080/presentation?showDriving='+$scope.showDrivingData+
           '&showKora='+$scope.showKoraData+
           '&showWaves='+$scope.showWavesData+
           '&ShowASeries='+$scope.showASeriesData+
           '&showMirat='+$scope.showMiratData+
-          '&showHandBag='+$scope.showHandBagsData
+          '&showHandBag='+$scope.showHandBagsData+
+          '&showBeltAndWallet='+$scope.showBeltAndWalletData+
+          '&showNA='+$scope.showNAData
           })
             .then(function successCallback(response) {
 					$scope.totalSalesDtoList=response.data;
@@ -40,7 +45,9 @@
           '&showWaves='+$scope.showWavesData+
           '&ShowASeries='+$scope.showASeriesData+
           '&showMirat='+$scope.showMiratData+
-          '&showHandBag='+$scope.showHandBagsData
+          '&showHandBag='+$scope.showHandBagsData+
+          '&showBeltAndWallet='+$scope.showBeltAndWalletData+
+          '&showNA='+$scope.showNAData
               })
                 .then(function successCallback(response) {
                         $scope.totalSalesDtoList=response.data;
@@ -51,15 +58,27 @@
                     }
                 );
           }
-
+           $scope.updateParameters = function() {
+                  $scope.showDrivingData = $scope.showAll;
+                  $scope.showKoraData = $scope.showAll;
+                  $scope.showWavesData = $scope.showAll;
+                  $scope.showASeriesData = $scope.showAll;
+                  $scope.showMiratData = $scope.showAll;
+                  $scope.showHandBagsData = $scope.showAll;
+                  $scope.showBeltAndWalletData = $scope.showAll;
+                  $scope.showNAData = $scope.showAll;
+                  $scope.updateGraph();
+           }
 
           $scope.drawChart = function() {
           const resArray = [];
-            resArray.push(['MONTH', 'Driving','Kora','Waves','A-Series','Mirat','Hand Bags']);
+            resArray.push(['MONTH', 'Driving','Kora','Waves','A-Series','Mirat','Hand Bags','Belts & Wallets','NA']);
             for(var i = 0, size =  $scope.totalSalesDtoList.length ; i < size ; i++){
                 var totalSalesDto = $scope.totalSalesDtoList[i];
-                resArray.push([totalSalesDto.month,totalSalesDto.drivingSales,totalSalesDto.koraSales,totalSalesDto.wavesSales,
-                totalSalesDto.aSeriesSales,totalSalesDto.miratSales,totalSalesDto.handBagSales]);
+                var totalSale = totalSalesDto.drivingSales+totalSalesDto.koraSales+totalSalesDto.wavesSales+
+                totalSalesDto.aSeriesSales+totalSalesDto.miratSales+totalSalesDto.handBagSales+totalSalesDto.beltsAndWalletsSale+totalSalesDto.naSalesSale;
+                resArray.push([totalSalesDto.month.split("_")[1]+"_"+totalSale,totalSalesDto.drivingSales,totalSalesDto.koraSales,totalSalesDto.wavesSales,
+                totalSalesDto.aSeriesSales,totalSalesDto.miratSales,totalSalesDto.handBagSales,totalSalesDto.beltsAndWalletsSale,totalSalesDto.naSalesSale]);
             }
             data = google.visualization.arrayToDataTable(resArray);
             var options = {
@@ -97,16 +116,22 @@
     <div><p>CLASSIC LEATHERS TOTAL SALES REPORT</p></div>
     <div>
         <p>
+            All <input type="checkbox" class="custom-control-input" ng-model="showAll"
+                           ng-change="updateParameters()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Driving <input type="checkbox" class="custom-control-input" ng-model="showDrivingData"
-                           ng-change="updateGraph()">
-            Kora <input type="checkbox" class="custom-control-input" ng-model="showKoraData" ng-change="updateGraph()">
+                           ng-change="updateGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Kora <input type="checkbox" class="custom-control-input" ng-model="showKoraData" ng-change="updateGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Waves <input type="checkbox" class="custom-control-input" ng-model="showWavesData"
-                         ng-change="updateGraph()">
+                         ng-change="updateGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             A-Series <input type="checkbox" class="custom-control-input" ng-model="showASeriesData"
-                            ng-change="updateGraph()">
+                            ng-change="updateGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Mirat <input type="checkbox" class="custom-control-input" ng-model="showMiratData"
-                         ng-change="updateGraph()">
+                         ng-change="updateGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Hand Bags <input type="checkbox" class="custom-control-input" ng-model="showHandBagsData"
+                             ng-change="updateGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Belts & Wallets <input type="checkbox" class="custom-control-input" ng-model="showBeltAndWalletData"
+                             ng-change="updateGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            NA <input type="checkbox" class="custom-control-input" ng-model="showNAData"
                              ng-change="updateGraph()">
         </p>
     </div>
