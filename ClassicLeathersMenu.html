@@ -24,7 +24,7 @@
           $scope.showNAData = true;
 
           $scope.loadTotalSalesData = function(){
-            $http({method: 'GET', url: 'http://localhost:8080/presentation/totalSales?showDriving='+$scope.showDrivingData+
+          $http({method: 'GET', url: 'http://localhost:8080/presentation/totalSales?showDriving='+$scope.showDrivingData+
           '&showKora='+$scope.showKoraData+
           '&showWaves='+$scope.showWavesData+
           '&ShowASeries='+$scope.showASeriesData+
@@ -82,6 +82,78 @@
             chart.draw(data, options);
           }
 <!----------------------------------------- TOTAL SALES GRAPH END--------------------------------------------------------- -->
+<!----------------------------------------- PROFIT GRAPH START------------------------------------------------------- -->
+           $scope.showAllProfit=true;
+          $scope.showDrivingProfitData = true;
+          $scope.showKoraProfitData = true;
+          $scope.showWavesProfitData = true;
+          $scope.showASeriesProfitData = true;
+          $scope.showMiratProfitData = true;
+          $scope.showHandBagsProfitData = true;
+          $scope.showBeltAndWalletProfitData = true;
+          $scope.showNAProfitData = true;
+          $scope.loadProfitData = function(){
+              $http({method: 'GET', url: 'http://localhost:8080/presentation/profitGraph?showDrivingProfit='+$scope.showDrivingProfitData+
+              '&showKoraProfit='+$scope.showKoraProfitData+
+              '&showWavesProfit='+$scope.showWavesProfitData+
+              '&showASeriesProfit='+$scope.showASeriesProfitData+
+              '&showMiratProfit='+$scope.showMiratProfitData+
+              '&showHandBagProfit='+$scope.showHandBagsProfitData+
+              '&showBeltAndWalletProfit='+$scope.showBeltAndWalletProfitData+
+              '&showNAProfit='+$scope.showNAProfitData
+              })
+                .then(function successCallback(response) {
+                        $scope.profitDtoList=response.data;
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback($scope.drawProfitChart);
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                    }
+                );
+          }
+          $scope.loadProfitData();
+          $scope.updateProfitGraph = function(){
+              $scope.loadProfitData();
+          }
+           $scope.updateProfitParameters = function() {
+                  $scope.showDrivingProfitData = $scope.showAllProfit;
+                  $scope.showKoraProfitData = $scope.showAllProfit;
+                  $scope.showWavesProfitData = $scope.showAllProfit;
+                  $scope.showASeriesProfitData = $scope.showAllProfit;
+                  $scope.showMiratProfitData = $scope.showAllProfit;
+                  $scope.showHandBagsProfitData = $scope.showAllProfit;
+                  $scope.showBeltAndWalletProfitData = $scope.showAllProfit;
+                  $scope.showNAProfitData = $scope.showAllProfit;
+                  $scope.updateProfitGraph();
+           }
+          $scope.drawProfitChart = function() {
+          const resArray = [];
+            resArray.push(['MONTH','Sales', 'Purchase']);
+            for(var i = 0, size =  $scope.profitDtoList.length ; i < size ; i++){
+                var profitDto = $scope.profitDtoList[i];
+                var totalSalePrice = (profitDto.drivingSalePrice+profitDto.koraSalePrice+profitDto.wavesSalePrice+
+                profitDto.aSeriesSalePrice+profitDto.miratSalePrice+profitDto.handBagSalePrice+profitDto.beltsAndWalletsSalePrice+profitDto.naSalesSalePrice);
+                var totalPurchasePrice = (profitDto.drivingCostPrice+profitDto.koraCostPrice+profitDto.wavesCostPrice+
+                profitDto.aSeriesCostPrice+profitDto.miratCostPrice+profitDto.handBagCostPrice+profitDto.beltsAndWalletsCostPrice+profitDto.naSalesCostPrice);
+
+                var profitPercent = Math.round(((totalSalePrice-totalPurchasePrice)/totalSalePrice)*100);
+
+                resArray.push([profitDto.month.split("_")[1]+"_"+profitPercent,(profitDto.drivingSalePrice+profitDto.koraSalePrice+profitDto.wavesSalePrice+
+                profitDto.aSeriesSalePrice+profitDto.miratSalePrice+profitDto.handBagSalePrice+profitDto.beltsAndWalletsSalePrice+profitDto.naSalesSalePrice),
+                (profitDto.drivingCostPrice+profitDto.koraCostPrice+profitDto.wavesCostPrice+
+                profitDto.aSeriesCostPrice+profitDto.miratCostPrice+profitDto.handBagCostPrice+profitDto.beltsAndWalletsCostPrice+profitDto.naSalesCostPrice)]);
+            }
+            data = google.visualization.arrayToDataTable(resArray);
+            var options = {
+              title: 'CLASSIC LEATHERS PERFORMANCE',
+              hAxis: {title: 'MONTH',  titleTextStyle: {color: '#333'}},
+              vAxis: {title: 'PURCHASE/SALE COST', minValue: 0}
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('profit_chart'));
+            chart.draw(data, options);
+          }
+<!----------------------------------------- PROFIT GRAPH END--------------------------------------------------------- -->
 <!----------------------------------------- HOUR SALE GRAPH START--------------------------------------------------------- -->
         $scope.showAllHourly = true;
         $scope.showHour8Data = true;
@@ -119,7 +191,7 @@
             +'&showHour00Data='+$scope.showHour00Data
             })
             .then(function successCallback(response) {
-					$scope.totalHourlySalesDtoList = $scope.hourlySales=response.data;
+					$scope.totalHourlySalesDtoList = response.data;
 					google.charts.load('current', {'packages':['corechart']});
                     google.charts.setOnLoadCallback($scope.drawHourlySalesChart);
                 },function errorCallback(response) {
@@ -180,6 +252,104 @@
             chart.draw(data, options);
           }
 <!----------------------------------------- HOUR SALE GRAPH END--------------------------------------------------------- -->
+<!----------------------------------------- STEP IN GRAPH START--------------------------------------------------------- -->
+        $scope.showAllHourlyStepIn = true;
+        $scope.showHour8Data1 = true;
+        $scope.showHour9Data1 = true;
+        $scope.showHour10Data1 = true;
+        $scope.showHour11Data1 = true;
+        $scope.showHour12Data1 = true;
+        $scope.showHour13Data1 = true;
+        $scope.showHour14Data1 = true;
+        $scope.showHour15Data1 = true;
+        $scope.showHour16Data1 = true;
+        $scope.showHour17Data1 = true;
+        $scope.showHour18Data1 = true;
+        $scope.showHour19Data1 = true;
+        $scope.showHour20Data1 = true;
+        $scope.showHour21Data1 = true;
+        $scope.showHour22Data1 = true;
+        $scope.showHour00Data1 = true;
+        $scope.loadHourlyStepInData = function(){
+            $http({method: 'GET', url: 'http://localhost:8080/presentation/stepIn?showHour8Data='+$scope.showHour8Data1
+            +'&showHour9Data='+$scope.showHour9Data1
+            +'&showHour10Data='+$scope.showHour10Data1
+            +'&showHour11Data='+$scope.showHour11Data1
+            +'&showHour12Data='+$scope.showHour12Data1
+            +'&showHour13Data='+$scope.showHour13Data1
+            +'&showHour14Data='+$scope.showHour14Data1
+            +'&showHour15Data='+$scope.showHour15Data1
+            +'&showHour16Data='+$scope.showHour16Data1
+            +'&showHour17Data='+$scope.showHour17Data1
+            +'&showHour18Data='+$scope.showHour18Data1
+            +'&showHour19Data='+$scope.showHour19Data1
+            +'&showHour20Data='+$scope.showHour20Data1
+            +'&showHour21Data='+$scope.showHour21Data1
+            +'&showHour22Data='+$scope.showHour22Data1
+            +'&showHour00Data='+$scope.showHour00Data1
+            })
+            .then(function successCallback(response) {
+					$scope.totalHourlyStepInDtoList =response.data;
+					google.charts.load('current', {'packages':['corechart']});
+                    google.charts.setOnLoadCallback($scope.drawHourlyStepInChart);
+                },function errorCallback(response) {
+					console.log(error.value);
+                }
+            );
+          }
+          $scope.loadHourlyStepInData();
+          $scope.updateHourlyStepInGraph = function(){
+              $scope.loadHourlyStepInData();
+          }
+           $scope.updateTotalHourlyStepInParameters = function() {
+                    $scope.showHour8Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour9Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour10Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour11Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour12Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour13Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour14Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour15Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour16Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour17Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour18Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour19Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour20Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour21Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour22Data1 = $scope.showAllHourlyStepIn;
+                    $scope.showHour00Data1 = $scope.showAllHourlyStepIn;
+                    $scope.updateHourlyStepInGraph();
+           }
+        $scope.drawHourlyStepInChart = function() {
+          const resArray = [];
+            resArray.push(['MONTH', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '00' ]);
+            for(var i = 0, size =  $scope.totalHourlyStepInDtoList.length ; i < size ; i++){
+                var obj = $scope.totalHourlyStepInDtoList[i];
+                var totalCount = obj.hour_8_count+obj.hour_9_count+
+                obj.hour_10_count+obj.hour_11_count+obj.hour_12_count+obj.hour_13_count+obj.hour_14_count+
+                obj.hour_15_count+obj.hour_16_count+obj.hour_17_count+obj.hour_18_count+obj.hour_19_count+
+                obj.hour_20_count+obj.hour_21_count+obj.hour_22_count+obj.hour_0_count;
+
+                resArray.push([obj.month.split("_")[1]+"_"+totalCount,obj.hour_8_count,obj.hour_9_count,
+                obj.hour_10_count,obj.hour_11_count,obj.hour_12_count,obj.hour_13_count,obj.hour_14_count,
+                obj.hour_15_count,obj.hour_16_count,obj.hour_17_count,obj.hour_18_count,obj.hour_19_count,
+                obj.hour_20_count,obj.hour_21_count,obj.hour_22_count,obj.hour_0_count]);
+            }
+            data = google.visualization.arrayToDataTable(resArray);
+            var options = {
+              hAxis: {
+                title: 'MONTH'
+              },
+              vAxis: {
+                title: 'STEP IN COUNT'
+              },
+              curveType: 'function',
+              legend: { position: 'bottom' }
+            };
+            var chart = new google.visualization.LineChart(document.getElementById('total_hourly_step_in_chart'));
+            chart.draw(data, options);
+          }
+<!----------------------------------------- STEP IN GRAPH END--------------------------------------------------------- -->
      });
     </script>
 
@@ -222,6 +392,31 @@
     </div>
     <div id="total_sales_chart" style="width: 100%; height: 350px"></div>
 
+    <div><p>CLASSIC LEATHERS PURCHASE VS SALES REPORT</p></div>
+    <div>
+        <p>
+            All <input type="checkbox" class="custom-control-input" ng-model="showAllProfit"
+                       ng-change="updateProfitParameters()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Driving <input type="checkbox" class="custom-control-input" ng-model="showDrivingProfitData"
+                           ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Kora <input type="checkbox" class="custom-control-input" ng-model="showKoraProfitData"
+                        ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Waves <input type="checkbox" class="custom-control-input" ng-model="showWavesProfitData"
+                         ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            A-Series <input type="checkbox" class="custom-control-input" ng-model="showASeriesProfitData"
+                            ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Mirat <input type="checkbox" class="custom-control-input" ng-model="showMiratProfitData"
+                         ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Hand Bags <input type="checkbox" class="custom-control-input" ng-model="showHandBagsProfitData"
+                             ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Belts & Wallets <input type="checkbox" class="custom-control-input" ng-model="showBeltAndWalletProfitData"
+                                   ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            NA <input type="checkbox" class="custom-control-input" ng-model="showNAProfitData"
+                      ng-change="updateProfitGraph()">
+        </p>
+    </div>
+    <div id="profit_chart" style="width: 100%; height: 350px"></div>
+
 <br><br><br>
     <div><p>CLASSIC LEATHERS HOURLY SALES REPORT</p></div>
     <div>
@@ -263,6 +458,49 @@
         </p>
     </div>
     <div id="total_hourly_sales_chart" style="width: 100%; height: 350px"></div>
+
+
+    <br><br><br>
+    <div><p>CLASSIC LEATHERS HOURLY STEP IN REPORT</p></div>
+    <div>
+        <p>
+            All <input type="checkbox" class="custom-control-input" ng-model="showAllHourlyStepIn"
+                       ng-change="updateTotalHourlyStepInParameters()">&nbsp&nbsp - &nbsp&nbsp
+            08 <input type="checkbox" class="custom-control-input" ng-model="showHour8Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            09 <input type="checkbox" class="custom-control-input" ng-model="showHour9Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            10 <input type="checkbox" class="custom-control-input" ng-model="showHour10Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            11 <input type="checkbox" class="custom-control-input" ng-model="showHour11Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            12 <input type="checkbox" class="custom-control-input" ng-model="showHour12Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            13 <input type="checkbox" class="custom-control-input" ng-model="showHour13Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            14 <input type="checkbox" class="custom-control-input" ng-model="showHour14Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            15 <input type="checkbox" class="custom-control-input" ng-model="showHour15Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            16 <input type="checkbox" class="custom-control-input" ng-model="showHour16Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            17 <input type="checkbox" class="custom-control-input" ng-model="showHour17Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            18 <input type="checkbox" class="custom-control-input" ng-model="showHour18Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            19 <input type="checkbox" class="custom-control-input" ng-model="showHour19Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            20 <input type="checkbox" class="custom-control-input" ng-model="showHour20Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            21 <input type="checkbox" class="custom-control-input" ng-model="showHour21Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            22 <input type="checkbox" class="custom-control-input" ng-model="showHour22Data1"
+                      ng-change="updateHourlyStepInGraph()">&nbsp&nbsp - &nbsp&nbsp
+            00 <input type="checkbox" class="custom-control-input" ng-model="showHour00Data1"
+                      ng-change="updateHourlyStepInGraph()">
+        </p>
+    </div>
+    <div id="total_hourly_step_in_chart" style="width: 100%; height: 350px"></div>
 </div>
 </body>
 </html>
