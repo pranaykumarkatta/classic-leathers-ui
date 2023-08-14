@@ -11,6 +11,48 @@
      var app = angular.module("classicLeathers", []);
 
      app.controller("presentationController", function($scope,$http) {
+<!----------------------------------------- DAILY SALES GRAPH START------------------------------------------------------- -->
+          $scope.loadDailySalesData = function(){
+          var monthNumber = (new Date()).getMonth()+1;
+          $http({method: 'GET', url: 'http://localhost:8080/presentation/dailySales?monthNumber='+monthNumber})
+            .then(function successCallback(response) {
+					$scope.dailySalesDtoList=response.data;
+					google.charts.load('current', {'packages':['corechart']});
+                    google.charts.setOnLoadCallback($scope.drawDailySalesChart);
+                },function errorCallback(response) {
+					console.log(error.value);
+                }
+            );
+          }
+          $scope.loadDailySalesData();
+         $scope.drawDailySalesChart = function() {
+          const resArray = [];
+            resArray.push(['DAY', 'SALES','Average']);
+            var totalSales = 0;
+            for(var i = 0, size =  $scope.dailySalesDtoList.length ; i < size ; i++){
+                var dailySalesDto = $scope.dailySalesDtoList[i];
+                totalSales = totalSales+dailySalesDto.sales;
+                resArray.push([dailySalesDto.day,dailySalesDto.sales,totalSales/dailySalesDto.day]);
+            }
+            data = google.visualization.arrayToDataTable(resArray);
+            var options = {
+              hAxis: {
+                title: 'DAY'
+              },
+              vAxis: {
+                title: 'SALES',
+                viewWindow: {
+                  min: 0,
+                  max: 20000
+                }
+              },
+              seriesType: 'bars',
+              series: {2: {type: 'line'}}
+            };
+            var chart = new google.visualization.ComboChart(document.getElementById('daily_sales_chart'));
+            chart.draw(data, options);
+          }
+<!----------------------------------------- DAILY SALES GRAPH END--------------------------------------------------------- -->
 
 <!----------------------------------------- TOTAL SALES GRAPH START------------------------------------------------------- -->
           $scope.showAll=true;
@@ -369,6 +411,10 @@
           }
 <!----------------------------------------- STEP IN GRAPH END--------------------------------------------------------- -->
      });
+
+
+
+
     </script>
 
 </head>
@@ -385,6 +431,9 @@
     </div>
 </div>
 <div ng-controller="presentationController" class="working_div container">
+    <div><p>CLASSIC LEATHERS DAILY SALES REPORT</p></div>
+    <div id="daily_sales_chart" style="width: 100%; height: 350px"></div>
+    <br><br><br><br>
     <div><p>CLASSIC LEATHERS TOTAL SALES REPORT</p></div>
     <div>
         <p>
@@ -392,7 +441,8 @@
                        ng-change="updateTotalParameters()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Driving <input type="checkbox" class="custom-control-input" ng-model="showDrivingData"
                            ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
-            Kora <input type="checkbox" class="custom-control-input" ng-model="showKoraData" ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp
+            Kora <input type="checkbox" class="custom-control-input" ng-model="showKoraData"
+                        ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp
             -- &nbsp&nbsp&nbsp
             Waves <input type="checkbox" class="custom-control-input" ng-model="showWavesData"
                          ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
@@ -435,44 +485,44 @@
     </div>
     <div id="profit_chart" style="width: 100%; height: 350px"></div>
 
-<br><br><br>
+    <br><br><br>
     <div><p>CLASSIC LEATHERS HOURLY SALES REPORT</p></div>
     <div>
         <p>
             All <input type="checkbox" class="custom-control-input" ng-model="showAllHourly"
                        ng-change="updateTotalHourlyParameters()">&nbsp&nbsp - &nbsp&nbsp
             08 <input type="checkbox" class="custom-control-input" ng-model="showHour8Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             09 <input type="checkbox" class="custom-control-input" ng-model="showHour9Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             10 <input type="checkbox" class="custom-control-input" ng-model="showHour10Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             11 <input type="checkbox" class="custom-control-input" ng-model="showHour11Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             12 <input type="checkbox" class="custom-control-input" ng-model="showHour12Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             13 <input type="checkbox" class="custom-control-input" ng-model="showHour13Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             14 <input type="checkbox" class="custom-control-input" ng-model="showHour14Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             15 <input type="checkbox" class="custom-control-input" ng-model="showHour15Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             16 <input type="checkbox" class="custom-control-input" ng-model="showHour16Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             17 <input type="checkbox" class="custom-control-input" ng-model="showHour17Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             18 <input type="checkbox" class="custom-control-input" ng-model="showHour18Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             19 <input type="checkbox" class="custom-control-input" ng-model="showHour19Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             20 <input type="checkbox" class="custom-control-input" ng-model="showHour20Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             21 <input type="checkbox" class="custom-control-input" ng-model="showHour21Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             22 <input type="checkbox" class="custom-control-input" ng-model="showHour22Data"
-                           ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
+                      ng-change="updateHourlyTotalGraph()">&nbsp&nbsp - &nbsp&nbsp
             00 <input type="checkbox" class="custom-control-input" ng-model="showHour00Data"
-                           ng-change="updateHourlyTotalGraph()">
+                      ng-change="updateHourlyTotalGraph()">
         </p>
     </div>
     <div id="total_hourly_sales_chart" style="width: 100%; height: 350px"></div>
