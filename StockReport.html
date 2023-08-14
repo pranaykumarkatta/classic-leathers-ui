@@ -10,7 +10,7 @@
     <script>
       var app = angular.module("classicLeathers", []);
       app.controller("retailController", function($scope,$http) {
-      $scope.footWearTypes = ["DRIVING","KORA","WAVES","A_SERIES","HAND BAG","MIRAT","WALLET"];
+      $scope.footWearTypes = ["DRIVING","KORA","WAVES","A_SERIES","HAND BAG","CASUALS","FORMALS","WALLET","JUSTON"];
       $scope.selectedFootwearType=$scope.footWearTypes[0];
       $scope.isFootWear=true;
       var drivingStockEntries = [];
@@ -29,8 +29,11 @@
                         if((response.data[i].sku.includes("LF")&&$scope.selectedFootwearType=="DRIVING")||
                         (response.data[i].sku.includes("KORA")&&$scope.selectedFootwearType=="KORA")||
                         (response.data[i].sku.includes("WAVES")&&$scope.selectedFootwearType=="WAVES")||
+                        (response.data[i].sku.includes("018_JUSTON")&&$scope.selectedFootwearType=="JUSTON")||
                         (response.data[i].sku.includes("A_0")&&$scope.selectedFootwearType=="A_SERIES")||
-                        (response.data[i].sku.includes("MIRAT")&&$scope.selectedFootwearType=="MIRAT")||
+                        (response.data[i].sku.includes("MIRAT")&&$scope.selectedFootwearType=="CASUALS")||
+                        (response.data[i].sku.includes("CASUAL")&&$scope.selectedFootwearType=="CASUALS")||
+                        (response.data[i].sku.includes("D_")&&$scope.selectedFootwearType=="FORMALS")||
                         (response.data[i].sku.includes("WLT")&&$scope.selectedFootwearType=="WALLET")||
                         (response.data[i].sku.includes("_BAG")&&$scope.selectedFootwearType=="HAND BAG")){
                             var item = response.data[i];
@@ -41,7 +44,8 @@
                         }
                         if($scope.selectedFootwearType=="DRIVING"||$scope.selectedFootwearType=="KORA"||
                         $scope.selectedFootwearType=="WAVES"||$scope.selectedFootwearType=="A_SERIES"||
-                        $scope.selectedFootwearType=="MIRAT"){
+                        $scope.selectedFootwearType=="CASUALS"||$scope.selectedFootwearType=="FORMALS"
+                        ||$scope.selectedFootwearType=="JUSTON"){
                             $scope.isFootWear=true;
                         }else{
                          $scope.isFootWear=false;

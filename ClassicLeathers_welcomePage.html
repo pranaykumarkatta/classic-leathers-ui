@@ -12,9 +12,10 @@
       app.controller("retailController", function($scope,$http) {
 <!----------------------------------------SALES----------------------------------------------------------------------------->
             $scope.genderList = ["MALE", "FEMALE"];
-            $scope.categoryList = ["NA","LFXOT01","LFXOT02","LFXOT03","LFXOT04","LFXOT05","LFXOT06","LFXOT07","LFXOT08","LFBIN03","LFBOT01","LFBOT02","LFPOT01","MIRAT-3","MIRAT-5","LFBOTS02B","LFBOTS02B","LFBOTS02B","LFBOTS-CHT","LFBOTS-CHT","LFBOTS-TAS","LFBOTS-01B","LFBOTS-01B","LFBOTS-01B","LFBOTS02B","S1","S2","WAVES_3","WAVES_4","WAVES_5","WAVES_6","WAVES_7","WAVES_7R","WAVES_8","WAVES_9","WAVES_10","WAVES_11","WAVES_12","WAVES_13","WAVES_14","A_01","A_02","A_03","KORA_V","KORA_C","D21","WLT_5","WLT_6","WLT_7","WLT_8","WLT_9","WLT_10","BLT5","BLT6","BLT7","BLT8","BLT9","LA_BAG_3","LA_BAG_4","LA_BAG_5","LH_BAG_1","LH_BAG_2","LH_BAG_3","LH_BAG_4","LH_BAG_5","OTTO SINGLE","OTTO WEEKLY"];
-            $scope.brandList = ["NA","99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","GENUINE LEATHER"];
-            $scope.leatherList = ["NA","BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","GENUINE LEATHER","NAVY BLUE SUDE","BOTTLE GREEN SUDE","MOCHA GREEN SUDE","MAROON SUDE"];
+            $scope.categoryList = ["NA","LFXOT01","LFXOT02","LFXOT03","LFXOT04","LFXOT05","LFXOT06","LFXOT07","LFXOT08","LFBIN03","LFBOT01","LFBOT02","LFPOT01","MIRAT-3","MIRAT-5","LFBOTS02B","LFBOTS02B","LFBOTS02B","LFBOTS-CHT","LFBOTS-CHT","LFBOTS-TAS","LFBOTS-01B","LFBOTS-01B","LFBOTS-01B","LFBOTS02B","S1","S2","WAVES_3","WAVES_4","WAVES_5","WAVES_6","WAVES_7","WAVES_7R","WAVES_8","WAVES_9","WAVES_10","WAVES_11","WAVES_12","WAVES_13","WAVES_14","A_01","A_02","A_03","KORA_V","KORA_C","D_21","D_1","D_2","D_3","WLT_5","WLT_6","WLT_7","WLT_8","WLT_9","WLT_10","BLT5","BLT6","BLT7","BLT8","BLT9","LA_BAG_3","LA_BAG_4","LA_BAG_5","LH_BAG_1","LH_BAG_2","LH_BAG_3","LH_BAG_4","LH_BAG_5","OTTO SINGLE","OTTO WEEKLY","CASUAL_BAR","018_JUSTON"];
+            $scope.brandList = ["99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","CAT","BAR","GENUINE LEATHER"];
+            $scope.stepInTypeList = ["WALK IN","REFERRAL","INSTAGRAM","EXISTING CUSTOMER"];
+            $scope.leatherList = ["NA","BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","BLUE","GENUINE LEATHER","NAVY BLUE SUDE","BOTTLE GREEN SUDE","MOCHA GREEN SUDE","MAROON SUDE"];
             $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
             $scope.mopList = ["CASH","G-PAY","SWIPE"];
             $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
@@ -27,6 +28,8 @@
                     window.alert("Invalid mobileNumber");
                 }else if($scope.brand==null || $scope.brand==""){
                     window.alert("Invalid Brand");
+                }else if($scope.stepInType==null || $scope.stepInType==""){
+                    window.alert("Invalid Step In Type");
                 }else if($scope.category==null || $scope.category==""){
                     window.alert("Invalid Category");
                 }else if($scope.leather==null || $scope.leather==""){
@@ -68,6 +71,7 @@
                               "updatedBy": $scope.updatedBy,
                               "category": $scope.category,
                               "leather": $scope.leather,
+                              "stepInType": $scope.stepInType,
                               "brand": $scope.brand
                     };
                     var headers = { 'content-type': 'application/json'}
@@ -170,6 +174,9 @@
                 <td>Mobile Number</td><td>{{popUpEntry.mobileNumber}}</td>
             </tr>
             <tr>
+                <td>Step In Type</td><td>{{popUpEntry.stepInType}}</td>
+            </tr>
+            <tr>
                 <td>Brand</td><td>{{popUpEntry.brand}}</td>
             </tr>
             <tr>
@@ -214,6 +221,7 @@
             <th>Customer Name</th>
             <th>Gender</th>
             <th>Mobile Number</th>
+            <th>Step In Type</th>
             <th>Brand</th>
             <th>Category</th>
             <th>Leather</th>
@@ -236,6 +244,9 @@
                 <select ng-model="gender" ng-options="x for x in genderList"></select>
             </th>
             <th><input type="text" ng-model="mobileNumber" class="text_input_width"></th>
+            <th>
+                <select ng-model="stepInType" ng-options="x for x in stepInTypeList"></select>
+            </th>
             <th>
                 <select ng-model="brand" ng-options="x for x in brandList"></select>
             </th>
@@ -272,6 +283,7 @@
             <td>{{salesEntry.customerName | uppercase}}</td>
             <td>{{salesEntry.gender}}</td>
             <td>{{salesEntry.mobileNumber}}</td>
+            <td>{{salesEntry.stepInType | uppercase}}</td>
             <td>{{salesEntry.brand | uppercase}}</td>
             <td>{{salesEntry.category | uppercase}}</td>
             <td>{{salesEntry.leather | uppercase}}</td>

@@ -73,7 +73,11 @@
                 title: 'MONTH'
               },
               vAxis: {
-                title: 'TOTAL SALES'
+                title: 'TOTAL SALES',
+                viewWindow: {
+                  min: 0,
+                  max: 100000
+                }
               },
               curveType: 'function',
               legend: { position: 'bottom' }
@@ -138,7 +142,7 @@
 
                 var profitPercent = Math.round(((totalSalePrice-totalPurchasePrice)/totalSalePrice)*100);
 
-                resArray.push([profitDto.month.split("_")[1]+"_"+profitPercent,(profitDto.drivingSalePrice+profitDto.koraSalePrice+profitDto.wavesSalePrice+
+                resArray.push([profitDto.month.split("_")[1]+"_Profit : "+profitPercent+"%",(profitDto.drivingSalePrice+profitDto.koraSalePrice+profitDto.wavesSalePrice+
                 profitDto.aSeriesSalePrice+profitDto.miratSalePrice+profitDto.handBagSalePrice+profitDto.beltsAndWalletsSalePrice+profitDto.naSalesSalePrice),
                 (profitDto.drivingCostPrice+profitDto.koraCostPrice+profitDto.wavesCostPrice+
                 profitDto.aSeriesCostPrice+profitDto.miratCostPrice+profitDto.handBagCostPrice+profitDto.beltsAndWalletsCostPrice+profitDto.naSalesCostPrice)]);
@@ -147,7 +151,13 @@
             var options = {
               title: 'CLASSIC LEATHERS PERFORMANCE',
               hAxis: {title: 'MONTH',  titleTextStyle: {color: '#333'}},
-              vAxis: {title: 'PURCHASE/SALE COST', minValue: 0}
+              vAxis: {
+                title: 'PURCHASE/SALE COST',
+                viewWindow: {
+                  min: 0,
+                  max: 300000
+                }
+              }
             };
 
             var chart = new google.visualization.AreaChart(document.getElementById('profit_chart'));
@@ -243,7 +253,11 @@
                 title: 'MONTH'
               },
               vAxis: {
-                title: 'TOTAL SALES'
+                title: 'TOTAL SALES',
+                viewWindow: {
+                  min: 0,
+                  max: 80000
+                }
               },
               curveType: 'function',
               legend: { position: 'bottom' }
@@ -341,7 +355,11 @@
                 title: 'MONTH'
               },
               vAxis: {
-                title: 'STEP IN COUNT'
+                title: 'STEP IN COUNT',
+                viewWindow: {
+                  min: 0,
+                  max: 60
+                }
               },
               curveType: 'function',
               legend: { position: 'bottom' }
