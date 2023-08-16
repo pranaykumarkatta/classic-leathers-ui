@@ -1,0 +1,66 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script>
+        var app = angular.module("classicLeathers", []);
+        app.controller("headerController", function($scope) {
+            $scope.name = "User";
+        });
+
+        app.controller("vendorController", function($scope,$http) {
+            $scope.saveVendor = function() {
+                var data={"name": $scope.vendorName, "place": $scope.vendorPlace};
+                var headers = { 'content-type': 'application/json'}
+                $http.post('http://localhost:8080/api/vendorController',data,{})
+                .then(data => {
+                        // data received by server
+                          window.location.reload();
+                })
+                .catch(error => {
+                        console.log(error.value);
+                });
+            };
+
+
+
+            $http({method: 'GET', url: 'http://localhost:8080/api/vendorController'})
+            .then(function successCallback(response) {
+					$scope.vendorList=response.data;
+                },function errorCallback(response) {
+					console.log(error.value);
+                }
+            );
+        });
+
+    </script>
+</head>
+<body ng-app="classicLeathers">
+<div ng-controller="headerController">
+    <p>Dear {{name}}, Welcome to classic leathers...!!</p>
+</div>
+<div ng-controller="vendorController">
+    <H2>Add Vendor</H2>
+    <form name="vendorForm" ng-submit="saveVendor(vendorForm.values)">
+        Vendor Name:<br>
+        <input type="text" ng-model="vendorName"><br>
+        Place:<br>
+        <input type="text" ng-model="vendorPlace">
+        <br><br>
+        <input type="Submit" value="Save"></button>
+    </form>
+    <p>-------------------------------------------------------------------</p>
+    <H2>Existing Vendor</H2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Place</th>
+        </tr>
+        <tr ng-repeat="vendor in vendorList">
+            <td>{{vendor.name}}</td>
+            <td>{{vendor.place}}</td>
+        </tr>
+
+    </table>
+</div>
+</body>
+</html>
