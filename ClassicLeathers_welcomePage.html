@@ -63,7 +63,7 @@
                               "size": $scope.size,
                               "mrp": $scope.mrp,
                               "discount": $scope.discount,
-                              "salePrice": $scope.mrp-$scope.discount,
+                              "salePrice": ($scope.mrp-$scope.discount)*$scope.quantity,
                               "modeOfPayment": $scope.mop,
                               "cashPayment": $scope.cashPayment,
                               "gPayPayment": $scope.gPayPayment,
