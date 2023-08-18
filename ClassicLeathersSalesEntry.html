@@ -153,6 +153,7 @@
                 }else if($scope.updatedBy==null || $scope.updatedBy==""){
                     window.alert("Invalid Updated By");
                 }else{
+                    var dataList = [];
                     for(var i = 0, size = $scope.newSalesList.length; i < size ; i++){
                         var item = $scope.newSalesList[i];
                         var data={"customerName": $scope.customerName,
@@ -174,22 +175,25 @@
                               "stepInType": item.stepInType,
                               "brand": item.brand
                         };
-                        var headers = { 'content-type': 'application/json'}
-                        $http.post('http://localhost:8080/retailSalesReport',data,{})
-                        .then(data => {
-                        })
-                        .catch(error => {
-                                console.log(error.value);
-                        });
+                        dataList.push(data);
                     }
-                    $scope.message="Data Saved Successfully"
+
+                    var headers = { 'content-type': 'application/json'}
+                    $http.post('http://localhost:8080/retailSalesReport',dataList,{})
+                      .then(data => {
+                         $scope.message="Data Saved Successfully"
                             setTimeout(() => {
                                 $scope.getPurchaseEntries();
                             }, 5000);
+                      })
+                      .catch(error => {
+                              console.log(error.value);
+                      });
                 }
         }
 
       });
+
 
 
 
@@ -360,7 +364,37 @@
             </table>
         </div>
 
-
+        <table class="table table-font" ng-show="showPaymentOptions">
+            <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>Total Purchase Value</th>
+                <th>MOP</th>
+                <th>Cash</th>
+                <th>G-Pay</th>
+                <th>Swipe</th>
+                <th>Updated By</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            </tr>
+            <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>{{totalPurchaseValue}}</th>
+                <th>
+                    <select ng-model="mop" ng-options="x for x in mopList"></select>
+                </th>
+                <th><input type="text" ng-model="cashPayment" class="number_input_width"></th>
+                <th><input type="text" ng-model="gPayPayment" class="number_input_width"></th>
+                <th><input type="text" ng-model="swipePayment" class="number_input_width"></th>
+                <th>
+                    <select ng-model="updatedBy" ng-options="x for x in employeeList"></select>
+                </th>
+                <th><input type="button" ng-click="saveSalesEntry()" value="save"
+                           class="text_input_width btn btn-primary">
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            </tr>
+        </table>
         <table class="table table-font" ng-show="showCustomerDetails || showNewSales">
             <tr>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
@@ -397,38 +431,6 @@
                 <td>{{salesEntry.saleDate}}</td>
                 <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
                 <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-            </tr>
-        </table>
-
-        <table class="table table-font" ng-show="showPaymentOptions">
-            <tr>
-                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-                <th>Total Purchase Value</th>
-                <th>MOP</th>
-                <th>Cash</th>
-                <th>G-Pay</th>
-                <th>Swipe</th>
-                <th>Updated By</th>
-                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-            </tr>
-            <tr>
-                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-                <th>{{totalPurchaseValue}}</th>
-                <th>
-                    <select ng-model="mop" ng-options="x for x in mopList"></select>
-                </th>
-                <th><input type="text" ng-model="cashPayment" class="number_input_width"></th>
-                <th><input type="text" ng-model="gPayPayment" class="number_input_width"></th>
-                <th><input type="text" ng-model="swipePayment" class="number_input_width"></th>
-                <th>
-                    <select ng-model="updatedBy" ng-options="x for x in employeeList"></select>
-                </th>
-                <th><input type="button" ng-click="saveSalesEntry()" value="save"
-                           class="text_input_width btn btn-primary">
-                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
             </tr>
         </table>
     </div>

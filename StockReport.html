@@ -10,8 +10,15 @@
     <script>
       var app = angular.module("classicLeathers", []);
       app.controller("retailController", function($scope,$http) {
-      $scope.footWearTypes = ["DRIVING","KORA","WAVES","A_SERIES","HAND BAG","CASUALS","FORMALS","WALLET","JUSTON"];
-      $scope.selectedFootwearType=$scope.footWearTypes[0];
+      $scope.level_0_categories = ["SHOES","SLIPPERS","BAGS","BELTS","WALLET"];
+      $scope.selectedLevel_0_category=$scope.level_0_categories[0];
+
+      $scope.shoe_categories = ["DRIVING","CASUALS","FORMALS"];
+      $scope.slipper_categories = ["KORA","WAVES","A_SERIES","JUSTON"];
+      $scope.all_categories = ["ALL"];
+      $scope.level_1_categories = $scope.shoe_categories;
+      $scope.selectedLevel_1_category=$scope.level_1_categories[0];
+
       $scope.isFootWear=true;
       var drivingStockEntries = [];
       $scope.DrivingShoeFilter="";
@@ -20,33 +27,38 @@
 	  $scope.sizeFilter=$scope.sizes[0];
 
       $scope.filterStock = function(){
+          if($scope.selectedLevel_0_category==$scope.level_0_categories[0]){
+              $scope.level_1_categories = $scope.shoe_categories;
+          }else if($scope.selectedLevel_0_category==$scope.level_0_categories[1]){
+              $scope.level_1_categories = $scope.slipper_categories;
+          }else {
+              $scope.level_1_categories = $scope.all_categories;
+          }
+          $scope.selectedLevel_1_category=$scope.level_1_categories[0];
         $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/driving'})
             .then(function successCallback(response) {
                     $scope.drivingStockEntries=[];
                     var totalDrivingStock=0;
                     var actualDrivingOrderedQuantity=0;
                     for(var i = 0, size = response.data.length; i < size ; i++){
-                        if((response.data[i].sku.includes("LF")&&$scope.selectedFootwearType=="DRIVING")||
-                        (response.data[i].sku.includes("KORA")&&$scope.selectedFootwearType=="KORA")||
-                        (response.data[i].sku.includes("WAVES")&&$scope.selectedFootwearType=="WAVES")||
-                        (response.data[i].sku.includes("018_JUSTON")&&$scope.selectedFootwearType=="JUSTON")||
-                        (response.data[i].sku.includes("A_0")&&$scope.selectedFootwearType=="A_SERIES")||
-                        (response.data[i].sku.includes("CASUAL")&&$scope.selectedFootwearType=="CASUALS")||
-                        (response.data[i].sku.includes("D_")&&$scope.selectedFootwearType=="FORMALS")||
-                        (response.data[i].sku.includes("MIRAT")&&$scope.selectedFootwearType=="FORMALS")||
-                        (response.data[i].sku.includes("FORMAL")&&$scope.selectedFootwearType=="FORMALS")||
-                        (response.data[i].sku.includes("WLT")&&$scope.selectedFootwearType=="WALLET")||
-                        (response.data[i].sku.includes("_BAG")&&$scope.selectedFootwearType=="HAND BAG")){
+                        if((response.data[i].sku.includes("LF")&&$scope.selectedLevel_1_category=="DRIVING"&&$scope.selectedLevel_0_category=="SHOES")||
+                        (response.data[i].sku.includes("CASUAL")&&$scope.selectedLevel_1_category=="CASUALS"&&$scope.selectedLevel_0_category=="SHOES")||
+                        (response.data[i].sku.includes("D_")&&$scope.selectedLevel_1_category=="FORMALS"&&$scope.selectedLevel_0_category=="SHOES")||
+                        (response.data[i].sku.includes("MIRAT")&&$scope.selectedLevel_1_category=="FORMALS"&&$scope.selectedLevel_0_category=="SHOES")||
+                        (response.data[i].sku.includes("FORMAL")&&$scope.selectedLevel_1_category=="FORMALS"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                        (response.data[i].sku.includes("KORA")&&$scope.selectedLevel_1_category=="KORA"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                        (response.data[i].sku.includes("WAVES")&&$scope.selectedLevel_1_category=="WAVES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                        (response.data[i].sku.includes("018_JUSTON")&&$scope.selectedLevel_1_category=="JUSTON"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                        (response.data[i].sku.includes("A_0")&&$scope.selectedLevel_1_category=="A_SERIES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                        (response.data[i].sku.includes("WLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="WALLET")||
+                        (response.data[i].sku.includes("_BAG")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BAGS")){
                             var item = response.data[i];
                             item.showEntry=true;
                             $scope.drivingStockEntries.push(item);
                             totalDrivingStock +=  Number(item.totalQuantity);
                             actualDrivingOrderedQuantity +=  Number(item.actualOrderedQuantity);
                         }
-                        if($scope.selectedFootwearType=="DRIVING"||$scope.selectedFootwearType=="KORA"||
-                        $scope.selectedFootwearType=="WAVES"||$scope.selectedFootwearType=="A_SERIES"||
-                        $scope.selectedFootwearType=="CASUALS"||$scope.selectedFootwearType=="FORMALS"
-                        ||$scope.selectedFootwearType=="JUSTON"){
+                        if($scope.selectedLevel_0_category=="SHOES" || $scope.selectedLevel_0_category=="SLIPPERS"){
                             $scope.isFootWear=true;
                         }else{
                          $scope.isFootWear=false;
@@ -122,6 +134,8 @@
 
 
 
+
+
     </script>
 </head>
 <body class="classicTheamColor" ng-app="classicLeathers">
@@ -138,13 +152,15 @@
     </div>
 </div>
 <div ng-controller="retailController" class="working_div container">
-    <p> Select Category : <select class="btn btn-primary" ng-model="selectedFootwearType"
-                                  ng-options="x for x in footWearTypes" ng-change="filterStock()"></select>
+    <p> Select Category : <select class="btn btn-primary" ng-model="selectedLevel_0_category"
+                                  ng-options="x for x in level_0_categories" ng-change="filterStock()"></select>
+        <select class="btn btn-primary" ng-model="selectedLevel_1_category"
+                ng-options="x for x in level_1_categories" ng-change="filterStock()"></select>
         Search by SKU / Leather: &nbsp <Input type="text" ng-model="DrivingShoeFilter" ng-change="updateTotalCount()"
                                               placeholder="BRAND SKU LEATHER">
         &nbsp&nbsp&nbsp<label>
             &nbsp Size : &nbsp <select ng-model="sizeFilter"
-                    ng-options="x for x in sizes" ng-change="updateTotalCount()"></select>
+                                       ng-options="x for x in sizes" ng-change="updateTotalCount()"></select>
             &nbsp&nbsp&nbsp
             Number Of Pairs Sold : &nbsp{{actualDrivingOrderedQuantity-totalDrivingStock}}</label></p>
     <table class="table table-font stockTable" ng-show="isFootWear">
@@ -167,42 +183,50 @@
             <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.brand}}</td>
             <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.sku}}</td>
             <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.leather}}</td>
-            <td ng-show="drivingStockEntry.showEntry" ng-style="{'background-color': (drivingStockEntry.size_40_quantity<2)?'#ffcccc':((drivingStockEntry.size_40_quantity>=3)?'#62de6f':none)}">
+            <td ng-show="drivingStockEntry.showEntry"
+                ng-style="{'background-color': (drivingStockEntry.size_40_quantity<2)?'#ffcccc':((drivingStockEntry.size_40_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_40_SalesStockInfo}}">
                     {{drivingStockEntry.size_40_quantity}}
                 </div>
             </td>
-            <td ng-show="drivingStockEntry.showEntry" ng-style="{'background-color': (drivingStockEntry.size_41_quantity<2)?'#ffcccc':((drivingStockEntry.size_41_quantity>=3)?'#62de6f':none)}">
+            <td ng-show="drivingStockEntry.showEntry"
+                ng-style="{'background-color': (drivingStockEntry.size_41_quantity<2)?'#ffcccc':((drivingStockEntry.size_41_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_41_SalesStockInfo}}">
                     {{drivingStockEntry.size_41_quantity}}
                 </div>
             </td>
-            <td ng-show="drivingStockEntry.showEntry" ng-style="{'background-color': (drivingStockEntry.size_42_quantity<2)?'#ffcccc':((drivingStockEntry.size_42_quantity>=3)?'#62de6f':none)}">
+            <td ng-show="drivingStockEntry.showEntry"
+                ng-style="{'background-color': (drivingStockEntry.size_42_quantity<2)?'#ffcccc':((drivingStockEntry.size_42_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_42_SalesStockInfo}}">
                     {{drivingStockEntry.size_42_quantity}}
                 </div>
             </td>
-            <td ng-show="drivingStockEntry.showEntry" ng-style="{'background-color': (drivingStockEntry.size_43_quantity<2)?'#ffcccc':((drivingStockEntry.size_43_quantity>=3)?'#62de6f':none)}">
+            <td ng-show="drivingStockEntry.showEntry"
+                ng-style="{'background-color': (drivingStockEntry.size_43_quantity<2)?'#ffcccc':((drivingStockEntry.size_43_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_43_SalesStockInfo}}">
                     {{drivingStockEntry.size_43_quantity}}
                 </div>
             </td>
-            <td ng-show="drivingStockEntry.showEntry" ng-style="{'background-color': (drivingStockEntry.size_44_quantity<2)?'#ffcccc':((drivingStockEntry.size_44_quantity>=3)?'#62de6f':none)}">
+            <td ng-show="drivingStockEntry.showEntry"
+                ng-style="{'background-color': (drivingStockEntry.size_44_quantity<2)?'#ffcccc':((drivingStockEntry.size_44_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_44_SalesStockInfo}}">
                     {{drivingStockEntry.size_44_quantity}}
                 </div>
             </td>
-            <td ng-show="drivingStockEntry.showEntry" ng-style="{'background-color': (drivingStockEntry.size_45_quantity<2)?'#ffcccc':((drivingStockEntry.size_45_quantity>=3)?'#62de6f':none)}">
+            <td ng-show="drivingStockEntry.showEntry"
+                ng-style="{'background-color': (drivingStockEntry.size_45_quantity<2)?'#ffcccc':((drivingStockEntry.size_45_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_45_SalesStockInfo}}">
                     {{drivingStockEntry.size_45_quantity}}
                 </div>
             </td>
-            <td ng-show="drivingStockEntry.showEntry" ng-style="{'background-color': (drivingStockEntry.size_46_quantity<2)?'#ffcccc':((drivingStockEntry.size_46_quantity>=3)?'#62de6f':none)}">
+            <td ng-show="drivingStockEntry.showEntry"
+                ng-style="{'background-color': (drivingStockEntry.size_46_quantity<2)?'#ffcccc':((drivingStockEntry.size_46_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_46_SalesStockInfo}}">
                     {{drivingStockEntry.size_46_quantity}}
                 </div>
             </td>
-            <td ng-show="drivingStockEntry.showEntry" ng-style="{'background-color': (drivingStockEntry.size_47_quantity<2)?'#ffcccc':((drivingStockEntry.size_47_quantity>=3)?'#62de6f':none)}">
+            <td ng-show="drivingStockEntry.showEntry"
+                ng-style="{'background-color': (drivingStockEntry.size_47_quantity<2)?'#ffcccc':((drivingStockEntry.size_47_quantity>=3)?'#62de6f':none)}">
                 <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_47_SalesStockInfo}}">
                     {{drivingStockEntry.size_47_quantity}}
                 </div>
