@@ -39,6 +39,10 @@
     padding:2px;
   }
 
+  .table tbody tr th p{
+    width:130px;
+  }
+
   .table tr th select {
     height: 23.14px;
   }
@@ -95,6 +99,7 @@
     border-radius: 10px;
     border:3px solid;
     margin: -10% 20%;
+    overflow-y: scroll;
 }
   .popUp_font {
     font-size:15px;

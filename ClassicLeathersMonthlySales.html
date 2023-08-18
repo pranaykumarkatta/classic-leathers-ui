@@ -11,81 +11,6 @@
       var app = angular.module("classicLeathers", []);
       app.controller("retailController", function($scope,$http) {
 <!----------------------------------------SALES----------------------------------------------------------------------------->
-            $scope.genderList = ["MALE", "FEMALE"];
-            $scope.categoryList = ["NA","LFXOT01","LFXOT02","LFXOT03","LFXOT04","LFXOT05","LFXOT06","LFXOT07","LFXOT08","LFBIN03","LFBOT01","LFBOT02","LFPOT01","MIRAT-3","MIRAT-5","LFBOTS02B","LFBOTS02B","LFBOTS02B","LFBOTS-CHT","LFBOTS-CHT","LFBOTS-TAS","LFBOTS-01B","LFBOTS-01B","LFBOTS-01B","LFBOTS02B","S1","S2","WAVES_3","WAVES_4","WAVES_5","WAVES_6","WAVES_7","WAVES_7R","WAVES_8","WAVES_9","WAVES_10","WAVES_11","WAVES_12","WAVES_13","WAVES_14","A_01","A_02","A_03","KORA_V","KORA_C","D_21","D_1","D_2","D_3","WLT_5","WLT_6","WLT_7","WLT_8","WLT_9","WLT_10","BLT5","BLT6","BLT7","BLT8","BLT9","LA_BAG_3","LA_BAG_4","LA_BAG_5","LH_BAG_1","LH_BAG_2","LH_BAG_3","LH_BAG_4","LH_BAG_5","OTTO SINGLE","OTTO WEEKLY","CASUAL_BAR","018_JUSTON"];
-            $scope.brandList = ["99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","CAT","BAR","GENUINE LEATHER"];
-            $scope.stepInTypeList = ["WALK IN","REFERRAL","INSTAGRAM","EXISTING CUSTOMER"];
-            $scope.leatherList = ["NA","BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","BLUE","GENUINE LEATHER","NAVY BLUE SUDE","BOTTLE GREEN SUDE","MOCHA GREEN SUDE","MAROON SUDE"];
-            $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
-            $scope.mopList = ["CASH","G-PAY","SWIPE"];
-            $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
-            $scope.saveSalesEntry = function() {
-                if($scope.customerName==null || $scope.customerName==""){
-                    window.alert("Invalid Customer");
-                }else if($scope.gender==null || $scope.gender==""){
-                    window.alert("Invalid Gender");
-                }else if($scope.mobileNumber==null || $scope.mobileNumber==""||$scope.mobileNumber.length <10){
-                    window.alert("Invalid mobileNumber");
-                }else if($scope.brand==null || $scope.brand==""){
-                    window.alert("Invalid Brand");
-                }else if($scope.stepInType==null || $scope.stepInType==""){
-                    window.alert("Invalid Step In Type");
-                }else if($scope.category==null || $scope.category==""){
-                    window.alert("Invalid Category");
-                }else if($scope.leather==null || $scope.leather==""){
-                    window.alert("Invalid leather");
-                }else if($scope.productDetails==null || $scope.productDetails==""){
-                    window.alert("Invalid Product Details");
-                }else if($scope.quantity==null || $scope.quantity==""){
-                    window.alert("Invalid Quantity");
-                }else if($scope.size==null || $scope.size==""){
-                    window.alert("Invalid Size");
-                }else if($scope.mrp==null || $scope.mrp==""){
-                    window.alert("Invalid MRP");
-                }else if($scope.discount==null || $scope.discount==""){
-                    window.alert("Invalid Discount");
-                }else if($scope.mop==null || $scope.mop==""){
-                    window.alert("Invalid MOP");
-                }else if($scope.cashPayment==null || $scope.cashPayment==""){
-                    window.alert("Invalid Cash");
-                }else if($scope.gPayPayment==null || $scope.gPayPayment==""){
-                    window.alert("Invalid G-Pay");
-                }else if($scope.swipePayment==null || $scope.swipePayment==""){
-                    window.alert("Invalid Swipe");
-                }else if($scope.updatedBy==null || $scope.updatedBy==""){
-                    window.alert("Invalid Updated By");
-                }else{
-                    var data={"customerName": $scope.customerName,
-                              "gender": $scope.gender,
-                              "mobileNumber": $scope.mobileNumber,
-                              "productDetails": $scope.productDetails,
-                              "quantity": $scope.quantity,
-                              "size": $scope.size,
-                              "mrp": $scope.mrp,
-                              "discount": $scope.discount,
-                              "salePrice": ($scope.mrp-$scope.discount)*$scope.quantity,
-                              "modeOfPayment": $scope.mop,
-                              "cashPayment": $scope.cashPayment,
-                              "gPayPayment": $scope.gPayPayment,
-                              "swipePayment": $scope.swipePayment,
-                              "updatedBy": $scope.updatedBy,
-                              "category": $scope.category,
-                              "leather": $scope.leather,
-                              "stepInType": $scope.stepInType,
-                              "brand": $scope.brand
-                    };
-                    var headers = { 'content-type': 'application/json'}
-                    $http.post('http://localhost:8080/retailSalesReport',data,{})
-                    .then(data => {
-                            // data received by server
-                              window.location.reload();
-                    })
-                    .catch(error => {
-                            console.log(error.value);
-                    });
-                }
-            };
-
             $scope.isPopUpVisible=false;
             $scope.showSalesEntry = function(salesEntry){
                 $scope.isPopUpVisible=true;
@@ -221,62 +146,23 @@
         <tr>
             <th>Customer Name</th>
             <th>Gender</th>
-            <th>Mobile Number</th>
-            <th>Step In Type</th>
-            <th>Brand</th>
-            <th>Category</th>
-            <th>Leather</th>
-            <th>Product Details</th>
+            <th>Mobile_Number</th>
+            <th><p>Step In Type</p></th>
+            <th><p>Brand</p></th>
+            <th><p>Category</p></th>
+            <th><p>Leather</p></th>
+            <th><p>Product Details</p></th>
             <th>Quantity</th>
             <th>Size</th>
             <th>MRP</th>
             <th>Discount</th>
-            <th>Sale Price</th>
+            <th>Sale_Price</th>
             <th>MOP</th>
             <th>Cash</th>
-            <th>G-Pay</th>
+            <th>GPay</th>
             <th>Swipe</th>
-            <th>Updated By</th>
-            <th>Date</th>
-        </tr>
-        <tr>
-            <th><input type="text" ng-model="customerName" class="text_input_width"></th>
-            <th>
-                <select ng-model="gender" ng-options="x for x in genderList"></select>
-            </th>
-            <th><input type="text" ng-model="mobileNumber" class="text_input_width"></th>
-            <th>
-                <select ng-model="stepInType" ng-options="x for x in stepInTypeList"></select>
-            </th>
-            <th>
-                <select ng-model="brand" ng-options="x for x in brandList"></select>
-            </th>
-            <th>
-                <select ng-model="category" ng-options="x for x in categoryList"></select>
-            </th>
-            <th>
-                <select ng-model="leather" ng-options="x for x in leatherList"></select>
-            </th>
-            <th><input type="text" ng-model="productDetails" class="text_input_width"></th>
-            <th><input type="text" ng-model="quantity" class="number_input_width"></th>
-            <th>
-                <select ng-model="size" ng-options="x for x in sizeList"></select>
-            </th>
-            <th><input type="text" ng-model="mrp" class="number_input_width"></th>
-            <th><input type="text" ng-model="discount" class="number_input_width"></th>
-            <th><span>{{quantity*mrp-discount}} </span></th>
-            <th>
-                <select ng-model="mop" ng-options="x for x in mopList"></select>
-            </th>
-            <th><input type="text" ng-model="cashPayment" class="number_input_width"></th>
-            <th><input type="text" ng-model="gPayPayment" class="number_input_width"></th>
-            <th><input type="text" ng-model="swipePayment" class="number_input_width"></th>
-            <th>
-                <select ng-model="updatedBy" ng-options="x for x in employeeList"></select>
-            </th>
-            <th><input type="button" ng-click="saveSalesEntry()" value="save"
-                       class="text_input_width btn btn-primary">
-            </th>
+            <th>Updated_By</th>
+            <th><p>Date</p></th>
         </tr>
         <tr ng-repeat="salesEntry in salesEntryList | filter : salesEntryFilter "
             ng-style="{'background-color': (salesEntry.isTodaySale=='true') ? '#ffffff':null,

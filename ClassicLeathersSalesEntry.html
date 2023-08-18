@@ -7,6 +7,240 @@
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/body.css">
     <script>
+      var app = angular.module("classicLeathers", []);
+      app.controller("newSaleController", function($scope,$http) {
+        $scope.genderList = ["MALE", "FEMALE"];
+        $scope.stepInTypeList = ["WALK IN","REFERRAL","INSTAGRAM","EXISTING CUSTOMER"];
+        $scope.categoryList = ["NA","LFXOT01","LFXOT02","LFXOT03","LFXOT04","LFXOT05","LFXOT06","LFXOT07","LFXOT08","LFBIN03","LFBOT01","LFBOT02","LFPOT01","MIRAT-3","MIRAT-5","3300_LASE_FORMAL","2200_LASE_FORMAL","502_CUT_FORMAL","TPR_MIRAT-5_SQUIRE","TPR_MIRAT-5","LFBOTS02B","LFBOTS02B","LFBOTS02B","LFBOTS-CHT","LFBOTS-CHT","LFBOTS-TAS","LFBOTS-01B","LFBOTS-01B","LFBOTS-01B","LFBOTS02B","S1","S2","WAVES_3","WAVES_4","WAVES_5","WAVES_6","WAVES_7","WAVES_7R","WAVES_8","WAVES_9","WAVES_10","WAVES_11","WAVES_12","WAVES_13","WAVES_14","A_01","A_02","A_03","KORA_V","KORA_C","D_21","D_1","D_2","D_3","WLT_5","WLT_6","WLT_7","WLT_8","WLT_9","WLT_10","BLT5","BLT6","BLT7","BLT8","BLT9","LA_BAG_3","LA_BAG_4","LA_BAG_5","LH_BAG_1","LH_BAG_2","LH_BAG_3","LH_BAG_4","LH_BAG_5","OTTO SINGLE","OTTO WEEKLY","CASUAL_BAR","018_JUSTON"];
+        $scope.brandList = ["99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","CAT","BAR","GENUINE LEATHER","OTTO","CROCS"];
+        $scope.leatherList = ["NA","BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","BLUE","GENUINE LEATHER","NAVY BLUE SUDE","BOTTLE GREEN SUDE","MOCHA GREEN SUDE","MAROON SUDE"];
+        $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
+        $scope.mopList = ["CASH","G-PAY","SWIPE"];
+        $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
+        $scope.customerName="";
+        $scope.showCustomerDetails = false;
+        $scope.isNewCustomer = false;
+        $scope.stepInType="";
+        $scope.newSalesList=[];
+        $scope.showNewSales=false;
+        $scope.isPopUpVisible=false;
+        $scope.discount="0";
+        $scope.totalPurchaseValue=0;
+        $scope.showPaymentOptions = false;
+        $scope.getPurchaseEntries = function(){
+            $scope.newSalesList=[];
+            $scope.mop="";
+            $scope.cashPayment="";
+            $scope.gPayPayment="";
+            $scope.swipePayment="";
+            $scope.updatedBy="";
+            $scope.message="";
+            if($scope.mobileNumber.length==10 &&  /^\d+$/.test($scope.mobileNumber)){
+                $http({method: 'GET', url: 'http://localhost:8080/retailCustomerSales?mobileNumber='+$scope.mobileNumber})
+                .then(function successCallback(response) {
+                    $scope.showCustomerDetails = false;
+                    $scope.salesHistoryList=response.data;
+                    if($scope.salesHistoryList.length==0){
+                        $scope.stepInType="WALK IN";
+                        $scope.isNewCustomer = true;
+                        $scope.showNewSales=false;
+                        $scope.customerName="";
+                        $scope.gender="";
+                    }else{
+                        $scope.stepInType="EXISTING CUSTOMER";
+                        $scope.showNewSales=true;
+                        $scope.isNewCustomer = false;
+                    }
+                    $scope.removeDuplicates = function() {
+                       return response.data.filter((value, index, self) =>
+                          index === self.findIndex((t) => (
+                            t.mobileNumber === value.mobileNumber))
+                        )
+                    }
+					var uniqueSalesHistory=$scope.removeDuplicates();
+					if(uniqueSalesHistory.length>1){
+					    window.alert("Multiple customers found");
+					}
+					if(uniqueSalesHistory.length==1){
+                        $scope.showCustomerDetails = true;
+                        $scope.customerName=uniqueSalesHistory[0].customerName;
+                        $scope.gender=uniqueSalesHistory[0].gender;
+                        $scope.loyaltyPoints=50;
+                    } else {
+                        $scope.loyaltyPoints=0;
+                    }
+                },function errorCallback(response) {
+					console.log(error.value);
+                });
+            }else{
+                window.alert("Please enter 10 digit mobile number");
+                $scope.showCustomerDetails = false;
+            }
+        }
+        $scope.hidePopUp = function(){
+               $scope.isPopUpVisible=false;
+        };
+        $scope.addSalesEntry = function(){
+            if($scope.customerName==null || $scope.customerName==""){
+                    window.alert("Invalid Name");
+                }else if($scope.gender==null || $scope.gender==""){
+                    window.alert("Invalid Gender");
+                }else{
+                    $scope.isPopUpVisible=true;
+                }
+        }
+
+        $scope.addProduct = function(){
+                $scope.showPaymentOptions = true;
+                if($scope.brand==null || $scope.brand==""){
+                    window.alert("Invalid Brand");
+                }else if($scope.stepInType==null || $scope.stepInType==""){
+                    window.alert("Invalid Step In Type");
+                }else if($scope.category==null || $scope.category==""){
+                    window.alert("Invalid Category");
+                }else if($scope.leather==null || $scope.leather==""){
+                    window.alert("Invalid leather");
+                }else if($scope.productDetails==null || $scope.productDetails==""){
+                    window.alert("Invalid Product Details");
+                }else if($scope.quantity==null || $scope.quantity==""){
+                    window.alert("Invalid Quantity");
+                }else if($scope.size==null || $scope.size==""){
+                    window.alert("Invalid Size");
+                }else if($scope.mrp==null || $scope.mrp==""){
+                    window.alert("Invalid MRP");
+                }else if($scope.discount==null || $scope.discount==""){
+                    window.alert("Invalid Discount");
+                }else{
+                     $scope.newSalesList.push({"customerName": $scope.customerName,
+                                      "gender": $scope.gender,
+                                      "mobileNumber": $scope.mobileNumber,
+                                      "productDetails": $scope.productDetails,
+                                      "quantity": $scope.quantity,
+                                      "size": $scope.size,
+                                      "mrp": $scope.mrp,
+                                      "discount": $scope.discount,
+                                      "salePrice": ($scope.mrp-$scope.discount)*$scope.quantity,
+                                      "category": $scope.category,
+                                      "leather": $scope.leather,
+                                      "stepInType": $scope.stepInType,
+                                      "brand": $scope.brand
+                                      });
+                     $scope.totalPurchaseValue+=($scope.mrp-$scope.discount)*$scope.quantity;
+                     $scope.showNewSales=true;
+                     $scope.brand="";
+                     $scope.category="";
+                     $scope.leather="";
+                     $scope.productDetails="";
+                     $scope.quantity="";
+                     $scope.size="";
+                     $scope.mrp="";
+                     $scope.discount="0";
+                }
+                $scope.hidePopUp();
+        }
+        $scope.saveSalesEntry = function(){
+                $scope.showPaymentOptions = false;
+                if($scope.newSalesList.length<1){
+                    window.alert("New sales not recorded");
+                }else if($scope.mop==null || $scope.mop==""){
+                    window.alert("Invalid MOP");
+                }else if($scope.cashPayment==null || $scope.cashPayment==""){
+                    window.alert("Invalid Cash");
+                }else if($scope.gPayPayment==null || $scope.gPayPayment==""){
+                    window.alert("Invalid G-Pay");
+                }else if($scope.swipePayment==null || $scope.swipePayment==""){
+                    window.alert("Invalid Swipe");
+                }else if($scope.updatedBy==null || $scope.updatedBy==""){
+                    window.alert("Invalid Updated By");
+                }else{
+                    for(var i = 0, size = $scope.newSalesList.length; i < size ; i++){
+                        var item = $scope.newSalesList[i];
+                        var data={"customerName": $scope.customerName,
+                              "gender": $scope.gender,
+                              "mobileNumber": $scope.mobileNumber,
+                              "productDetails": item.productDetails,
+                              "quantity": item.quantity,
+                              "size": item.size,
+                              "mrp": item.mrp,
+                              "discount": item.discount,
+                              "salePrice": (item.mrp-$scope.discount)*item.quantity,
+                              "modeOfPayment": $scope.mop,
+                              "cashPayment": $scope.cashPayment,
+                              "gPayPayment": $scope.gPayPayment,
+                              "swipePayment": $scope.swipePayment,
+                              "updatedBy": $scope.updatedBy,
+                              "category": item.category,
+                              "leather": item.leather,
+                              "stepInType": item.stepInType,
+                              "brand": item.brand
+                        };
+                        var headers = { 'content-type': 'application/json'}
+                        $http.post('http://localhost:8080/retailSalesReport',data,{})
+                        .then(data => {
+                        })
+                        .catch(error => {
+                                console.log(error.value);
+                        });
+                    }
+                    $scope.message="Data Saved Successfully"
+                            setTimeout(() => {
+                                $scope.getPurchaseEntries();
+                            }, 5000);
+                }
+        }
+
+      });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </script>
 </head>
 <body class="classicTheamColor" ng-app="classicLeathers">
@@ -19,6 +253,184 @@
         <a href=".\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
         <a href=".\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
         <a href=".\StockReport.html" class="btn btn-primary">Stock</a>
+    </div>
+</div>
+<div ng-controller="newSaleController" class="working_div container">
+    <div>
+        <p>CUSTOMER LOOKUP</p>
+        <table class="table table-font">
+            <tr>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>
+                    <label>Mobile Number </label>
+                    <input type="text" ng-model="mobileNumber" class="text_input_width" maxlength="10">
+                </td>
+                <td>
+                    <input type="button" ng-click="getPurchaseEntries()" value="Get Purchase History"
+                           class="btn btn-primary">
+                </td>
+                <td colspan="2">
+                    <h5><b>{{message}}</b></h5>
+                </td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+            </tr>
+            <tr ng-show="showCustomerDetails">
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>Mobile : <label>{{mobileNumber}}</label></td>
+                <td>Name : <label>{{customerName}}</label></td>
+                <td>Gender : <label>{{gender}}</label></td>
+                <td>Loyalty Point : <label> {{loyaltyPoints}} </label></td>
+                <td>
+                    <input type="button" ng-click="addSalesEntry()" value="Add Product"
+                           class="btn btn-primary">
+                </td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+            </tr>
+            <tr ng-show="isNewCustomer">
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>Mobile : <label>{{mobileNumber}}</label></td>
+                <td>Name : <input type="text" ng-model="customerName" class="text_input_width">
+                <td>Gender : <select ng-model="gender" ng-options="x for x in genderList"
+                                     style="width: 75px"></select></td>
+                <td>Loyalty Point : <label> {{loyaltyPoints}} </label></td>
+                <td>
+                    <input type="button" ng-click="addSalesEntry()" value="Add Product"
+                           class="btn btn-primary">
+                </td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+            </tr>
+        </table>
+        <div class="popUp_div" ng-show="isPopUpVisible">
+            <table class="table table-font" ng-show="showCustomerDetails || isNewCustomer">
+                <tr>
+                    <th>Step In Type</th>
+                    <th><select ng-model="stepInType" ng-options="x for x in stepInTypeList"></select></th>
+                <tr>
+                    <th>Brand</th>
+                    <th><select ng-model="brand" ng-options="x for x in brandList"></select></th>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <th><select ng-model="category" ng-options="x for x in categoryList"></select></th>
+                </tr>
+                <tr>
+                    <th>Leather</th>
+                    <th><select ng-model="leather" ng-options="x for x in leatherList"></select></th>
+                </tr>
+                <tr>
+                    <th>Product Details</th>
+                    <th><input type="text" ng-model="productDetails" class="text_input_width"></th>
+                </tr>
+                <tr>
+                    <th>Quantity</th>
+                    <th><input type="text" ng-model="quantity" class="number_input_width"></th>
+                </tr>
+                <tr>
+                    <th>Size</th>
+                    <th><select ng-model="size" ng-options="x for x in sizeList"></select></th>
+                </tr>
+                <tr>
+                    <th>MRP</th>
+                    <th><input type="text" ng-model="mrp" class="number_input_width"></th>
+                </tr>
+                <tr>
+                    <th>Discount</th>
+                    <th><input type="text" ng-model="discount" value="0" class="number_input_width"></th>
+                </tr>
+                <tr>
+                    <th>Sale Price</th>
+                    <th>
+                        <span>{{quantity*mrp-discount}} </span>
+                        <input style="float:right;" type="button" ng-click="hidePopUp()" value="Close"
+                               class="btn btn-primary">
+                        <input style="float:right; margin-right: 5px;" type="button" ng-click="addProduct()"
+                               value="Add" class="btn btn-primary">
+                    </th>
+                </tr>
+            </table>
+        </div>
+
+
+        <table class="table table-font" ng-show="showCustomerDetails || showNewSales">
+            <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>Customer Name</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Leather</th>
+                <th>Purchase Value</th>
+                <th>Sale Date</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            </tr>
+            <tr ng-repeat="salesEntry in newSalesList" style="background-color:white">
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>{{salesEntry.customerName}}</td>
+                <td>{{salesEntry.brand}}</td>
+                <td>{{salesEntry.category}}</td>
+                <td>{{salesEntry.leather}}</td>
+                <td>{{salesEntry.salePrice}}</td>
+                <td>{{salesEntry.saleDate}}</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+            </tr>
+            <tr ng-repeat="salesEntry in salesHistoryList">
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>{{salesEntry.customerName}}</td>
+                <td>{{salesEntry.brand}}</td>
+                <td>{{salesEntry.category}}</td>
+                <td>{{salesEntry.leather}}</td>
+                <td>{{salesEntry.salePrice}}</td>
+                <td>{{salesEntry.saleDate}}</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+            </tr>
+        </table>
+
+        <table class="table table-font" ng-show="showPaymentOptions">
+            <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>Total Purchase Value</th>
+                <th>MOP</th>
+                <th>Cash</th>
+                <th>G-Pay</th>
+                <th>Swipe</th>
+                <th>Updated By</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            </tr>
+            <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>{{totalPurchaseValue}}</th>
+                <th>
+                    <select ng-model="mop" ng-options="x for x in mopList"></select>
+                </th>
+                <th><input type="text" ng-model="cashPayment" class="number_input_width"></th>
+                <th><input type="text" ng-model="gPayPayment" class="number_input_width"></th>
+                <th><input type="text" ng-model="swipePayment" class="number_input_width"></th>
+                <th>
+                    <select ng-model="updatedBy" ng-options="x for x in employeeList"></select>
+                </th>
+                <th><input type="button" ng-click="saveSalesEntry()" value="save"
+                           class="text_input_width btn btn-primary">
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            </tr>
+        </table>
     </div>
 </div>
 </body>

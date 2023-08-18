@@ -31,9 +31,10 @@
                         (response.data[i].sku.includes("WAVES")&&$scope.selectedFootwearType=="WAVES")||
                         (response.data[i].sku.includes("018_JUSTON")&&$scope.selectedFootwearType=="JUSTON")||
                         (response.data[i].sku.includes("A_0")&&$scope.selectedFootwearType=="A_SERIES")||
-                        (response.data[i].sku.includes("MIRAT")&&$scope.selectedFootwearType=="CASUALS")||
                         (response.data[i].sku.includes("CASUAL")&&$scope.selectedFootwearType=="CASUALS")||
                         (response.data[i].sku.includes("D_")&&$scope.selectedFootwearType=="FORMALS")||
+                        (response.data[i].sku.includes("MIRAT")&&$scope.selectedFootwearType=="FORMALS")||
+                        (response.data[i].sku.includes("FORMAL")&&$scope.selectedFootwearType=="FORMALS")||
                         (response.data[i].sku.includes("WLT")&&$scope.selectedFootwearType=="WALLET")||
                         (response.data[i].sku.includes("_BAG")&&$scope.selectedFootwearType=="HAND BAG")){
                             var item = response.data[i];
