@@ -35,6 +35,9 @@
               $scope.level_1_categories = $scope.all_categories;
           }
           $scope.selectedLevel_1_category=$scope.level_1_categories[0];
+          $scope.filterStock1();
+      }
+      $scope.filterStock1 = function(){
         $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/driving'})
             .then(function successCallback(response) {
                     $scope.drivingStockEntries=[];
@@ -155,7 +158,7 @@
     <p> Select Category : <select class="btn btn-primary" ng-model="selectedLevel_0_category"
                                   ng-options="x for x in level_0_categories" ng-change="filterStock()"></select>
         <select class="btn btn-primary" ng-model="selectedLevel_1_category"
-                ng-options="x for x in level_1_categories" ng-change="filterStock()"></select>
+                ng-options="x for x in level_1_categories" ng-change="filterStock1()"></select>
         Search by SKU / Leather: &nbsp <Input type="text" ng-model="DrivingShoeFilter" ng-change="updateTotalCount()"
                                               placeholder="BRAND SKU LEATHER">
         &nbsp&nbsp&nbsp<label>
