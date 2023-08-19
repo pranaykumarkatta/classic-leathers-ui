@@ -11,8 +11,9 @@
       app.controller("newSaleController", function($scope,$http) {
         $scope.genderList = ["MALE", "FEMALE"];
         $scope.stepInTypeList = ["WALK IN","REFERRAL","INSTAGRAM","EXISTING CUSTOMER"];
+        $scope.level_0_category = ["SHOES","SLIPPERS","BAGS","BELTS","WALLETS"];
         $scope.categoryList = ["NA","LFXOT01","LFXOT02","LFXOT03","LFXOT04","LFXOT05","LFXOT06","LFXOT07","LFXOT08","LFBIN03","LFBOT01","LFBOT02","LFPOT01","LFPOT08","MIRAT-3","MIRAT-5","3300_LASE_FORMAL","2200_LASE_FORMAL","502_CUT_FORMAL","TPR_MIRAT-5_SQUIRE","TPR_MIRAT-5","LFBOTS02B","LFBOTS02B","LFBOTS02B","LFBOTS-CHT","LFBOTS-CHT","LFBOTS-TAS","LFBOTS-01B","LFBOTS-01B","LFBOTS-01B","LFBOTS02B","S1","S2","WAVES_3","WAVES_4","WAVES_5","WAVES_6","WAVES_7","WAVES_7R","WAVES_8","WAVES_9","WAVES_10","WAVES_11","WAVES_12","WAVES_13","WAVES_14","A_01","A_02","A_03","KORA_V","KORA_C","D_21","D_1","D_2","D_3","WLT_5","WLT_6","WLT_7","WLT_8","WLT_9","WLT_10","BLT5","BLT6","BLT7","BLT8","BLT9","LA_BAG_3","LA_BAG_4","LA_BAG_5","LH_BAG_1","LH_BAG_2","LH_BAG_3","LH_BAG_4","LH_BAG_5","OTTO SINGLE","OTTO WEEKLY","CASUAL_BAR","018_JUSTON"];
-        $scope.brandList = ["99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","CAT","BAR","GENUINE LEATHER","OTTO","CROCS"];
+        $scope.brandList = ["99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","CAT","BAR","GENUINE LEATHER","OTTO","CROCS","SERVICE"];
         $scope.leatherList = ["NA","BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","BLUE","GENUINE LEATHER","NAVY BLUE SUDE","BOTTLE GREEN SUDE","MOCHA GREEN SUDE","MAROON SUDE"];
         $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
         $scope.mopList = ["CASH","G-PAY","SWIPE"];
@@ -27,6 +28,65 @@
         $scope.discount="0";
         $scope.totalPurchaseValue=0;
         $scope.showPaymentOptions = false;
+        $scope.availabilityMap = "";
+
+        $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/availability'})
+            .then(function successCallback(response) {
+                    $scope.availabilityMap =response.data;
+                    $scope.level_0_category=[];
+                    $scope.level_1_category=[];
+                    $scope.skuList=[];
+                    $scope.brand=$scope.brandList[0];
+                    if($scope.brandList.length>0){
+                        $scope.level_0_category = $scope.availabilityMap[$scope.brandList[0]];
+                        $scope.level_1_category = [];
+                        $scope.skuList = [];
+                        $scope.colorList = [];
+                    }
+                },function errorCallback(response) {
+                    console.log(error.value);
+                }
+       );
+
+       $scope.updateLevel_0_CategoryList = function(){
+            $scope.level_0_category = $scope.availabilityMap[$scope.brand];
+            $scope.level_1_category = [];
+            $scope.skuList = [];
+            $scope.colorList = [];
+            if($scope.level_0_category[0]==$scope.brandList[8]||$scope.level_0_category[0]==$scope.brandList[9]){
+                $scope.level_1_category = $scope.availabilityMap[$scope.brand];
+                $scope.skuList = $scope.availabilityMap[$scope.brand];
+                $scope.colorList = $scope.availabilityMap[$scope.brand];
+                $scope.selected_level_0_category = $scope.availabilityMap[$scope.brand][0];
+                $scope.selected_level_1_category = $scope.availabilityMap[$scope.brand][0];;
+                $scope.category = $scope.availabilityMap[$scope.brand][0];;
+                $scope.leather = $scope.availabilityMap[$scope.brand][0];;
+            }
+
+       }
+       $scope.updateLevel_1_CategoryList = function(){
+            if($scope.selected_level_0_category!=null && $scope.selected_level_0_category!=""){
+                $scope.level_1_category = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category];
+                $scope.skuList = [];
+                $scope.colorList = [];
+            }
+       }
+       $scope.updateSkuList = function(){
+            if($scope.selected_level_1_category!=null && $scope.selected_level_1_category!=""){
+                $scope.skuList = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category];
+                $scope.colorList = [];
+            }
+       }
+       $scope.updateColorList = function(){
+            if($scope.skuList!=null && $scope.skuList!=""){
+                $scope.colorList = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category+"_"+$scope.category];
+            }
+       }
+
+
+
         $scope.getPurchaseEntries = function(){
             $scope.newSalesList=[];
             $scope.mop="";
@@ -245,6 +305,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     </script>
 </head>
 <body class="classicTheamColor" ng-app="classicLeathers">
@@ -321,15 +393,37 @@
                     <th><select ng-model="stepInType" ng-options="x for x in stepInTypeList"></select></th>
                 <tr>
                     <th>Brand</th>
-                    <th><select ng-model="brand" ng-options="x for x in brandList"></select></th>
+                    <th>
+                        <select ng-model="brand" ng-change="updateLevel_0_CategoryList()">
+                            <option ng-repeat="x in brandList">{{x}}</option>
+                        </select>
+                    </th>
                 </tr>
                 <tr>
                     <th>Category</th>
-                    <th><select ng-model="category" ng-options="x for x in categoryList"></select></th>
+                    <th>
+                        <select ng-model="selected_level_0_category" ng-change="updateLevel_1_CategoryList()">
+                            <option ng-repeat="x in level_0_category">{{x}}</option>
+                        </select>
+                        <select ng-model="selected_level_1_category" ng-change="updateSkuList()">
+                            <option ng-repeat="x in level_1_category">{{x}}</option>
+                        </select>
+                    </th>
                 </tr>
                 <tr>
-                    <th>Leather</th>
-                    <th><select ng-model="leather" ng-options="x for x in leatherList"></select></th>
+                    <th>SKU</th>
+                    <th>
+                        <select ng-model="category" ng-change="updateColorList()">
+                            <option ng-repeat="x in skuList">{{x}}</option>
+                        </select>
+                        <select ng-model="leather">
+                            <option ng-repeat="x in colorList">{{x}}</option>
+                        </select>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Size</th>
+                    <th><select ng-model="size" ng-options="x for x in sizeList"></select></th>
                 </tr>
                 <tr>
                     <th>Product Details</th>
@@ -338,10 +432,6 @@
                 <tr>
                     <th>Quantity</th>
                     <th><input type="text" ng-model="quantity" class="number_input_width"></th>
-                </tr>
-                <tr>
-                    <th>Size</th>
-                    <th><select ng-model="size" ng-options="x for x in sizeList"></select></th>
                 </tr>
                 <tr>
                     <th>MRP</th>
@@ -355,10 +445,11 @@
                     <th>Sale Price</th>
                     <th>
                         <span>{{quantity*mrp-discount}} </span>
-                        <input style="float:right;" type="button" ng-click="hidePopUp()" value="Close"
-                               class="btn btn-primary">
-                        <input style="float:right; margin-right: 5px;" type="button" ng-click="addProduct()"
+                        <input style="float:right;" type="button" ng-click="addProduct()"
                                value="Add" class="btn btn-primary">
+                        <input style="float:right; margin-right: 5px;" type="button" ng-click="hidePopUp()"
+                               value="Close"
+                               class="btn btn-primary">
                     </th>
                 </tr>
             </table>
