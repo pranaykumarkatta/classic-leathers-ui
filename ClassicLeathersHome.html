@@ -75,22 +75,24 @@
 <!----------------------------------------- TOTAL SALES GRAPH START------------------------------------------------------- -->
           $scope.showAll=true;
           $scope.showDrivingData = true;
-          $scope.showKoraData = true;
-          $scope.showWavesData = true;
-          $scope.showASeriesData = true;
           $scope.showMiratData = true;
+          $scope.showFormalData = true;
+          $scope.showCasualData = true;
+          $scope.showSlippersData = true;
           $scope.showHandBagsData = true;
           $scope.showBeltAndWalletData = true;
+          $scope.showOtherData = true;
           $scope.showNAData = true;
 
           $scope.loadTotalSalesData = function(){
           $http({method: 'GET', url: 'http://localhost:8080/presentation/totalSales?showDriving='+$scope.showDrivingData+
-          '&showKora='+$scope.showKoraData+
-          '&showWaves='+$scope.showWavesData+
-          '&ShowASeries='+$scope.showASeriesData+
           '&showMirat='+$scope.showMiratData+
+          '&showFormal='+$scope.showFormalData+
+          '&showCasual='+$scope.showCasualData+
+          '&showSlippers='+$scope.showSlippersData+
           '&showHandBag='+$scope.showHandBagsData+
           '&showBeltAndWallet='+$scope.showBeltAndWalletData+
+          '&showOther='+$scope.showOtherData+
           '&showNA='+$scope.showNAData
           })
             .then(function successCallback(response) {
@@ -108,24 +110,30 @@
           }
            $scope.updateTotalParameters = function() {
                   $scope.showDrivingData = $scope.showAll;
-                  $scope.showKoraData = $scope.showAll;
-                  $scope.showWavesData = $scope.showAll;
-                  $scope.showASeriesData = $scope.showAll;
                   $scope.showMiratData = $scope.showAll;
+                  $scope.showFormalData = $scope.showAll;
+                  $scope.showCasualData = $scope.showAll;
+                  $scope.showSlippersData = $scope.showAll;
                   $scope.showHandBagsData = $scope.showAll;
                   $scope.showBeltAndWalletData = $scope.showAll;
+                  $scope.showOtherData = $scope.showAll;
                   $scope.showNAData = $scope.showAll;
                   $scope.updateTotalGraph();
            }
           $scope.drawTotalSalesChart = function() {
           const resArray = [];
-            resArray.push(['MONTH', 'Driving','Kora','Waves','A-Series','Mirat','Hand Bags','Belts & Wallets','NA']);
+            resArray.push(['MONTH', 'Driving','Mirat','Other Formals','Other Casuals','CAT','Kora','Waves','A-Series','Juston','Crocs','Hand Bags','Belts & Wallets','OTTO','Service','NA']);
             for(var i = 0, size =  $scope.totalSalesDtoList.length ; i < size ; i++){
                 var totalSalesDto = $scope.totalSalesDtoList[i];
-                var totalSale = totalSalesDto.drivingSales+totalSalesDto.koraSales+totalSalesDto.wavesSales+
-                totalSalesDto.aSeriesSales+totalSalesDto.miratSales+totalSalesDto.handBagSales+totalSalesDto.beltsAndWalletsSale+totalSalesDto.naSalesSale;
-                resArray.push([totalSalesDto.month.split("_")[1]+"_"+totalSale,totalSalesDto.drivingSales,totalSalesDto.koraSales,totalSalesDto.wavesSales,
-                totalSalesDto.aSeriesSales,totalSalesDto.miratSales,totalSalesDto.handBagSales,totalSalesDto.beltsAndWalletsSale,totalSalesDto.naSalesSale]);
+
+                var totalSale = totalSalesDto.drivingSales+totalSalesDto.miratSales+totalSalesDto.otherFormalsSales+
+                totalSalesDto.otherCasualsSales+totalSalesDto.catSales+totalSalesDto.koraSales+totalSalesDto.wavesSales+
+                totalSalesDto.aSeriesSales+totalSalesDto.justonSales+totalSalesDto.crocsSales+
+                totalSalesDto.handBagSales+totalSalesDto.beltsAndWalletsSale+totalSalesDto.ottoSales+totalSalesDto.serviceSales+totalSalesDto.naSalesSale;
+
+                resArray.push([totalSalesDto.month.split("_")[1]+"_"+totalSale,totalSalesDto.drivingSales,totalSalesDto.miratSales,totalSalesDto.otherFormalsSales,
+                totalSalesDto.otherCasualsSales,totalSalesDto.catSales,totalSalesDto.koraSales,totalSalesDto.wavesSales,totalSalesDto.aSeriesSales,totalSalesDto.justonSales,totalSalesDto.crocsSales,
+                totalSalesDto.handBagSales,totalSalesDto.beltsAndWalletsSale,totalSalesDto.ottoSales,totalSalesDto.serviceSales,totalSalesDto.naSalesSale]);
             }
             data = google.visualization.arrayToDataTable(resArray);
             var options = {
@@ -465,18 +473,19 @@
                        ng-change="updateTotalParameters()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Driving <input type="checkbox" class="custom-control-input" ng-model="showDrivingData"
                            ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
-            Kora <input type="checkbox" class="custom-control-input" ng-model="showKoraData"
-                        ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp
-            -- &nbsp&nbsp&nbsp
-            Waves <input type="checkbox" class="custom-control-input" ng-model="showWavesData"
-                         ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
-            A-Series <input type="checkbox" class="custom-control-input" ng-model="showASeriesData"
-                            ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Mirat <input type="checkbox" class="custom-control-input" ng-model="showMiratData"
                          ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Formal <input type="checkbox" class="custom-control-input" ng-model="showFormalData"
+                        ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Casual <input type="checkbox" class="custom-control-input" ng-model="showCasualData"
+                         ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Slippers <input type="checkbox" class="custom-control-input" ng-model="showSlippersData"
+                            ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Hand Bags <input type="checkbox" class="custom-control-input" ng-model="showHandBagsData"
                              ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Belts & Wallets <input type="checkbox" class="custom-control-input" ng-model="showBeltAndWalletData"
+                                   ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Others <input type="checkbox" class="custom-control-input" ng-model="showOtherData"
                                    ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             NA <input type="checkbox" class="custom-control-input" ng-model="showNAData"
                       ng-change="updateTotalGraph()">
