@@ -122,18 +122,20 @@
            }
           $scope.drawTotalSalesChart = function() {
           const resArray = [];
-            resArray.push(['MONTH', 'Driving','Mirat','Other Formals','Other Casuals','CAT','Kora','Waves','A-Series','Juston','Crocs','Hand Bags','Belts & Wallets','OTTO','Service','NA']);
+            resArray.push(['MONTH', 'Driving','Mirat','Other Formals','Other Casuals','CAT','Kora','Waves','A-Series','Juston','Crocs','Hand Bags','Belts & Wallets','OTTO','Ladies Slippers','Kids Slippers','Service','NA']);
             for(var i = 0, size =  $scope.totalSalesDtoList.length ; i < size ; i++){
                 var totalSalesDto = $scope.totalSalesDtoList[i];
 
                 var totalSale = totalSalesDto.drivingSales+totalSalesDto.miratSales+totalSalesDto.otherFormalsSales+
                 totalSalesDto.otherCasualsSales+totalSalesDto.catSales+totalSalesDto.koraSales+totalSalesDto.wavesSales+
                 totalSalesDto.aSeriesSales+totalSalesDto.justonSales+totalSalesDto.crocsSales+
-                totalSalesDto.handBagSales+totalSalesDto.beltsAndWalletsSale+totalSalesDto.ottoSales+totalSalesDto.serviceSales+totalSalesDto.naSalesSale;
+                totalSalesDto.handBagSales+totalSalesDto.beltsAndWalletsSale+totalSalesDto.ottoSales+totalSalesDto.ladiesFootwearSales+
+                totalSalesDto.kidsFootwearSales+totalSalesDto.serviceSales+totalSalesDto.naSalesSale;
 
                 resArray.push([totalSalesDto.month.split("_")[1]+"_"+totalSale,totalSalesDto.drivingSales,totalSalesDto.miratSales,totalSalesDto.otherFormalsSales,
                 totalSalesDto.otherCasualsSales,totalSalesDto.catSales,totalSalesDto.koraSales,totalSalesDto.wavesSales,totalSalesDto.aSeriesSales,totalSalesDto.justonSales,totalSalesDto.crocsSales,
-                totalSalesDto.handBagSales,totalSalesDto.beltsAndWalletsSale,totalSalesDto.ottoSales,totalSalesDto.serviceSales,totalSalesDto.naSalesSale]);
+                totalSalesDto.handBagSales,totalSalesDto.beltsAndWalletsSale,totalSalesDto.ottoSales,totalSalesDto.serviceSales,totalSalesDto.ladiesFootwearSales,
+                totalSalesDto.kidsFootwearSales,totalSalesDto.naSalesSale]);
             }
             data = google.visualization.arrayToDataTable(resArray);
             var options = {

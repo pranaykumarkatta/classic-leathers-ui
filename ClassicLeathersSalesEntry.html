@@ -16,7 +16,7 @@
         $scope.brandList = ["99CRAFTS","TEAK WOOD","KORA","LOUIS STITCH","CAT","BAR","GENUINE LEATHER","OTTO","CROCS","SERVICE"];
         $scope.leatherList = ["NA","BLACK SOFTY","BLACK SUDE","BLACK MILLED","BLACK LASER","BLACK MESH","BLACK CROCO","CFY BROWN SOFTY","CFY BROWN SUDE","CFY BROWN CROCO","BROWN MILLED","TAN MILLED","TAN SUDE","TAN PUP","BR TAN ","BLUE SOFTY","BLUE SUDE","BLUE MESH","ASH BLUE","CHERRY SOFTY","CHERRY MESH","CHERRY CROCO","GREEN PUP","ENG GREEN","BTL GREEN SOFTY","GREEN SUDE","RED SOFTY","GRAY SOFTY","RED MILLED","RED LASER","RED CROCO","BLACK SOFTY","BLACK","BROWN","TAN","BLUE","GENUINE LEATHER","NAVY BLUE SUDE","BOTTLE GREEN SUDE","MOCHA GREEN SUDE","MAROON SUDE"];
         $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
-        $scope.mopList = ["CASH","G-PAY","SWIPE"];
+        $scope.mopList = ["NA","CASH","G-PAY","SWIPE"];
         $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
         $scope.customerName="";
         $scope.showCustomerDetails = false;
@@ -89,10 +89,8 @@
 
         $scope.getPurchaseEntries = function(){
             $scope.newSalesList=[];
-            $scope.mop="";
-            $scope.cashPayment="";
-            $scope.gPayPayment="";
-            $scope.swipePayment="";
+            $scope.mop1="NA";
+            $scope.mop2="NA";
             $scope.updatedBy="";
             $scope.message="";
             if($scope.mobileNumber.length==10 &&  /^\d+$/.test($scope.mobileNumber)){
@@ -188,6 +186,8 @@
                      $scope.totalPurchaseValue+=($scope.mrp-$scope.discount)*$scope.quantity;
                      $scope.showNewSales=true;
                      $scope.brand="";
+                     $scope.selected_level_0_category="";
+                     $scope.selected_level_1_category="";
                      $scope.category="";
                      $scope.leather="";
                      $scope.productDetails="";
@@ -199,23 +199,59 @@
                 $scope.hidePopUp();
         }
         $scope.saveSalesEntry = function(){
-                $scope.showPaymentOptions = false;
                 if($scope.newSalesList.length<1){
                     window.alert("New sales not recorded");
-                }else if($scope.mop==null || $scope.mop==""){
-                    window.alert("Invalid MOP");
-                }else if($scope.cashPayment==null || $scope.cashPayment==""){
-                    window.alert("Invalid Cash");
-                }else if($scope.gPayPayment==null || $scope.gPayPayment==""){
-                    window.alert("Invalid G-Pay");
-                }else if($scope.swipePayment==null || $scope.swipePayment==""){
-                    window.alert("Invalid Swipe");
-                }else if($scope.updatedBy==null || $scope.updatedBy==""){
+                }else if($scope.mop1=='NA'){
+                    window.alert("Invalid MOP 1");
+                }else if($scope.mop1!='NA' && ($scope.mop1Amount==null||$scope.mop1Amount=="")){
+                    window.alert("Invalid Amount for MOP 1");
+                }else if($scope.showMOP2 && $scope.mop1 == $scope.mop2){
+                    window.alert("MOP 1 & MOP 2 are same");
+                }else if($scope.showMOP2 && $scope.mop2=="NA"){
+                    window.alert("Invalid MOP 2");
+                }else if($scope.showMOP2 && $scope.mop2!="NA" && ($scope.mop2Amount==null||$scope.mop2Amount=="")){
+                    window.alert("Invalid Amount for MOP 2");
+                } else if(!$scope.showMOP2 && ($scope.totalPurchaseValue != $scope.mop1Amount)){
+                    window.alert("Total Purchase Value less than paid amount");
+                } else if($scope.showMOP2 && ($scope.totalPurchaseValue != (Number($scope.mop1Amount)+Number($scope.mop2Amount)))){
+                    window.alert("Total Purchase Value less than total paid amount");
+                } else if($scope.updatedBy==null || $scope.updatedBy==""){
                     window.alert("Invalid Updated By");
                 }else{
                     var dataList = [];
                     for(var i = 0, size = $scope.newSalesList.length; i < size ; i++){
                         var item = $scope.newSalesList[i];
+                        var mop="";
+                        var cashPayment=0;
+                        var gPayPayment=0;
+                        var swipePayment=0;
+                        var itemPurchaseValue = (item.mrp-$scope.discount)*item.quantity;
+                        if($scope.showMOP2){
+                            var mop2AmountShare = $scope.mop2Amount/$scope.newSalesList.length;
+                            if($scope.mop1==$scope.mopList[1]){
+                               cashPayment = itemPurchaseValue - mop2AmountShare;
+                            }if($scope.mop1==$scope.mopList[2]){
+                               gPayPayment = itemPurchaseValue - mop2AmountShare;
+                            }if($scope.mop1==$scope.mopList[3]){
+                               swipePayment = itemPurchaseValue - mop2AmountShare;
+                            }
+                            if($scope.mop2==$scope.mopList[1]){
+                               cashPayment = mop2AmountShare;
+                            }if($scope.mop2==$scope.mopList[2]){
+                               gPayPayment = mop2AmountShare;
+                            }if($scope.mop2==$scope.mopList[3]){
+                               swipePayment = mop2AmountShare;
+                            }
+                        } else{
+                            mop=$scope.mop1;
+                            if($scope.mop1==$scope.mopList[1]){
+                                cashPayment = itemPurchaseValue;
+                            }if($scope.mop1==$scope.mopList[2]){
+                               gPayPayment = itemPurchaseValue;
+                            }if($scope.mop1==$scope.mopList[3]){
+                               swipePayment = itemPurchaseValue;
+                            }
+                        }
                         var data={"customerName": $scope.customerName,
                               "gender": $scope.gender,
                               "mobileNumber": $scope.mobileNumber,
@@ -225,10 +261,10 @@
                               "mrp": item.mrp,
                               "discount": item.discount,
                               "salePrice": (item.mrp-$scope.discount)*item.quantity,
-                              "modeOfPayment": $scope.mop,
-                              "cashPayment": $scope.cashPayment,
-                              "gPayPayment": $scope.gPayPayment,
-                              "swipePayment": $scope.swipePayment,
+                              "modeOfPayment": mop,
+                              "cashPayment": cashPayment,
+                              "gPayPayment": gPayPayment,
+                              "swipePayment": swipePayment,
                               "updatedBy": $scope.updatedBy,
                               "category": item.category,
                               "leather": item.leather,
@@ -237,7 +273,6 @@
                         };
                         dataList.push(data);
                     }
-
                     var headers = { 'content-type': 'application/json'}
                     $http.post('http://localhost:8080/retailSalesReport',dataList,{})
                       .then(data => {
@@ -249,6 +284,7 @@
                       .catch(error => {
                               console.log(error.value);
                       });
+                $scope.showPaymentOptions = false;
                 }
         }
 
@@ -459,11 +495,13 @@
             <tr>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>Total Purchase Value</th>
-                <th>MOP</th>
-                <th>Cash</th>
-                <th>G-Pay</th>
-                <th>Swipe</th>
+                <th>MOP 1</th>
+                <th>Amount</th>
+                <th>Show MOP 2</th>
+                <th ng-show="showMOP2">MOP 2</th>
+                <th ng-show="showMOP2">Amount</th>
                 <th>Updated By</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
@@ -471,18 +509,24 @@
             <tr>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>{{totalPurchaseValue}}</th>
                 <th>
-                    <select ng-model="mop" ng-options="x for x in mopList"></select>
+                    <select ng-model="mop1" ng-options="x for x in mopList"></select>
                 </th>
-                <th><input type="text" ng-model="cashPayment" class="number_input_width"></th>
-                <th><input type="text" ng-model="gPayPayment" class="number_input_width"></th>
-                <th><input type="text" ng-model="swipePayment" class="number_input_width"></th>
+                <th><input type="text" ng-model="mop1Amount"></th>
+                <th><input type="checkbox" ng-model="showMOP2"></th>
+                <th ng-show="showMOP2">
+                    <select ng-model="mop2" ng-options="x for x in mopList"></select>
+                </th>
+                <th ng-show="showMOP2"><input type="text" ng-model="mop2Amount"></th>
                 <th>
                     <select ng-model="updatedBy" ng-options="x for x in employeeList"></select>
                 </th>
                 <th><input type="button" ng-click="saveSalesEntry()" value="save"
                            class="text_input_width btn btn-primary">
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
             </tr>
         </table>
