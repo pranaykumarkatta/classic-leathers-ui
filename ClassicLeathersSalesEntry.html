@@ -227,6 +227,7 @@
                         var swipePayment=0;
                         var itemPurchaseValue = (item.mrp-$scope.discount)*item.quantity;
                         if($scope.showMOP2){
+                            mop=$scope.mop1+"/"+$scope.mop2;
                             var mop2AmountShare = $scope.mop2Amount/$scope.newSalesList.length;
                             if($scope.mop1==$scope.mopList[1]){
                                cashPayment = itemPurchaseValue - mop2AmountShare;
@@ -496,7 +497,7 @@
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-                <th>Total Purchase Value</th>
+                <th>Total</th>
                 <th>MOP 1</th>
                 <th>Amount</th>
                 <th>Show MOP 2</th>
@@ -515,17 +516,16 @@
                     <select ng-model="mop1" ng-options="x for x in mopList"></select>
                 </th>
                 <th><input type="text" ng-model="mop1Amount"></th>
-                <th><input type="checkbox" ng-model="showMOP2"></th>
+                <th><input type="checkbox" ng-model="showMOP2" class="text_input_width"></th>
                 <th ng-show="showMOP2">
                     <select ng-model="mop2" ng-options="x for x in mopList"></select>
                 </th>
-                <th ng-show="showMOP2"><input type="text" ng-model="mop2Amount"></th>
+                <th ng-show="showMOP2"><input type="text" ng-model="mop2Amount" class="text_input_width"></th>
                 <th>
                     <select ng-model="updatedBy" ng-options="x for x in employeeList"></select>
                 </th>
                 <th><input type="button" ng-click="saveSalesEntry()" value="save"
                            class="text_input_width btn btn-primary">
-                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
             </tr>
