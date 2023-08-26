@@ -27,7 +27,10 @@
         $scope.isPopUpVisible=false;
         $scope.discount="0";
         $scope.totalPurchaseValue=0;
+        $scope.totalDiscountValue=0;
+        $scope.totalMrpValue=0;
         $scope.showPaymentOptions = false;
+        $scope.isSaveDisabled = false;
         $scope.availabilityMap = "";
 
         $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/availability'})
@@ -150,6 +153,7 @@
 
         $scope.addProduct = function(){
                 $scope.showPaymentOptions = true;
+                $scope.isSaveDisabled = false;
                 if($scope.brand==null || $scope.brand==""){
                     window.alert("Invalid Brand");
                 }else if($scope.stepInType==null || $scope.stepInType==""){
@@ -184,6 +188,8 @@
                                       "brand": $scope.brand
                                       });
                      $scope.totalPurchaseValue+=($scope.mrp-$scope.discount)*$scope.quantity;
+                     $scope.totalMrpValue+= $scope.mrp*$scope.quantity;
+                     $scope.totalDiscountValue+= $scope.discount*$scope.quantity;
                      $scope.showNewSales=true;
                      $scope.brand="";
                      $scope.selected_level_0_category="";
@@ -218,6 +224,7 @@
                 } else if($scope.updatedBy==null || $scope.updatedBy==""){
                     window.alert("Invalid Updated By");
                 }else{
+                    $scope.isSaveDisabled = true;
                     var dataList = [];
                     for(var i = 0, size = $scope.newSalesList.length; i < size ; i++){
                         var item = $scope.newSalesList[i];
@@ -225,7 +232,7 @@
                         var cashPayment=0;
                         var gPayPayment=0;
                         var swipePayment=0;
-                        var itemPurchaseValue = (item.mrp-$scope.discount)*item.quantity;
+                        var itemPurchaseValue = (item.mrp-item.discount)*item.quantity;
                         if($scope.showMOP2){
                             mop=$scope.mop1+"/"+$scope.mop2;
                             var mop2AmountShare = $scope.mop2Amount/$scope.newSalesList.length;
@@ -261,7 +268,7 @@
                               "size": item.size,
                               "mrp": item.mrp,
                               "discount": item.discount,
-                              "salePrice": (item.mrp-$scope.discount)*item.quantity,
+                              "salePrice": (item.mrp-item.discount)*item.quantity,
                               "modeOfPayment": mop,
                               "cashPayment": cashPayment,
                               "gPayPayment": gPayPayment,
@@ -275,9 +282,55 @@
                         dataList.push(data);
                     }
                     var headers = { 'content-type': 'application/json'}
-                    $http.post('http://localhost:8080/retailSalesReport',dataList,{})
+<!--------------------------------get invioce number start--------------------------------------->
+                    var sheetNumber = (new Date()).getMonth()-3;
+                    var monthNumber = decodeURIComponent((new RegExp('[?|&]' + 'month' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+                    if(monthNumber!=null){
+                        sheetNumber=monthNumber-4;
+                    }
+                    $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+sheetNumber})
+                    .then(function successCallback(response) {
+                            var d = new Date();
+                            $scope.invoiceNumber=(d.getFullYear()+"").substring(2,4) +""+((d.getMonth() + 1)+"").padStart(2, '0')+(response.data.length+2);
+                            $scope.saveSales();
+                        },function errorCallback(response) {
+                            console.log(error.value);
+                        }
+                    );
+<!-------------------------------------get invioce number end-------------------------------------->
+                    $scope.saveSales = function(){
+                        $http.post('http://localhost:8080/retailSalesReport?invoiceNumber='+$scope.invoiceNumber,dataList,{})
                       .then(data => {
                          $scope.message="Data Saved Successfully"
+                         $scope.showPaymentOptions = false;
+                         const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "EP", "OCT", "NOV", "DEC"];
+                         var d = new Date();
+                         var hours = d.getHours();
+                         var minutes = d.getMinutes();
+                         var ampm = hours >= 12 ? 'pm' : 'am';
+                         hours = hours % 12;
+                         hours = hours ? hours : 12; // the hour '0' should be '12'
+                         minutes = minutes < 10 ? '0'+minutes : minutes;
+                         var dateTimeString = (months[d.getMonth()]) + "-" + d.getDate() + "-" + d.getFullYear() + " " +hours+ ":" + minutes +" " + ampm;
+                         var url = "https://api.whatsapp.com/send/?phone=+91"+$scope.mobileNumber+"&text=Dear *"+$scope.customerName+"*,%0A%0A_Thank's for your purchase @ *CLASSIC LEATHERS*_ on " +dateTimeString+ ". %0A%0A"+
+                                        "*👇 Here is your purchase summary for the Invoice No : "+ $scope.invoiceNumber +"*%0A";
+
+                         for(var i = 0, size = $scope.newSalesList.length; i < size ; i++){
+                            var item = $scope.newSalesList[i];
+                            var mrp = Math.round((item.mrp-item.discount)*item.quantity*1.12);
+                            var mrp1 = mrp+Number(item.discount*item.quantity);
+                            var url = url+"👉🏻 Product : "+item.productDetails+" of ₹ "+mrp1+" for ₹ "+(item.mrp-item.discount)*item.quantity+"  %0A";
+                         }
+                         url=url+"👉🏻 👉🏻 Total purchase value ₹ "+($scope.totalPurchaseValue)+"%0A"+
+                                        "🎉🎉: WOW !! You have saved 🎊₹ "+(Math.round(($scope.totalMrpValue-$scope.totalDiscountValue)*0.12) +$scope.totalDiscountValue)+"🎊 - on this purchase%0A%0A"+
+                                        "👉🏻 Click https://chat.whatsapp.com/GmUW1z10XzjLJ7lGkgLkXw to join in our WhatsApp community 🥳%0A"+
+                                        "👉🏻 click https://instagram.com/classic_leathers?utm_source=qr to follow us on Instagram 🤗%0A%0A"+
+                                        "*Reach us @* 90 10 100 778 / support@classicleathers.in%0A"+
+                                        "*_Keep shopping with us🤝!! Have a great day😀_*"
+                         window.open(url);
+                        $scope.totalPurchaseValue=0;
+                        $scope.totalDiscountValue=0;
+                        $scope.totalMrpValue=0;
                             setTimeout(() => {
                                 $scope.getPurchaseEntries();
                             }, 5000);
@@ -285,11 +338,14 @@
                       .catch(error => {
                               console.log(error.value);
                       });
-                $scope.showPaymentOptions = false;
+
+                    }
+
                 }
         }
 
       });
+
 
 
 
@@ -481,7 +537,7 @@
                 <tr>
                     <th>Sale Price</th>
                     <th>
-                        <span>{{quantity*mrp-discount}} </span>
+                        <span>{{quantity*(mrp-discount)}} </span>
                         <input style="float:right;" type="button" ng-click="addProduct()"
                                value="Add" class="btn btn-primary">
                         <input style="float:right; margin-right: 5px;" type="button" ng-click="hidePopUp()"
@@ -525,7 +581,7 @@
                     <select ng-model="updatedBy" ng-options="x for x in employeeList"></select>
                 </th>
                 <th><input type="button" ng-click="saveSalesEntry()" value="save"
-                           class="text_input_width btn btn-primary">
+                           class="text_input_width btn btn-primary" ng-disabled="isSaveDisabled">
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                 <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
             </tr>
