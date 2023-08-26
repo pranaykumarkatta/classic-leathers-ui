@@ -160,6 +160,7 @@
             <th>GPay</th>
             <th>Swipe</th>
             <th>Updated_By</th>
+            <th><p>Invoice Number</p></th>
             <th><p>Date</p></th>
         </tr>
         <tr ng-repeat="salesEntry in salesEntryList | filter : salesEntryFilter "
@@ -183,6 +184,7 @@
             <td>{{salesEntry.gPayPayment}}</td>
             <td>{{salesEntry.swipePayment}}</td>
             <td>{{salesEntry.updatedBy}}</td>
+            <td><a class = "btn" href="file:///D:/onedrive/Tag_classicLeathers/Invoices/{{salesEntry.invoiceNumber}}.pdf">{{salesEntry.invoiceNumber}}</a></td>
             <td>{{salesEntry.saleDate}}</td>
         </tr>
 

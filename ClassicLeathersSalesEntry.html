@@ -312,7 +312,7 @@
                          hours = hours ? hours : 12; // the hour '0' should be '12'
                          minutes = minutes < 10 ? '0'+minutes : minutes;
                          var dateTimeString = (months[d.getMonth()]) + "-" + d.getDate() + "-" + d.getFullYear() + " " +hours+ ":" + minutes +" " + ampm;
-                         var url = "https://api.whatsapp.com/send/?phone=+91"+$scope.mobileNumber+"&text=Dear *"+$scope.customerName+"*,%0A%0A_Thank's for your purchase @ *CLASSIC LEATHERS*_ on " +dateTimeString+ ". %0A%0A"+
+                         var url = "https://api.whatsapp.com/send/?phone=+918190839579&text=Dear *"+$scope.customerName+"*,%0A%0A_Thank's for your purchase @ *CLASSIC LEATHERS*_ on " +dateTimeString+ ". %0A%0A"+
                                         "*👇 Here is your purchase summary for the Invoice No : "+ $scope.invoiceNumber +"*%0A";
 
                          for(var i = 0, size = $scope.newSalesList.length; i < size ; i++){
