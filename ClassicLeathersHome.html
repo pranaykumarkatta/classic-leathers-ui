@@ -36,10 +36,17 @@
          $scope.drawDailySalesChart = function() {
           const resArray = [];
             var totalSales = 0;
+            $scope.graphMaxValue = 0;
             for(var i = 0, size =  $scope.dailySalesDtoList.length ; i < size ; i++){
                 var dailySalesDto = $scope.dailySalesDtoList[i];
                 totalSales = totalSales+dailySalesDto.sales;
                 var avgSale = Math.round(totalSales/dailySalesDto.day);
+                console.log($scope.graphMaxValue);
+                console.log(dailySalesDto.sales);
+                console.log($scope.graphMaxValue<dailySalesDto.sales);
+                if($scope.graphMaxValue<dailySalesDto.sales){
+                    $scope.graphMaxValue = dailySalesDto.sales+5000-(dailySalesDto.sales % 5000);
+                }
                 resArray.push([dailySalesDto.day,dailySalesDto.sales,"Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale,avgSale,"Day - "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale]);
             }
 
@@ -60,7 +67,7 @@
                 title: 'SALES',
                 viewWindow: {
                   min: 0,
-                  max: 20000
+                  max: $scope.graphMaxValue
                 }
               },
               seriesType: 'bars',
@@ -159,22 +166,24 @@
 <!----------------------------------------- PROFIT GRAPH START------------------------------------------------------- -->
            $scope.showAllProfit=true;
           $scope.showDrivingProfitData = true;
-          $scope.showKoraProfitData = true;
-          $scope.showWavesProfitData = true;
-          $scope.showASeriesProfitData = true;
           $scope.showMiratProfitData = true;
+          $scope.showFormalProfitData = true;
+          $scope.showCasualProfitData = true;
+          $scope.showSlippersProfitData = true;
           $scope.showHandBagsProfitData = true;
           $scope.showBeltAndWalletProfitData = true;
+          $scope.showOtherProfitData = true;
           $scope.showNAProfitData = true;
           $scope.loadProfitData = function(){
-              $http({method: 'GET', url: 'http://localhost:8080/presentation/profitGraph?showDrivingProfit='+$scope.showDrivingProfitData+
-              '&showKoraProfit='+$scope.showKoraProfitData+
-              '&showWavesProfit='+$scope.showWavesProfitData+
-              '&showASeriesProfit='+$scope.showASeriesProfitData+
-              '&showMiratProfit='+$scope.showMiratProfitData+
-              '&showHandBagProfit='+$scope.showHandBagsProfitData+
-              '&showBeltAndWalletProfit='+$scope.showBeltAndWalletProfitData+
-              '&showNAProfit='+$scope.showNAProfitData
+              $http({method: 'GET', url: 'http://localhost:8080/presentation/profitGraph?showDriving='+$scope.showDrivingProfitData+
+          '&showMirat='+$scope.showMiratProfitData+
+          '&showFormal='+$scope.showFormalProfitData+
+          '&showCasual='+$scope.showCasualProfitData+
+          '&showSlippers='+$scope.showSlippersProfitData+
+          '&showHandBag='+$scope.showHandBagsProfitData+
+          '&showBeltAndWallet='+$scope.showBeltAndWalletProfitData+
+          '&showOther='+$scope.showOtherProfitData+
+          '&showNA='+$scope.showNAProfitData
               })
                 .then(function successCallback(response) {
                         $scope.profitDtoList=response.data;
@@ -191,31 +200,34 @@
           }
            $scope.updateProfitParameters = function() {
                   $scope.showDrivingProfitData = $scope.showAllProfit;
-                  $scope.showKoraProfitData = $scope.showAllProfit;
-                  $scope.showWavesProfitData = $scope.showAllProfit;
-                  $scope.showASeriesProfitData = $scope.showAllProfit;
                   $scope.showMiratProfitData = $scope.showAllProfit;
+                  $scope.showFormalProfitData = $scope.showAllProfit;
+                  $scope.showCasualProfitData = $scope.showAllProfit;
+                  $scope.showSlippersProfitData = $scope.showAllProfit;
                   $scope.showHandBagsProfitData = $scope.showAllProfit;
                   $scope.showBeltAndWalletProfitData = $scope.showAllProfit;
+                  $scope.showOtherProfitData = $scope.showAllProfit;
                   $scope.showNAProfitData = $scope.showAllProfit;
                   $scope.updateProfitGraph();
            }
           $scope.drawProfitChart = function() {
           const resArray = [];
-            resArray.push(['MONTH','Sales', 'Purchase']);
+            resArray.push(['MONTH','Sales', 'Purchase','Shop Expence']);
             for(var i = 0, size =  $scope.profitDtoList.length ; i < size ; i++){
                 var profitDto = $scope.profitDtoList[i];
-                var totalSalePrice = (profitDto.drivingSalePrice+profitDto.koraSalePrice+profitDto.wavesSalePrice+
-                profitDto.aSeriesSalePrice+profitDto.miratSalePrice+profitDto.handBagSalePrice+profitDto.beltsAndWalletsSalePrice+profitDto.naSalesSalePrice);
-                var totalPurchasePrice = (profitDto.drivingCostPrice+profitDto.koraCostPrice+profitDto.wavesCostPrice+
-                profitDto.aSeriesCostPrice+profitDto.miratCostPrice+profitDto.handBagCostPrice+profitDto.beltsAndWalletsCostPrice+profitDto.naSalesCostPrice);
+                var totalSalePrice = (profitDto.drivingSalePrice+profitDto.miratSalePrice+profitDto.otherFormalSalePrice+profitDto.otherCasualsSalePrice+
+                profitDto.catSalePrice+profitDto.koraSalePrice+profitDto.wavesSalePrice+profitDto.aSeriesSalePrice+profitDto.justonSalePrice+profitDto.crocsSalePrice
+                +profitDto.handBagSalePrice+profitDto.beltsAndWalletsSalePrice+profitDto.ladiesFootwearSalePrice+profitDto.kidsFootwearSalePrice
+                +profitDto.ottoSalePrice+profitDto.serviceSalePrice+profitDto.naSalesSalePrice);
+                var totalPurchasePrice = (profitDto.drivingCostPrice+profitDto.miratCostPrice+profitDto.otherFormalCostPrice+profitDto.otherCasualsCostPrice+
+                profitDto.catCostPrice+profitDto.koraCostPrice+profitDto.wavesCostPrice+profitDto.aSeriesCostPrice+profitDto.justonCostPrice+profitDto.crocsCostPrice
+                +profitDto.handBagCostPrice+profitDto.beltsAndWalletsCostPrice+profitDto.ladiesFootwearCostPrice+profitDto.kidsFootwearCostPrice
+                +profitDto.ottoCostPrice+profitDto.serviceCostPrice+profitDto.naSalesCostPrice);
 
-                var profitPercent = Math.round(((totalSalePrice-totalPurchasePrice)/totalSalePrice)*100);
+                var profitPercent = Math.round(((totalSalePrice-totalPurchasePrice-70000)/totalSalePrice)*100);
+                var profit =  totalSalePrice-totalPurchasePrice-70000;
 
-                resArray.push([profitDto.month.split("_")[1]+"_Profit : "+profitPercent+"%",(profitDto.drivingSalePrice+profitDto.koraSalePrice+profitDto.wavesSalePrice+
-                profitDto.aSeriesSalePrice+profitDto.miratSalePrice+profitDto.handBagSalePrice+profitDto.beltsAndWalletsSalePrice+profitDto.naSalesSalePrice),
-                (profitDto.drivingCostPrice+profitDto.koraCostPrice+profitDto.wavesCostPrice+
-                profitDto.aSeriesCostPrice+profitDto.miratCostPrice+profitDto.handBagCostPrice+profitDto.beltsAndWalletsCostPrice+profitDto.naSalesCostPrice)]);
+                resArray.push([profitDto.month.split("_")[1]+" : "+profit+" | "+profitPercent+"%",totalSalePrice,totalPurchasePrice,70000]);
             }
             data = google.visualization.arrayToDataTable(resArray);
             var options = {
@@ -444,6 +456,7 @@
 
 
 
+
     </script>
 
 </head>
@@ -478,9 +491,9 @@
             Mirat <input type="checkbox" class="custom-control-input" ng-model="showMiratData"
                          ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Formal <input type="checkbox" class="custom-control-input" ng-model="showFormalData"
-                        ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+                          ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Casual <input type="checkbox" class="custom-control-input" ng-model="showCasualData"
-                         ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+                          ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Slippers <input type="checkbox" class="custom-control-input" ng-model="showSlippersData"
                             ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Hand Bags <input type="checkbox" class="custom-control-input" ng-model="showHandBagsData"
@@ -488,7 +501,7 @@
             Belts & Wallets <input type="checkbox" class="custom-control-input" ng-model="showBeltAndWalletData"
                                    ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Others <input type="checkbox" class="custom-control-input" ng-model="showOtherData"
-                                   ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+                          ng-change="updateTotalGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             NA <input type="checkbox" class="custom-control-input" ng-model="showNAData"
                       ng-change="updateTotalGraph()">
         </p>
@@ -502,18 +515,20 @@
                        ng-change="updateProfitParameters()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Driving <input type="checkbox" class="custom-control-input" ng-model="showDrivingProfitData"
                            ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
-            Kora <input type="checkbox" class="custom-control-input" ng-model="showKoraProfitData"
-                        ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
-            Waves <input type="checkbox" class="custom-control-input" ng-model="showWavesProfitData"
-                         ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
-            A-Series <input type="checkbox" class="custom-control-input" ng-model="showASeriesProfitData"
-                            ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Mirat <input type="checkbox" class="custom-control-input" ng-model="showMiratProfitData"
                          ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Formal <input type="checkbox" class="custom-control-input" ng-model="showFormalProfitData"
+                          ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Casual <input type="checkbox" class="custom-control-input" ng-model="showCasualProfitData"
+                          ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Slippers <input type="checkbox" class="custom-control-input" ng-model="showSlippersProfitData"
+                            ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Hand Bags <input type="checkbox" class="custom-control-input" ng-model="showHandBagsProfitData"
                              ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             Belts & Wallets <input type="checkbox" class="custom-control-input" ng-model="showBeltAndWalletProfitData"
                                    ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
+            Others <input type="checkbox" class="custom-control-input" ng-model="showOtherProfitData"
+                          ng-change="updateProfitGraph()">&nbsp&nbsp&nbsp -- &nbsp&nbsp&nbsp
             NA <input type="checkbox" class="custom-control-input" ng-model="showNAProfitData"
                       ng-change="updateProfitGraph()">
         </p>

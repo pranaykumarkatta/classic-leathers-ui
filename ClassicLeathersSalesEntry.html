@@ -312,7 +312,8 @@
                          hours = hours ? hours : 12; // the hour '0' should be '12'
                          minutes = minutes < 10 ? '0'+minutes : minutes;
                          var dateTimeString = (months[d.getMonth()]) + "-" + d.getDate() + "-" + d.getFullYear() + " " +hours+ ":" + minutes +" " + ampm;
-                         var url = "https://api.whatsapp.com/send/?phone=+918190839579&text=Dear *"+$scope.customerName+"*,%0A%0A_Thank's for your purchase @ *CLASSIC LEATHERS*_ on " +dateTimeString+ ". %0A%0A"+
+                         var url = "https://api.whatsapp.com/send/?phone=+918190839579&text=Dear *"+$scope.customerName+"*,%0A%0A_Thank's for your purchase @ *CLASSIC LEATHERS*_ on " +dateTimeString+ ".%0A%0A"+
+                                        "🎉🎉: WOW !! You have saved 🎊₹ "+(Math.round(($scope.totalMrpValue-$scope.totalDiscountValue)*0.12) +$scope.totalDiscountValue)+"🎊 - on this purchase%0A%0A"+
                                         "*👇 Here is your purchase summary for the Invoice No : "+ $scope.invoiceNumber +"*%0A";
 
                          for(var i = 0, size = $scope.newSalesList.length; i < size ; i++){
@@ -321,8 +322,7 @@
                             var mrp1 = mrp+Number(item.discount*item.quantity);
                             var url = url+"👉🏻 Product : "+item.productDetails+" of ₹ "+mrp1+" for ₹ "+(item.mrp-item.discount)*item.quantity+"  %0A";
                          }
-                         url=url+"👉🏻 👉🏻 Total purchase value ₹ "+($scope.totalPurchaseValue)+"%0A"+
-                                        "🎉🎉: WOW !! You have saved 🎊₹ "+(Math.round(($scope.totalMrpValue-$scope.totalDiscountValue)*0.12) +$scope.totalDiscountValue)+"🎊 - on this purchase%0A%0A"+
+                         url=url+"👉🏻 👉🏻 Total purchase value ₹ "+($scope.totalPurchaseValue)+" %0A%0A"+
                                         "👉🏻 Click https://chat.whatsapp.com/GmUW1z10XzjLJ7lGkgLkXw to join in our WhatsApp community 🥳%0A"+
                                         "👉🏻 click https://instagram.com/classic_leathers?utm_source=qr to follow us on Instagram 🤗%0A%0A"+
                                         "*Reach us @* 90 10 100 778 / support@classicleathers.in%0A"+

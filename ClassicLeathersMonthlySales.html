@@ -52,6 +52,9 @@
                 }
             );
 <!----------------------------------------SALES----------------------------------------------------------------------------->
+      $scope.openPdf = function(invNo){
+        window.open("http://127.0.0.1:4500/Invoices/"+invNo+".pdf","_blank");
+      }
       });
 
 
@@ -165,8 +168,8 @@
         </tr>
         <tr ng-repeat="salesEntry in salesEntryList | filter : salesEntryFilter "
             ng-style="{'background-color': (salesEntry.isTodaySale=='true') ? '#ffffff':null,
-            'font-weight': (salesEntry.isTodaySale=='true') ?700:null}" ng-click="showSalesEntry(salesEntry)">
-            <td>{{salesEntry.customerName | uppercase}}</td>
+            'font-weight': (salesEntry.isTodaySale=='true') ?700:null}">
+            <td ng-click="showSalesEntry(salesEntry)">{{salesEntry.customerName | uppercase}}</td>
             <td>{{salesEntry.gender}}</td>
             <td>{{salesEntry.mobileNumber}}</td>
             <td>{{salesEntry.stepInType | uppercase}}</td>
@@ -184,7 +187,7 @@
             <td>{{salesEntry.gPayPayment}}</td>
             <td>{{salesEntry.swipePayment}}</td>
             <td>{{salesEntry.updatedBy}}</td>
-            <td><a class = "btn" href="file:///D:/onedrive/Tag_classicLeathers/Invoices/{{salesEntry.invoiceNumber}}.pdf">{{salesEntry.invoiceNumber}}</a></td>
+            <td><a class = "btn" ng-click="openPdf(salesEntry.invoiceNumber)">Print Bill</a></td>
             <td>{{salesEntry.saleDate}}</td>
         </tr>
 
