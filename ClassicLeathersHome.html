@@ -36,16 +36,13 @@
          $scope.drawDailySalesChart = function() {
           const resArray = [];
             var totalSales = 0;
-            $scope.graphMaxValue = 0;
+            $scope.dailySalesGraphMaxValue = 0;
             for(var i = 0, size =  $scope.dailySalesDtoList.length ; i < size ; i++){
                 var dailySalesDto = $scope.dailySalesDtoList[i];
                 totalSales = totalSales+dailySalesDto.sales;
                 var avgSale = Math.round(totalSales/dailySalesDto.day);
-                console.log($scope.graphMaxValue);
-                console.log(dailySalesDto.sales);
-                console.log($scope.graphMaxValue<dailySalesDto.sales);
-                if($scope.graphMaxValue<dailySalesDto.sales){
-                    $scope.graphMaxValue = dailySalesDto.sales+5000-(dailySalesDto.sales % 5000);
+                if($scope.dailySalesGraphMaxValue<dailySalesDto.sales){
+                    $scope.dailySalesGraphMaxValue = dailySalesDto.sales+5000-(dailySalesDto.sales % 5000);
                 }
                 resArray.push([dailySalesDto.day,dailySalesDto.sales,"Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale,avgSale,"Day - "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale]);
             }
@@ -67,7 +64,7 @@
                 title: 'SALES',
                 viewWindow: {
                   min: 0,
-                  max: $scope.graphMaxValue
+                  max: $scope.dailySalesGraphMaxValue
                 }
               },
               seriesType: 'bars',
