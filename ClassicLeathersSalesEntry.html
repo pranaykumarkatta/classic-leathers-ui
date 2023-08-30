@@ -87,6 +87,12 @@
                         +$scope.selected_level_1_category+"_"+$scope.category];
             }
        }
+       $scope.updateProductDescription = function(){
+            if($scope.colorList!=null && $scope.colorList!=""){
+                $scope.productDetails = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category+"_"+$scope.category+"_"+$scope.leather][0];
+            }
+       }
 
 
 
@@ -509,18 +515,18 @@
                         <select ng-model="category" ng-change="updateColorList()">
                             <option ng-repeat="x in skuList">{{x}}</option>
                         </select>
-                        <select ng-model="leather">
+                        <select ng-model="leather" ng-change="updateProductDescription()">
                             <option ng-repeat="x in colorList">{{x}}</option>
                         </select>
                     </th>
                 </tr>
                 <tr>
-                    <th>Size</th>
-                    <th><select ng-model="size" ng-options="x for x in sizeList"></select></th>
+                    <th>Product Details</th>
+                    <th>{{productDetails}}</th>
                 </tr>
                 <tr>
-                    <th>Product Details</th>
-                    <th><input type="text" ng-model="productDetails" class="text_input_width"></th>
+                    <th>Size</th>
+                    <th><select ng-model="size" ng-options="x for x in sizeList"></select></th>
                 </tr>
                 <tr>
                     <th>Quantity</th>
