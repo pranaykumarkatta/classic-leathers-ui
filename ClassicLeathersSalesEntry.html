@@ -64,6 +64,8 @@
                 $scope.selected_level_1_category = $scope.availabilityMap[$scope.brand][0];;
                 $scope.category = $scope.availabilityMap[$scope.brand][0];;
                 $scope.leather = $scope.availabilityMap[$scope.brand][0];;
+                $scope.productDetails = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category+"_"+$scope.category+"_"+$scope.leather][0];
             }
 
        }
