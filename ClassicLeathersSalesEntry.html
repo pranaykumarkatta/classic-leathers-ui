@@ -299,7 +299,13 @@
                     $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+sheetNumber})
                     .then(function successCallback(response) {
                             var d = new Date();
-                            $scope.invoiceNumber=(d.getFullYear()+"").substring(2,4) +""+((d.getMonth() + 1)+"").padStart(2, '0')+(response.data.length+2);
+                            var num="";
+                            if(response.data.length>0){
+                                num = ""+(response.data.length+2);
+                            }else{
+                                num = "2";
+                            }
+                            $scope.invoiceNumber=(d.getFullYear()+"").substring(2,4) +""+((d.getMonth() + 1)+"").padStart(2, '0')+num.padStart(3, "0");
                             $scope.saveSales();
                         },function errorCallback(response) {
                             console.log(error.value);
@@ -311,7 +317,7 @@
                       .then(data => {
                          $scope.message="Data Saved Successfully"
                          $scope.showPaymentOptions = false;
-                         const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "EP", "OCT", "NOV", "DEC"];
+                         const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
                          var d = new Date();
                          var hours = d.getHours();
                          var minutes = d.getMinutes();
@@ -320,7 +326,7 @@
                          hours = hours ? hours : 12; // the hour '0' should be '12'
                          minutes = minutes < 10 ? '0'+minutes : minutes;
                          var dateTimeString = (months[d.getMonth()]) + "-" + d.getDate() + "-" + d.getFullYear() + " " +hours+ ":" + minutes +" " + ampm;
-                         var url = "https://api.whatsapp.com/send/?phone=+918190839579&text=Dear *"+$scope.customerName+"*,%0A%0A_Thank's for your purchase @ *CLASSIC LEATHERS*_ on " +dateTimeString+ ".%0A%0A"+
+                         var url = "https://api.whatsapp.com/send/?phone=+91"+$scope.mobileNumber+"&text=Dear *"+$scope.customerName+"*,%0A%0A_Thank's for your purchase @ *CLASSIC LEATHERS*_ on " +dateTimeString+ ".%0A%0A"+
                                         "🎉🎉: WOW !! You have saved 🎊₹ "+(Math.round(($scope.totalMrpValue-$scope.totalDiscountValue)*0.12) +$scope.totalDiscountValue)+"🎊 - on this purchase%0A%0A"+
                                         "*👇 Here is your purchase summary for the Invoice No : "+ $scope.invoiceNumber +"*%0A";
 

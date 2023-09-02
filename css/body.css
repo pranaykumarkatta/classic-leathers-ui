@@ -43,6 +43,10 @@
     width:130px;
   }
 
+  .table tbody tr th label{
+    width:300px;
+  }
+
   .table tr th select {
     height: 23.14px;
   }

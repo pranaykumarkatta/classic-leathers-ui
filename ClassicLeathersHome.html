@@ -44,11 +44,11 @@
                 if($scope.dailySalesGraphMaxValue<dailySalesDto.sales){
                     $scope.dailySalesGraphMaxValue = dailySalesDto.sales+5000-(dailySalesDto.sales % 5000);
                 }
-                resArray.push([dailySalesDto.day,dailySalesDto.sales,"Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale,avgSale,"Day - "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale]);
+                resArray.push([""+dailySalesDto.day,dailySalesDto.sales,"Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale,avgSale,"Day - "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale]);
             }
 
             var dataTable = new google.visualization.DataTable();
-            dataTable.addColumn('number', 'DAY');
+            dataTable.addColumn('string', 'DAY');
             dataTable.addColumn('number', 'Sales');
             dataTable.addColumn({type: 'string', role: 'tooltip'});
             dataTable.addColumn('number', 'Average Sales');
