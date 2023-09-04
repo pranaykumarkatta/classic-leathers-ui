@@ -54,6 +54,7 @@
                         (response.data[i].sku.includes("018_JUSTON")&&$scope.selectedLevel_1_category=="JUSTON"&&$scope.selectedLevel_0_category=="SLIPPERS")||
                         (response.data[i].sku.includes("A_0")&&$scope.selectedLevel_1_category=="A_SERIES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
                         (response.data[i].sku.includes("WLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="WALLET")||
+                        (response.data[i].sku.includes("BLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BELTS")||
                         (response.data[i].sku.includes("_BAG")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BAGS")){
                             var item = response.data[i];
                             item.showEntry=true;
@@ -70,6 +71,7 @@
                     $scope.totalDrivingStock=totalDrivingStock;
                     $scope.actualDrivingOrderedQuantity=actualDrivingOrderedQuantity;
                     drivingStockEntries =  $scope.drivingStockEntries;
+                    $scope.loadSalesData();
                 },function errorCallback(response) {
                     console.log(error.value);
                 }
@@ -130,6 +132,35 @@
                     console.log(error.value);
                 }
        );
+
+       $scope.monthNumber = 0;
+
+       $scope.loadSalesData = function(){
+            $scope.salesDataList = [];
+            $http({method: 'GET', url: 'http://localhost:8080/retailCustomerSales/productSaleHistory?productSearchString=&monthNumber='+$scope.monthNumber})
+                .then(function successCallback(response) {
+                    for(var i = 0, size = response.data.length; i < size ; i++){
+                        if((response.data[i].category.includes("LF")&&$scope.selectedLevel_1_category=="DRIVING"&&$scope.selectedLevel_0_category=="SHOES")||
+                            (response.data[i].category.includes("CASUAL")&&$scope.selectedLevel_1_category=="CASUALS"&&$scope.selectedLevel_0_category=="SHOES")||
+                            (response.data[i].category.includes("D_")&&$scope.selectedLevel_1_category=="FORMALS"&&$scope.selectedLevel_0_category=="SHOES")||
+                            (response.data[i].category.includes("MIRAT")&&$scope.selectedLevel_1_category=="FORMALS"&&$scope.selectedLevel_0_category=="SHOES")||
+                            (response.data[i].category.includes("FORMAL")&&$scope.selectedLevel_1_category=="FORMALS"&&$scope.selectedLevel_0_category=="SHOES")||
+                            (response.data[i].category.includes("KORA")&&$scope.selectedLevel_1_category=="KORA"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                            (response.data[i].category.includes("WAVES")&&$scope.selectedLevel_1_category=="WAVES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                            (response.data[i].category.includes("018_JUSTON")&&$scope.selectedLevel_1_category=="JUSTON"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                            (response.data[i].category.includes("A_0")&&$scope.selectedLevel_1_category=="A_SERIES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+                            (response.data[i].category.includes("WLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="WALLET")||
+                            (response.data[i].category.includes("BLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BELTS")||
+                            (response.data[i].category.includes("_BAG")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BAGS")){
+                                $scope.salesDataList.push(response.data[i]);
+                            }
+                    }
+                },function errorCallback(response) {
+                    console.log(error.value);
+                }
+           );
+       };
+       $scope.loadSalesData();
     });
 
 
@@ -264,6 +295,65 @@
                 </div>
             </td>
         </tr>
+    </table>
+    <p>Sales Info || Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
+    <input type="button" ng-click="loadSalesData()" value="Get Sales"
+           class="btn btn-primary">
+</p>
+    <table class="table table-font stockTable">
+        <tr>
+            <th>BRAND</th>
+            <th>SKU</th>
+            <th>LEATHER</th>
+            <th>40</th>
+            <th>41</th>
+            <th>42</th>
+            <th>43</th>
+            <th>44</th>
+            <th>45</th>
+            <th>46</th>
+            <th>47</th>
+            <th>Total &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+        </tr>
+        <tr ng-repeat="salesData in salesDataList  | filter:DrivingShoeFilter">
+            <td>
+                {{salesData.brand}}
+            </td>
+            <td>
+                {{salesData.category}}
+            </td>
+            <td>
+                {{salesData.leather}}
+            </td>
+            <td>
+                {{salesData.size_40_quantity}}
+            </td>
+            <td>
+                {{salesData.size_41_quantity}}
+            </td>
+            <td>
+                {{salesData.size_42_quantity}}
+            </td>
+            <td>
+                {{salesData.size_43_quantity}}
+            </td>
+            <td>
+                {{salesData.size_44_quantity}}
+            </td>
+            <td>
+                {{salesData.size_45_quantity}}
+            </td>
+            <td>
+                {{salesData.size_46_quantity}}
+            </td>
+            <td>
+                {{salesData.size_47_quantity}}
+            </td>
+            <td>
+                {{salesData.size_40_quantity + salesData.size_41_quantity + salesData.size_42_quantity + salesData.size_43_quantity + salesData.size_44_quantity + salesData.size_45_quantity + salesData.size_46_quantity + salesData.size_47_quantity}}
+            </td>
+        </tr>
+
     </table>
 </div>
 </body>
