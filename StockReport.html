@@ -161,7 +161,115 @@
            );
        };
        $scope.loadSalesData();
+
+
+       $scope.entryTypeList = ["INWARD","OUTWARD"]
+       $scope.fromList = ["CLASSIC LEATHERS","PARANDHARAMAN","AJIO RETAIL"]
+       $scope.toList = ["CLASSIC LEATHERS","AJIO RETAIL"]
+
+       $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/availability'})
+            .then(function successCallback(response) {
+                    $scope.availabilityMap =response.data;
+                    $scope.level_0_category=[];
+                    $scope.level_1_category=[];
+                    $scope.skuList=[];
+                    $scope.brandList = $scope.availabilityMap["brand"]
+                    $scope.brand=$scope.brandList[0];
+                    if($scope.brandList.length>0){
+                        $scope.level_0_category = $scope.availabilityMap[$scope.brandList[0]];
+                        $scope.level_1_category = [];
+                        $scope.skuList = [];
+                        $scope.colorList = [];
+                    }
+                },function errorCallback(response) {
+                    console.log(error.value);
+                }
+       );
+
+       $scope.updateLevel_0_CategoryList = function(){
+            $scope.level_0_category = $scope.availabilityMap[$scope.brand];
+            $scope.level_1_category = [];
+            $scope.skuList = [];
+            $scope.colorList = [];
+            if($scope.level_0_category[0]==$scope.brandList[8]||$scope.level_0_category[0]==$scope.brandList[9]){
+                $scope.level_1_category = $scope.availabilityMap[$scope.brand];
+                $scope.skuList = $scope.availabilityMap[$scope.brand];
+                $scope.colorList = $scope.availabilityMap[$scope.brand];
+                $scope.selected_level_0_category = $scope.availabilityMap[$scope.brand][0];
+                $scope.selected_level_1_category = $scope.availabilityMap[$scope.brand][0];;
+                $scope.category = $scope.availabilityMap[$scope.brand][0];;
+                $scope.leather = $scope.availabilityMap[$scope.brand][0];;
+                $scope.productDetails = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category+"_"+$scope.category+"_"+$scope.leather][0];
+            }
+
+       }
+       $scope.updateLevel_1_CategoryList = function(){
+            if($scope.selected_level_0_category!=null && $scope.selected_level_0_category!=""){
+                $scope.level_1_category = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category];
+                $scope.skuList = [];
+                $scope.colorList = [];
+            }
+       }
+       $scope.updateSkuList = function(){
+            if($scope.selected_level_1_category!=null && $scope.selected_level_1_category!=""){
+                $scope.skuList = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category];
+                $scope.colorList = [];
+            }
+       }
+       $scope.updateColorList = function(){
+            if($scope.skuList!=null && $scope.skuList!=""){
+                $scope.colorList = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category+"_"+$scope.category];
+            }
+       }
+       $scope.updateProductDescription = function(){
+            if($scope.colorList!=null && $scope.colorList!=""){
+                $scope.productDetails = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category+"_"+$scope.category+"_"+$scope.leather][0];
+            }
+       }
+
+       $scope.addStockEntry = function(){
+            var data={"entryType": $scope.entryType,
+                "from": $scope.from,
+                "to": $scope.to,
+                "brand": $scope.brand,
+                "level_0_Category": $scope.selected_level_0_category,
+                "level_0_Category": $scope.selected_level_1_category,
+                "sku": $scope.category,
+                "leather": $scope.leather,
+                "productDescription": $scope.productDetails,
+                "size_40_quantity": $scope.size_40_quantity,
+                "size_41_quantity": $scope.size_41_quantity,
+                "size_42_quantity": $scope.size_42_quantity,
+                "size_43_quantity": $scope.size_43_quantity,
+                "size_44_quantity": $scope.size_44_quantity,
+                "size_45_quantity": $scope.size_45_quantity,
+                "size_46_quantity": $scope.size_46_quantity,
+                "size_47_quantity": $scope.size_47_quantity,
+                "totalQuantity": $scope.size_40_quantity+$scope.size_41_quantity+$scope.size_42_quantity+$scope.size_43_quantity+
+                                 $scope.size_44_quantity+$scope.size_45_quantity+$scope.size_46_quantity+$scope.size_47_quantity,
+                "costPrice": $scope.cost,
+            };
+<!--            console.log(data);-->
+       }
+
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -297,9 +405,9 @@
         </tr>
     </table>
     <p>Sales Info || Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
-    <input type="button" ng-click="loadSalesData()" value="Get Sales"
-           class="btn btn-primary">
-</p>
+        <input type="button" ng-click="loadSalesData()" value="Get Sales"
+               class="btn btn-primary">
+    </p>
     <table class="table table-font stockTable">
         <tr>
             <th>BRAND</th>
@@ -350,10 +458,71 @@
                 {{salesData.size_47_quantity}}
             </td>
             <td>
-                {{salesData.size_40_quantity + salesData.size_41_quantity + salesData.size_42_quantity + salesData.size_43_quantity + salesData.size_44_quantity + salesData.size_45_quantity + salesData.size_46_quantity + salesData.size_47_quantity}}
+                {{salesData.size_40_quantity + salesData.size_41_quantity + salesData.size_42_quantity +
+                salesData.size_43_quantity + salesData.size_44_quantity + salesData.size_45_quantity +
+                salesData.size_46_quantity + salesData.size_47_quantity}}
             </td>
         </tr>
 
+    </table>
+
+    <p>Update Stock :</p>
+    <table class="table table-font">
+        <tr>
+            <th>
+                Entry Type <select ng-model="entryType" ng-options="x for x in entryTypeList"></select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+
+                From <select ng-model="from" ng-options="x for x in fromList"></select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+
+                To <select ng-model="to" ng-options="x for x in toList"></select>
+            </th>
+        <tr>
+            <th>Brand
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <select ng-model="brand" ng-change="updateLevel_0_CategoryList()">
+                    <option ng-repeat="x in brandList">{{x}}</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>Category &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <select ng-model="selected_level_0_category" ng-change="updateLevel_1_CategoryList()">
+                    <option ng-repeat="x in level_0_category">{{x}}</option>
+                </select>
+                <select ng-model="selected_level_1_category" ng-change="updateSkuList()">
+                    <option ng-repeat="x in level_1_category">{{x}}</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>SKU
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <select ng-model="category" ng-change="updateColorList()">
+                    <option ng-repeat="x in skuList">{{x}}</option>
+                </select>
+                <select ng-model="leather" ng-change="updateProductDescription()">
+                    <option ng-repeat="x in colorList">{{x}}</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>Product Details &nbsp&nbsp&nbsp&nbsp&nbsp {{productDetails}}</th>
+        </tr>
+        <tr>
+            <th>40 <input type="number" ng-model="size_40_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                41 <input type="number" ng-model="size_41_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                42 <input type="number" ng-model="size_42_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                43 <input type="number" ng-model="size_43_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                44 <input type="number" ng-model="size_44_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                45 <input type="number" ng-model="size_45_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                46 <input type="number" ng-model="size_46_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                47 <input type="number" ng-model="size_47_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                Total : <span>{{size_40_quantity+size_41_quantity+size_42_quantity+
+                    size_43_quantity+size_44_quantity+size_45_quantity+
+                    size_46_quantity+size_47_quantity}}</span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                Cost <input type="text" ng-model="cost" class="number_input_width"> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <input type="button" ng-click="addStockEntry()" value="Update" class="text_input_width btn btn-primary"></th>
+        </tr>
     </table>
 </div>
 </body>
