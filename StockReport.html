@@ -14,7 +14,7 @@
       $scope.selectedLevel_0_category=$scope.level_0_categories[0];
 
       $scope.shoe_categories = ["DRIVING","CASUALS","FORMALS"];
-      $scope.slipper_categories = ["KORA","WAVES","A_SERIES","JUSTON"];
+      $scope.slipper_categories = ["KORA","WAVES","A_SERIES","JUSTON","COPPER_SLIPPERS"];
       $scope.all_categories = ["ALL"];
       $scope.level_1_categories = $scope.shoe_categories;
       $scope.selectedLevel_1_category=$scope.level_1_categories[0];
@@ -53,6 +53,9 @@
                         (response.data[i].sku.includes("WAVES")&&$scope.selectedLevel_1_category=="WAVES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
                         (response.data[i].sku.includes("018_JUSTON")&&$scope.selectedLevel_1_category=="JUSTON"&&$scope.selectedLevel_0_category=="SLIPPERS")||
                         (response.data[i].sku.includes("A_0")&&$scope.selectedLevel_1_category=="A_SERIES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+						(response.data[i].sku.includes("RONALDO")&&$scope.selectedLevel_1_category=="COPPER_SLIPPERS"&&$scope.selectedLevel_0_category=="SLIPPERS")||	
+						(response.data[i].sku.includes("PRINCE")&&$scope.selectedLevel_1_category=="COPPER_SLIPPERS"&&$scope.selectedLevel_0_category=="SLIPPERS")||	
+						(response.data[i].sku.includes("AMERICAN")&&$scope.selectedLevel_1_category=="COPPER_SLIPPERS"&&$scope.selectedLevel_0_category=="SLIPPERS")||			
                         (response.data[i].sku.includes("WLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="WALLET")||
                         (response.data[i].sku.includes("BLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BELTS")||
                         (response.data[i].sku.includes("_BAG")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BAGS")){
@@ -149,6 +152,9 @@
                             (response.data[i].category.includes("WAVES")&&$scope.selectedLevel_1_category=="WAVES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
                             (response.data[i].category.includes("018_JUSTON")&&$scope.selectedLevel_1_category=="JUSTON"&&$scope.selectedLevel_0_category=="SLIPPERS")||
                             (response.data[i].category.includes("A_0")&&$scope.selectedLevel_1_category=="A_SERIES"&&$scope.selectedLevel_0_category=="SLIPPERS")||
+							(response.data[i].category.includes("RONALDO")&&$scope.selectedLevel_1_category=="COPPER_SLIPPERS"&&$scope.selectedLevel_0_category=="SLIPPERS")||	
+							(response.data[i].category.includes("PRINCE")&&$scope.selectedLevel_1_category=="COPPER_SLIPPERS"&&$scope.selectedLevel_0_category=="SLIPPERS")||	
+							(response.data[i].category.includes("AMERICAN")&&$scope.selectedLevel_1_category=="COPPER_SLIPPERS"&&$scope.selectedLevel_0_category=="SLIPPERS")||
                             (response.data[i].category.includes("WLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="WALLET")||
                             (response.data[i].category.includes("BLT")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BELTS")||
                             (response.data[i].category.includes("_BAG")&&$scope.selectedLevel_1_category=="ALL"&&$scope.selectedLevel_0_category=="BAGS")){

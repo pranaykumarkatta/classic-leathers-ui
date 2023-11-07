@@ -221,10 +221,15 @@
                 +profitDto.handBagCostPrice+profitDto.beltsAndWalletsCostPrice+profitDto.ladiesFootwearCostPrice+profitDto.kidsFootwearCostPrice
                 +profitDto.ottoCostPrice+profitDto.serviceCostPrice+profitDto.naSalesCostPrice);
 
-                var profitPercent = Math.round(((totalSalePrice-totalPurchasePrice-70000)/totalSalePrice)*100);
-                var profit =  totalSalePrice-totalPurchasePrice-70000;
-
-                resArray.push([profitDto.month.split("_")[1]+" : "+profit+" | "+profitPercent+"%",totalSalePrice,totalPurchasePrice,70000]);
+                if($scope.showAllProfit){
+                    var profitPercent = Math.round(((totalSalePrice-totalPurchasePrice-70000)/totalSalePrice)*100);
+                    var profit =  totalSalePrice-totalPurchasePrice-70000;
+                    resArray.push([profitDto.month.split("_")[1]+" : "+profit+" | "+profitPercent+"%",totalSalePrice,totalPurchasePrice,70000]);
+                } else{
+                    var profitPercent = Math.round(((totalSalePrice-totalPurchasePrice)/totalSalePrice)*100);
+                    var profit =  totalSalePrice-totalPurchasePrice;
+                    resArray.push([profitDto.month.split("_")[1]+" : "+profit+" | "+profitPercent+"%",totalSalePrice,totalPurchasePrice,0]);
+                }
             }
             data = google.visualization.arrayToDataTable(resArray);
             var options = {
