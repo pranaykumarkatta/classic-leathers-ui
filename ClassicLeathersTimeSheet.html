@@ -65,6 +65,7 @@
 
              var monthNumber = (new Date()).getMonth()+1;
             var month = decodeURIComponent((new RegExp('[?|&]' + 'month' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+            console.log(month+"----------------------------------");
             if(month!=null){
                 monthNumber=month;
             }

@@ -25,6 +25,8 @@
       $scope.sizeFilter="";
 	  $scope.sizes = ["All","40","41","42","43","44","45","46","47"];
 	  $scope.sizeFilter=$scope.sizes[0];
+	  $scope.showUpdateStock=false;
+	  $scope.isUpdateDisabled=false;
 
       $scope.filterStock = function(){
           if($scope.selectedLevel_0_category==$scope.level_0_categories[0]){
@@ -170,8 +172,8 @@
 
 
        $scope.entryTypeList = ["INWARD","OUTWARD"]
-       $scope.fromList = ["CLASSIC LEATHERS","PARANDHARAMAN","AJIO RETAIL"]
-       $scope.toList = ["CLASSIC LEATHERS","AJIO RETAIL"]
+       $scope.fromList = ["CLASSIC LEATHERS","PARANDHARAMAN","AJIO RETAIL","FLIPKART"]
+       $scope.toList = ["CLASSIC LEATHERS","AJIO RETAIL","FLIPKART"]
 
        $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/availability'})
             .then(function successCallback(response) {
@@ -193,6 +195,7 @@
        );
 
        $scope.updateLevel_0_CategoryList = function(){
+            $scope.isUpdateDisabled=false;
             $scope.level_0_category = $scope.availabilityMap[$scope.brand];
             $scope.level_1_category = [];
             $scope.skuList = [];
@@ -211,6 +214,7 @@
 
        }
        $scope.updateLevel_1_CategoryList = function(){
+            $scope.isUpdateDisabled=false;
             if($scope.selected_level_0_category!=null && $scope.selected_level_0_category!=""){
                 $scope.level_1_category = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category];
                 $scope.skuList = [];
@@ -218,6 +222,7 @@
             }
        }
        $scope.updateSkuList = function(){
+            $scope.isUpdateDisabled=false;
             if($scope.selected_level_1_category!=null && $scope.selected_level_1_category!=""){
                 $scope.skuList = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
                         +$scope.selected_level_1_category];
@@ -225,12 +230,14 @@
             }
        }
        $scope.updateColorList = function(){
+            $scope.isUpdateDisabled=false;
             if($scope.skuList!=null && $scope.skuList!=""){
                 $scope.colorList = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
                         +$scope.selected_level_1_category+"_"+$scope.category];
             }
        }
        $scope.updateProductDescription = function(){
+            $scope.isUpdateDisabled=false;
             if($scope.colorList!=null && $scope.colorList!=""){
                 $scope.productDetails = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
                         +$scope.selected_level_1_category+"_"+$scope.category+"_"+$scope.leather][0];
@@ -238,12 +245,14 @@
        }
 
        $scope.addStockEntry = function(){
+
+	        $scope.isUpdateDisabled=true;
             var data={"entryType": $scope.entryType,
                 "from": $scope.from,
                 "to": $scope.to,
                 "brand": $scope.brand,
                 "level_0_Category": $scope.selected_level_0_category,
-                "level_0_Category": $scope.selected_level_1_category,
+                "level_1_Category": $scope.selected_level_1_category,
                 "sku": $scope.category,
                 "leather": $scope.leather,
                 "productDescription": $scope.productDetails,
@@ -259,10 +268,20 @@
                                  $scope.size_44_quantity+$scope.size_45_quantity+$scope.size_46_quantity+$scope.size_47_quantity,
                 "costPrice": $scope.cost,
             };
-<!--            console.log(data);-->
+            $http.post('http://localhost:8080/retailStockReport/saveStockEntry',data,{})
+                        .then(data => {
+                            $scope.message="Data Saved Successfully"
+                            setTimeout(() => {
+                            $scope.message="";
+
+                            }, 1000);
+                        })
        }
 
     });
+
+
+
 
 
 
@@ -309,227 +328,240 @@
         &nbsp&nbsp&nbsp<label>
             &nbsp Size : &nbsp <select ng-model="sizeFilter"
                                        ng-options="x for x in sizes" ng-change="updateTotalCount()"></select>
-            &nbsp&nbsp&nbsp
-            Number Of Pairs Sold : &nbsp{{actualDrivingOrderedQuantity-totalDrivingStock}}</label></p>
-    <table class="table table-font stockTable" ng-show="isFootWear">
-        <tr>
-            <th>BRAND</th>
-            <th>SKU</th>
-            <th>LEATHER</th>
-            <th>40</th>
-            <th>41</th>
-            <th>42</th>
-            <th>43</th>
-            <th>44</th>
-            <th>45</th>
-            <th>46</th>
-            <th>47</th>
-            <th>Total : {{totalDrivingStock}} / {{actualDrivingOrderedQuantity}}</th>
-        </tr>
-        <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter"
-            ng-style="{'background-color': (drivingStockEntry.totalQuantity=='0')?'#ffcccc':none}">
-            <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.brand}}</td>
-            <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.sku}}</td>
-            <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.leather}}</td>
-            <td ng-show="drivingStockEntry.showEntry"
-                ng-style="{'background-color': (drivingStockEntry.size_40_quantity<2)?'#ffcccc':((drivingStockEntry.size_40_quantity>=3)?'#62de6f':none)}">
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_40_SalesStockInfo}}">
-                    {{drivingStockEntry.size_40_quantity}}
-                </div>
-            </td>
-            <td ng-show="drivingStockEntry.showEntry"
-                ng-style="{'background-color': (drivingStockEntry.size_41_quantity<2)?'#ffcccc':((drivingStockEntry.size_41_quantity>=3)?'#62de6f':none)}">
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_41_SalesStockInfo}}">
-                    {{drivingStockEntry.size_41_quantity}}
-                </div>
-            </td>
-            <td ng-show="drivingStockEntry.showEntry"
-                ng-style="{'background-color': (drivingStockEntry.size_42_quantity<2)?'#ffcccc':((drivingStockEntry.size_42_quantity>=3)?'#62de6f':none)}">
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_42_SalesStockInfo}}">
-                    {{drivingStockEntry.size_42_quantity}}
-                </div>
-            </td>
-            <td ng-show="drivingStockEntry.showEntry"
-                ng-style="{'background-color': (drivingStockEntry.size_43_quantity<2)?'#ffcccc':((drivingStockEntry.size_43_quantity>=3)?'#62de6f':none)}">
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_43_SalesStockInfo}}">
-                    {{drivingStockEntry.size_43_quantity}}
-                </div>
-            </td>
-            <td ng-show="drivingStockEntry.showEntry"
-                ng-style="{'background-color': (drivingStockEntry.size_44_quantity<2)?'#ffcccc':((drivingStockEntry.size_44_quantity>=3)?'#62de6f':none)}">
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_44_SalesStockInfo}}">
-                    {{drivingStockEntry.size_44_quantity}}
-                </div>
-            </td>
-            <td ng-show="drivingStockEntry.showEntry"
-                ng-style="{'background-color': (drivingStockEntry.size_45_quantity<2)?'#ffcccc':((drivingStockEntry.size_45_quantity>=3)?'#62de6f':none)}">
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_45_SalesStockInfo}}">
-                    {{drivingStockEntry.size_45_quantity}}
-                </div>
-            </td>
-            <td ng-show="drivingStockEntry.showEntry"
-                ng-style="{'background-color': (drivingStockEntry.size_46_quantity<2)?'#ffcccc':((drivingStockEntry.size_46_quantity>=3)?'#62de6f':none)}">
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_46_SalesStockInfo}}">
-                    {{drivingStockEntry.size_46_quantity}}
-                </div>
-            </td>
-            <td ng-show="drivingStockEntry.showEntry"
-                ng-style="{'background-color': (drivingStockEntry.size_47_quantity<2)?'#ffcccc':((drivingStockEntry.size_47_quantity>=3)?'#62de6f':none)}">
-                <div data-toggle="tooltip" data-placement="top" title="{{drivingStockEntry.size_47_SalesStockInfo}}">
-                    {{drivingStockEntry.size_47_quantity}}
-                </div>
-            </td>
-            <td ng-show="drivingStockEntry.showEntry">
-                <div data-toggle="tooltip" data-placement="top"
-                     title="{{drivingStockEntry.total_Quantity_SalesStockInfo}}">
-                    {{drivingStockEntry.totalQuantity}}
-                </div>
-            </td>
-        </tr>
-    </table>
+            &nbsp
+            Number Of Pairs Sold : &nbsp{{actualDrivingOrderedQuantity-totalDrivingStock}}</label>
+        Update Stock <input type="checkbox" class="custom-control-input" ng-model="showUpdateStock"></p>
+    <div ng-hide="showUpdateStock">
+        <table class="table table-font stockTable" ng-show="isFootWear">
+            <tr>
+                <th>BRAND</th>
+                <th>SKU</th>
+                <th>LEATHER</th>
+                <th>40</th>
+                <th>41</th>
+                <th>42</th>
+                <th>43</th>
+                <th>44</th>
+                <th>45</th>
+                <th>46</th>
+                <th>47</th>
+                <th>Total : {{totalDrivingStock}} / {{actualDrivingOrderedQuantity}}</th>
+            </tr>
+            <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter"
+                ng-style="{'background-color': (drivingStockEntry.totalQuantity=='0')?'#ffcccc':none}">
+                <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.brand}}</td>
+                <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.sku}}</td>
+                <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.leather}}</td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_40_quantity<2)?'#ffcccc':((drivingStockEntry.size_40_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_40_SalesStockInfo}}">
+                        {{drivingStockEntry.size_40_quantity}}
+                    </div>
+                </td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_41_quantity<2)?'#ffcccc':((drivingStockEntry.size_41_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_41_SalesStockInfo}}">
+                        {{drivingStockEntry.size_41_quantity}}
+                    </div>
+                </td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_42_quantity<2)?'#ffcccc':((drivingStockEntry.size_42_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_42_SalesStockInfo}}">
+                        {{drivingStockEntry.size_42_quantity}}
+                    </div>
+                </td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_43_quantity<2)?'#ffcccc':((drivingStockEntry.size_43_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_43_SalesStockInfo}}">
+                        {{drivingStockEntry.size_43_quantity}}
+                    </div>
+                </td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_44_quantity<2)?'#ffcccc':((drivingStockEntry.size_44_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_44_SalesStockInfo}}">
+                        {{drivingStockEntry.size_44_quantity}}
+                    </div>
+                </td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_45_quantity<2)?'#ffcccc':((drivingStockEntry.size_45_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_45_SalesStockInfo}}">
+                        {{drivingStockEntry.size_45_quantity}}
+                    </div>
+                </td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_46_quantity<2)?'#ffcccc':((drivingStockEntry.size_46_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_46_SalesStockInfo}}">
+                        {{drivingStockEntry.size_46_quantity}}
+                    </div>
+                </td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_47_quantity<2)?'#ffcccc':((drivingStockEntry.size_47_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_47_SalesStockInfo}}">
+                        {{drivingStockEntry.size_47_quantity}}
+                    </div>
+                </td>
+                <td ng-show="drivingStockEntry.showEntry">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.total_Quantity_SalesStockInfo}}">
+                        {{drivingStockEntry.totalQuantity}}
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-    <table class="table table-font stockTable" ng-hide="isFootWear">
-        <tr>
-            <th>SKU</th>
-            <th>LEATHER</th>
-            <th>BRAND</th>
+        <table class="table table-font stockTable" ng-hide="isFootWear">
+            <tr>
+                <th>SKU</th>
+                <th>LEATHER</th>
+                <th>BRAND</th>
 
-            <th>Total : {{totalDrivingStock}} / {{actualDrivingOrderedQuantity}}</th>
-        </tr>
-        <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter"
-            ng-style="{'background-color': (drivingStockEntry.totalQuantity=='0')?'#ffcccc':none}">
-            <td>{{drivingStockEntry.sku}}</td>
-            <td>{{drivingStockEntry.leather}}</td>
-            <td>{{drivingStockEntry.brand}}</td>
+                <th>Total : {{totalDrivingStock}} / {{actualDrivingOrderedQuantity}}</th>
+            </tr>
+            <tr ng-repeat="drivingStockEntry in drivingStockEntries | filter:DrivingShoeFilter"
+                ng-style="{'background-color': (drivingStockEntry.totalQuantity=='0')?'#ffcccc':none}">
+                <td>{{drivingStockEntry.sku}}</td>
+                <td>{{drivingStockEntry.leather}}</td>
+                <td>{{drivingStockEntry.brand}}</td>
 
-            <td>
-                <div data-toggle="tooltip" data-placement="top"
-                     title="{{drivingStockEntry.total_Quantity_SalesStockInfo}}">
-                    {{drivingStockEntry.totalQuantity}}
-                </div>
-            </td>
-        </tr>
-    </table>
-    <p>Sales Info || Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
-        <input type="button" ng-click="loadSalesData()" value="Get Sales"
-               class="btn btn-primary">
-    </p>
-    <table class="table table-font stockTable">
-        <tr>
-            <th>BRAND</th>
-            <th>SKU</th>
-            <th>LEATHER</th>
-            <th>40</th>
-            <th>41</th>
-            <th>42</th>
-            <th>43</th>
-            <th>44</th>
-            <th>45</th>
-            <th>46</th>
-            <th>47</th>
-            <th>Total &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-        </tr>
-        <tr ng-repeat="salesData in salesDataList  | filter:DrivingShoeFilter">
-            <td>
-                {{salesData.brand}}
-            </td>
-            <td>
-                {{salesData.category}}
-            </td>
-            <td>
-                {{salesData.leather}}
-            </td>
-            <td>
-                {{salesData.size_40_quantity}}
-            </td>
-            <td>
-                {{salesData.size_41_quantity}}
-            </td>
-            <td>
-                {{salesData.size_42_quantity}}
-            </td>
-            <td>
-                {{salesData.size_43_quantity}}
-            </td>
-            <td>
-                {{salesData.size_44_quantity}}
-            </td>
-            <td>
-                {{salesData.size_45_quantity}}
-            </td>
-            <td>
-                {{salesData.size_46_quantity}}
-            </td>
-            <td>
-                {{salesData.size_47_quantity}}
-            </td>
-            <td>
-                {{salesData.size_40_quantity + salesData.size_41_quantity + salesData.size_42_quantity +
-                salesData.size_43_quantity + salesData.size_44_quantity + salesData.size_45_quantity +
-                salesData.size_46_quantity + salesData.size_47_quantity}}
-            </td>
-        </tr>
+                <td>
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.total_Quantity_SalesStockInfo}}">
+                        {{drivingStockEntry.totalQuantity}}
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <p>Sales Info || Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
+            <input type="button" ng-click="loadSalesData()" value="Get Sales"
+                   class="btn btn-primary">
+        </p>
+        <table class="table table-font stockTable">
+            <tr>
+                <th>BRAND</th>
+                <th>SKU</th>
+                <th>LEATHER</th>
+                <th>40</th>
+                <th>41</th>
+                <th>42</th>
+                <th>43</th>
+                <th>44</th>
+                <th>45</th>
+                <th>46</th>
+                <th>47</th>
+                <th>Total &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            </tr>
+            <tr ng-repeat="salesData in salesDataList  | filter:DrivingShoeFilter">
+                <td>
+                    {{salesData.brand}}
+                </td>
+                <td>
+                    {{salesData.category}}
+                </td>
+                <td>
+                    {{salesData.leather}}
+                </td>
+                <td>
+                    {{salesData.size_40_quantity}}
+                </td>
+                <td>
+                    {{salesData.size_41_quantity}}
+                </td>
+                <td>
+                    {{salesData.size_42_quantity}}
+                </td>
+                <td>
+                    {{salesData.size_43_quantity}}
+                </td>
+                <td>
+                    {{salesData.size_44_quantity}}
+                </td>
+                <td>
+                    {{salesData.size_45_quantity}}
+                </td>
+                <td>
+                    {{salesData.size_46_quantity}}
+                </td>
+                <td>
+                    {{salesData.size_47_quantity}}
+                </td>
+                <td>
+                    {{salesData.size_40_quantity + salesData.size_41_quantity + salesData.size_42_quantity +
+                    salesData.size_43_quantity + salesData.size_44_quantity + salesData.size_45_quantity +
+                    salesData.size_46_quantity + salesData.size_47_quantity}}
+                </td>
+            </tr>
 
-    </table>
+        </table>
+    </div>
+    <div ng-show="showUpdateStock">
+        <p>Update Stock</p>
+        <table class="table table-font">
+            <tr>
+                <th>
+                    Entry Type <select ng-model="entryType" ng-options="x for x in entryTypeList"></select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 
-    <p>Update Stock :</p>
-    <table class="table table-font">
-        <tr>
-            <th>
-                Entry Type <select ng-model="entryType" ng-options="x for x in entryTypeList"></select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    From <select ng-model="from" ng-options="x for x in fromList"></select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 
-                From <select ng-model="from" ng-options="x for x in fromList"></select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-
-                To <select ng-model="to" ng-options="x for x in toList"></select>
-            </th>
-        <tr>
-            <th>Brand
-                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <select ng-model="brand" ng-change="updateLevel_0_CategoryList()">
-                    <option ng-repeat="x in brandList">{{x}}</option>
-                </select>
-            </th>
-        </tr>
-        <tr>
-            <th>Category &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <select ng-model="selected_level_0_category" ng-change="updateLevel_1_CategoryList()">
-                    <option ng-repeat="x in level_0_category">{{x}}</option>
-                </select>
-                <select ng-model="selected_level_1_category" ng-change="updateSkuList()">
-                    <option ng-repeat="x in level_1_category">{{x}}</option>
-                </select>
-            </th>
-        </tr>
-        <tr>
-            <th>SKU
-                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <select ng-model="category" ng-change="updateColorList()">
-                    <option ng-repeat="x in skuList">{{x}}</option>
-                </select>
-                <select ng-model="leather" ng-change="updateProductDescription()">
-                    <option ng-repeat="x in colorList">{{x}}</option>
-                </select>
-            </th>
-        </tr>
-        <tr>
-            <th>Product Details &nbsp&nbsp&nbsp&nbsp&nbsp {{productDetails}}</th>
-        </tr>
-        <tr>
-            <th>40 <input type="number" ng-model="size_40_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                41 <input type="number" ng-model="size_41_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                42 <input type="number" ng-model="size_42_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                43 <input type="number" ng-model="size_43_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                44 <input type="number" ng-model="size_44_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                45 <input type="number" ng-model="size_45_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                46 <input type="number" ng-model="size_46_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                47 <input type="number" ng-model="size_47_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                Total : <span>{{size_40_quantity+size_41_quantity+size_42_quantity+
+                    To <select ng-model="to" ng-options="x for x in toList"></select>
+                </th>
+            <tr>
+                <th>Brand
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <select ng-model="brand" ng-change="updateLevel_0_CategoryList()">
+                        <option ng-repeat="x in brandList">{{x}}</option>
+                    </select>
+                </th>
+            </tr>
+            <tr>
+                <th>Category &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <select ng-model="selected_level_0_category" ng-change="updateLevel_1_CategoryList()">
+                        <option ng-repeat="x in level_0_category">{{x}}</option>
+                    </select>
+                    <select ng-model="selected_level_1_category" ng-change="updateSkuList()">
+                        <option ng-repeat="x in level_1_category">{{x}}</option>
+                    </select>
+                </th>
+            </tr>
+            <tr>
+                <th>SKU
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <select ng-model="category" ng-change="updateColorList()">
+                        <option ng-repeat="x in skuList">{{x}}</option>
+                    </select>
+                    <select ng-model="leather" ng-change="updateProductDescription()">
+                        <option ng-repeat="x in colorList">{{x}}</option>
+                    </select>
+                </th>
+            </tr>
+            <tr>
+                <th>Product Details &nbsp&nbsp&nbsp&nbsp&nbsp {{productDetails}}</th>
+            </tr>
+            <tr>
+                <th>40 <input type="number" ng-model="size_40_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    41 <input type="number" ng-model="size_41_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    42 <input type="number" ng-model="size_42_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    43 <input type="number" ng-model="size_43_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    44 <input type="number" ng-model="size_44_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    45 <input type="number" ng-model="size_45_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    46 <input type="number" ng-model="size_46_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    47 <input type="number" ng-model="size_47_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    Total : <span>{{size_40_quantity+size_41_quantity+size_42_quantity+
                     size_43_quantity+size_44_quantity+size_45_quantity+
                     size_46_quantity+size_47_quantity}}</span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                Cost <input type="text" ng-model="cost" class="number_input_width"> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-            <input type="button" ng-click="addStockEntry()" value="Update" class="text_input_width btn btn-primary"></th>
-        </tr>
-    </table>
+                    Cost <input type="text" ng-model="cost" class="number_input_width"> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <input type="button" ng-click="addStockEntry()" value="Update"
+                           class="text_input_width btn btn-primary" ng-disabled="isUpdateDisabled" > <label ng-bind="message"></label></th>
+            </tr>
+        </table>
+    </div>
 </div>
 </body>
 </html>
