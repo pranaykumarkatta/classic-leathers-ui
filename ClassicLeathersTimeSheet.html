@@ -79,20 +79,26 @@
 
          $scope.UpdateTotalWorkingHours = function(){
             var hoursTotal=0;
-            var filterRowCount=0
+            var filterRowCount=0;
+            var halfDayCount= 0;
 
             for(var i = 0, size =  $scope.timeSheetEntryList.length ; i < size ; i++){
                 var item =  $scope.timeSheetEntryList[i];
                 var name = item.employeeName;
                 if($scope.timeSheetFilter.toLowerCase() == name.toLowerCase() && item.totalWorkingHours>0){
+                if(parseFloat(item.totalWorkingHours) <=6 ){
+                    halfDayCount=halfDayCount+1;
+                }
                     hoursTotal=hoursTotal+parseFloat(item.totalWorkingHours);
                     filterRowCount=filterRowCount+1;
                 }
             }
-            var averageWorkingHours=(hoursTotal/filterRowCount);
+
+            var averageWorkingHours=(hoursTotal/(filterRowCount-halfDayCount/2));
 
              $scope.showAverage=hoursTotal>0;
              $scope.daysPresent=filterRowCount;
+             $scope.halfDayCount=halfDayCount;
              $scope.hoursTotal=hoursTotal.toFixed(2);
              $scope.averageWorkingHours=averageWorkingHours.toFixed(2);
          }
@@ -131,8 +137,8 @@
         <tr>
             <th>Filter by Date, Employee Name, Present Yes/No &nbsp
                 <Input type="text" ng-model="timeSheetFilter" ng-change="UpdateTotalWorkingHours()"></th>
-            <th ng-show="showAverage">Total / Average Working Hours : <label ng-bind="hoursTotal"></label> &nbsp / &nbsp <label ng-bind="averageWorkingHours"></label></th>
-            <th ng-show="showAverage">Number of days present : <label ng-bind="daysPresent"></label></th>
+            <th ng-show="showAverage">Total / Average Working Hours : <b ng-bind="hoursTotal"></b>  /  <b ng-bind="averageWorkingHours"></b></th>
+            <th ng-show="showAverage">Number of days present / Half Days : <b ng-bind="daysPresent"></b> / <b ng-bind="halfDayCount"></b></th>
         </tr>
     </table>
     <table class="table table-font">
