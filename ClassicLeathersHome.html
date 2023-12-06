@@ -47,6 +47,10 @@
                 resArray.push([""+dailySalesDto.day,dailySalesDto.sales,"Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale,avgSale,"Day - "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale]);
             }
 
+            for(var i = resArray.length ; i < 31 ; i++){
+                resArray.push([""+(i+1),0,"Day "+dailySalesDto.day+" || Total Sale : "+0+" || Avg Sales: "+avgSale,avgSale,"Day - "+0+" || Total Sale : "+0+" || Avg Sales: "+avgSale]);
+            }
+
             var dataTable = new google.visualization.DataTable();
             dataTable.addColumn('string', 'DAY');
             dataTable.addColumn('number', 'Sales');
