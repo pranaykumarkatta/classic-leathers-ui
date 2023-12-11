@@ -162,34 +162,67 @@
             };
             var chart = new google.visualization.LineChart(document.getElementById('total_sales_chart'));
             chart.draw(data, options);
-
+          }
 <!----------------------------------------- TOTAL SALES GRAPH END--------------------------------------------------------- -->
 
-<!----------------------------------------- AVERAGE SALES GRAPH BY DATE START------------------------------------------------------- -->
-           const resArray1 = [];
-            resArray1.push(['DAY', 'AUG', 'SEP', 'OCT', 'NOV']);
-            resArray1.push(['10', 8000, 10000, 7800, 6900]);
-            resArray1.push(['20', 10000, 8000, 10000, 9000]);
-            resArray1.push(['30', 9000, 7000, 7000, 7000]);
-            data = google.visualization.arrayToDataTable(resArray1);
-            var options = {
-              hAxis: {
-                title: 'DAY'
-              },
-              vAxis: {
-                title: 'AVERAGE SALES',
-                viewWindow: {
-                  min: 0,
-                  max: 15000
-                }
-              },
-              curveType: 'function',
-              legend: { position: 'bottom' }
-            };
-            var chart = new google.visualization.LineChart(document.getElementById('avg_sales_by_date_chart'));
-            chart.draw(data, options);
-          }
-<!----------------------------------------- AVERAGE SALES GRAPH BY DATE END--------------------------------------------------------- -->
+<!----------------------------------------- SALES MEDIUM GRAPH START------------------------------------------------------- -->
+          let salesEntryMap = new Map()
+           for(var i=0; i<9;i++){
+               $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+i})
+                .then(function successCallback(response) {
+                        salesEntryMap.set(new Date(response.data[2].saleDate).getMonth()+1,response.data);
+                        if(i+1 >8){
+                         google.charts.load('current', {'packages':['corechart']});
+                         google.charts.setOnLoadCallback($scope.drawSalesMediumChart);
+                        }
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                    }
+                );
+            }
+
+            $scope.drawSalesMediumChart = function(){
+					const resArray = [];
+					console.log(salesEntryMap);
+					resArray.push(['MONTH','EXISTING','INSTAGRAM','REFERRAL','WALK IN']);
+					for (let [key, value] of salesEntryMap){
+                        var walkInSales=0;
+                        var existingCustomerSales=0;
+                        var referralSales=0;
+                        var advertisementSales=0;
+                        for(var i = 0, size = value.length; i < size ; i++){
+                            var item = value[i];
+                            if(item.stepInType == 'EXISTING CUSTOMER'){
+                                existingCustomerSales += Number(item.salePrice);
+                            }else if(item.stepInType == 'INSTAGRAM'){
+                                advertisementSales += Number(item.salePrice);
+                            }else if(item.stepInType == 'REFERRAL'){
+                                referralSales += Number(item.salePrice);
+                            }else if(item.stepInType == 'WALK IN'||item.stepInType == 'WALKIN'){
+                                walkInSales += Number(item.salePrice);
+                            }
+                        }
+                        resArray.push([key,existingCustomerSales,advertisementSales,referralSales,walkInSales]);
+                    }
+                    data = google.visualization.arrayToDataTable(resArray);
+                    var options = {
+                      hAxis: {
+                        title: 'MONTH'
+                      },
+                      vAxis: {
+                        title: 'SALES',
+                        viewWindow: {
+                          min: 0,
+                          max: 210000
+                        }
+                      },
+                      curveType: 'function',
+                      legend: { position: 'bottom' }
+                    };
+                    var chart = new google.visualization.LineChart(document.getElementById('sales_medium_date_chart'));
+                    chart.draw(data, options);
+            }
+<!----------------------------------------- SALES MEDIUM GRAPH END--------------------------------------------------------- -->
 <!----------------------------------------- PROFIT GRAPH START------------------------------------------------------- -->
            $scope.showAllProfit=true;
           $scope.showDrivingProfitData = true;
@@ -489,6 +522,7 @@
 
 
 
+
     </script>
 
 </head>
@@ -539,8 +573,8 @@
         </p>
     </div>
     <div id="total_sales_chart" style="width: 100%; height: 350px"></div>
-
-    <div id="avg_sales_by_date_chart" style="width: 100%; height: 350px"></div>
+    <div><p>CLASSIC LEATHERS SALES REPORT BY STEP IN TYPE</p></div>
+    <div id="sales_medium_date_chart" style="width: 100%; height: 350px"></div>
     <br><br><br>
     <div><p>CLASSIC LEATHERS PURCHASE VS SALES REPORT</p></div>
     <div>
