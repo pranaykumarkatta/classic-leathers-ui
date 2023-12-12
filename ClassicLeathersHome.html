@@ -167,13 +167,26 @@
 
 <!----------------------------------------- SALES MEDIUM GRAPH START------------------------------------------------------- -->
           let salesEntryMap = new Map()
-           for(var i=0; i<9;i++){
-               $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+i})
+          $scope.i=0;
+          $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+$scope.i})
                 .then(function successCallback(response) {
                         salesEntryMap.set(new Date(response.data[2].saleDate).getMonth()+1,response.data);
-                        if(i+1 >8){
-                         google.charts.load('current', {'packages':['corechart']});
-                         google.charts.setOnLoadCallback($scope.drawSalesMediumChart);
+                        $scope.i = $scope.i+1;
+                        $scope.loadSales();
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                    }
+          );
+
+            $scope.loadSales = function(){
+                $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+$scope.i})
+                .then(function successCallback(response) {
+                        salesEntryMap.set(new Date(response.data[2].saleDate).getMonth()+1,response.data);
+                        $scope.i = $scope.i+1;
+                        if($scope.i < 9){ $scope.loadSales();}
+                        else{
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback($scope.drawSalesMediumChart);
                         }
                     },function errorCallback(response) {
                         console.log(error.value);
