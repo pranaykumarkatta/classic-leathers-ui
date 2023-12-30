@@ -1,0 +1,205 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/body.css">
+    <script type="text/javascript">
+     var app = angular.module("classicLeathers", []);
+
+     app.controller("stockController", function($scope,$http) {
+
+        $scope.isAdmin = decodeURIComponent((new RegExp('[?|&]' + 'add' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+
+        $scope.loadStores = function(){
+            $http({method: 'GET', url: 'http://localhost:8080/stock/stores'})
+                .then(function successCallback(response) {
+                        $scope.storeList = response.data;
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                    }
+          );
+        }
+        $scope.loadStores();
+        $scope.addStore = function(){
+            if($scope.newStore !=null){
+                $scope.storeList.push($scope.newStore);
+                $scope.newStore=null;
+                $scope.isAdmin=false;
+            }else{
+                window.alert("Invalid Store Name");
+           }
+        }
+
+
+        $scope.loadBrands = function(){
+            $http({method: 'GET', url: 'http://localhost:8080/stock/brands'})
+                .then(function successCallback(response) {
+                        $scope.brandList = response.data;
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                    }
+          );
+        }
+        $scope.loadBrands();
+        $scope.addBrand = function(){
+            if($scope.newBrand !=null){
+                $scope.brandList.push($scope.newBrand);
+                $scope.newBrand=null;
+                $scope.isAdmin=false;
+            }else{
+                window.alert("Invalid Brand Name");
+           }
+        }
+
+
+
+        $scope.loadSkus = function(){
+            $http({method: 'GET', url: 'http://localhost:8080/stock/skus'})
+                .then(function successCallback(response) {
+                        $scope.skuList = response.data;
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                    }
+          );
+        }
+        $scope.loadSkus();
+        $scope.addSku = function(){
+            if($scope.newSku !=null){
+                $scope.skuList.push($scope.newSku);
+                $scope.newSku=null;
+                $scope.isAdmin=false;
+            }else{
+                window.alert("Invalid SKU Name");
+           }
+        }
+
+
+
+        $scope.isValidSku = true;
+        const updateStockDTOList = [];
+        $scope.saveStockDetails = function(){
+            if($scope.fromStore ==null){
+                 window.alert("Invalid From Store");
+            }else if($scope.toStore ==null){
+                 window.alert("Invalid To Store");
+            }else if($scope.brand ==null){
+                 window.alert("Invalid Brand");
+            }else if($scope.sku !=null){
+                 const newSkus= $scope.sku.split('\n');
+                 newSkus.forEach(validateSKU);
+                 if($scope.isValidSku){
+                    for(var i = 0, size = newSkus.length; i < size ; i++){
+                        var item = newSkus[i];
+                        var data={"brand": $scope.brand,
+                                  "from": $scope.fromStore,
+                                  "to": $scope.toStore,
+                                  "sku": item
+                            };
+                        updateStockDTOList.push(data);
+                    }
+                    $http.post('http://localhost:8080/stock',updateStockDTOList,{})
+                        .then(data => {
+                            $scope.message="Data Saved Successfully"
+                            $scope.sku=null;
+                        })
+                        .catch(error => {
+                            console.log(error.value);
+                        });
+                 }else{
+                    $scope.isValidSku = true;
+                 }
+            }else{
+                window.alert("Invalid SKU Data");
+            }
+
+        }
+
+        function validateSKU(value){
+            if($scope.skuList.indexOf(value)<0){
+                $scope.isValidSku = false;
+            }
+        }
+     });
+
+
+
+    </script>
+
+</head>
+<body class="classicThemeColor" ng-app="classicLeathers">
+
+<div class="header_div">
+    <img class="images" src="../resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">RETAIL STORE TIRUPATI</label>
+    </div>
+</div>
+<div ng-controller="stockController" class="working_div container">
+    <div>
+       <p><input type="checkbox" ng-model="isUpdateStock">  Update Stock</p>
+    </div>
+    <div ng-hide="isUpdateStock"><p>Stock Report</p></div>
+    <div ng-show="isUpdateStock">
+        <p>UPDATE STOCK ENTRY</p>
+        <table class="table table-font">
+            <tr ng-show="isAdmin">
+                <td>Store</td>
+                <td><input type="text" ng-model="newStore"></td>
+            </tr>
+            <tr ng-show="isAdmin">
+                <td></td>
+                <td><input type="button" value="Add Store" class="btn btn-primary" ng-click="addStore()"></td>
+            </tr>
+            <tr ng-hide="isAdmin">
+                <td>From</td>
+                <td><select ng-model="fromStore" ng-options="x for x in storeList"></select></td>
+            </tr>
+            <tr ng-hide="isAdmin">
+                <td>To</td>
+                <td><select ng-model="toStore" ng-options="x for x in storeList"></select></td>
+            </tr>
+            <tr ng-show="isAdmin">
+                <td>Brand</td>
+                <td> <input type="text" ng-model="newBrand"></td>
+            </tr>
+            <tr ng-show="isAdmin">
+                <td></td>
+                <td><input type="button" value="Add Brand" class="btn btn-primary" ng-click="addBrand()"></td>
+            </tr>
+            <tr ng-hide="isAdmin">
+                <td>Brand</td>
+                <td><select ng-model="brand" ng-options="x for x in brandList"></select></td>
+            </tr>
+            <tr ng-show="isAdmin">
+                <td>SKU / Purchase Cost / MRP</td>
+                <td><input type="text" ng-model="newSku"> / <input type="text" ng-model="purchaseCost"> / <input
+                        type="text" ng-model="mrp"></td>
+            </tr>
+            <tr ng-show="isAdmin">
+                <td>Category / Description</td>
+                <td><input type="text" ng-model="category"> / <input type="text" ng-model="description">
+            </tr>
+
+            <tr ng-show="isAdmin">
+                <td></td>
+                <td><input type="button" value="Add Sku" class="btn btn-primary" ng-click="addSku()"></td>
+            </tr>
+            <tr ng-hide="isAdmin">
+                <td>SKU</td>
+                <td><textarea ng-model="sku" rows="10" cols="20"></textarea></td>
+            </tr>
+            <tr ng-hide="isAdmin">
+                <td><input type="button" value="save" class="btn btn-primary" ng-click="saveStockDetails()"></td>
+                <td><span ng-bind="message"></span></td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>
+</body>
+</html>
