@@ -21,10 +21,10 @@
                 $scope.isPopUpVisible=false;
             };
 
-            var sheetNumber = (new Date()).getMonth()-3;
+            var sheetNumber = (new Date()).getMonth();
             var monthNumber = decodeURIComponent((new RegExp('[?|&]' + 'month' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
             if(monthNumber!=null){
-                sheetNumber=monthNumber-4;
+                sheetNumber=monthNumber;
             }
             $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+sheetNumber})
             .then(function successCallback(response) {

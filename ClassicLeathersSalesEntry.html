@@ -13,7 +13,7 @@
         $scope.stepInTypeList = ["WALK IN","REFERRAL","INSTAGRAM","EXISTING CUSTOMER"];
         $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
         $scope.mopList = ["NA","CASH","G-PAY","SWIPE"];
-        $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","RAJU","MANI"];
+        $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","MANI"];
         $scope.customerName="";
         $scope.showCustomerDetails = false;
         $scope.isNewCustomer = false;
@@ -288,10 +288,10 @@
                     }
                     var headers = { 'content-type': 'application/json'}
 <!--------------------------------get invioce number start--------------------------------------->
-                    var sheetNumber = (new Date()).getMonth()-3;
+                    var sheetNumber = (new Date()).getMonth();
                     var monthNumber = decodeURIComponent((new RegExp('[?|&]' + 'month' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
                     if(monthNumber!=null){
-                        sheetNumber=monthNumber-4;
+                        sheetNumber=monthNumber;
                     }
                     $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+sheetNumber})
                     .then(function successCallback(response) {
