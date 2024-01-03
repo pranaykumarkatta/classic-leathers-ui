@@ -58,7 +58,6 @@
             dataTable.addColumn('number', 'Average Sales');
             dataTable.addColumn({type: 'string', role: 'tooltip'});
             dataTable.addRows(resArray);
-<!--            data = google.visualization.arrayToDataTable(resArray);-->
             var options = {
               tooltip: {isHtml: true},
               hAxis: {
@@ -170,30 +169,34 @@
           $scope.i=0;
           $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+$scope.i})
                 .then(function successCallback(response) {
-                        salesEntryMap.set(new Date(response.data[2].saleDate).getMonth()+1,response.data);
+                        salesEntryMap.set(new Date(response.data[1].saleDate).getMonth()+1,response.data);
                         $scope.i = $scope.i+1;
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback($scope.drawSalesMediumChart);
                         $scope.loadSales();
                     },function errorCallback(response) {
                         console.log(error.value);
+                        window.alert(111);
                     }
           );
 
             $scope.loadSales = function(){
                 $http({method: 'GET', url: 'http://localhost:8080/retailSalesReport?sheetNumber='+$scope.i})
                 .then(function successCallback(response) {
-                        salesEntryMap.set(new Date(response.data[2].saleDate).getMonth()+1,response.data);
-                        $scope.i = $scope.i+1;
-                        if($scope.i < 9){ $scope.loadSales();}
-                        else{
-                        google.charts.load('current', {'packages':['corechart']});
-                        google.charts.setOnLoadCallback($scope.drawSalesMediumChart);
+                             if(response.data.length > 0){
+                                salesEntryMap.set(new Date(response.data[1].saleDate).getMonth()+1,response.data);
+                                $scope.i = $scope.i+1;
+                            }
+                            if($scope.i < 13){ $scope.loadSales();}
+                                else{
+                                google.charts.load('current', {'packages':['corechart']});
+                                google.charts.setOnLoadCallback($scope.drawSalesMediumChart);
                         }
                     },function errorCallback(response) {
                         console.log(error.value);
                     }
                 );
             }
-
             $scope.drawSalesMediumChart = function(){
 					const resArray = [];
 					console.log(salesEntryMap);
