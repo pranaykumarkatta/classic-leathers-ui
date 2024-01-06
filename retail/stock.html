@@ -12,6 +12,17 @@
 
      app.controller("stockController", function($scope,$http) {
 
+        <!--     GET STOCK AVAILABILITY DETAILS START-->
+                $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/getStockReport'})
+                    .then(function successCallback(response) {
+                            $scope.stockEntries=response.data;
+                             console.log($scope.stockEntries)
+                        },function errorCallback(response) {
+                            console.log(error.value);
+                        }
+               );
+        <!--     GET STOCK AVAILABILITY DETAILS END-->
+
         $scope.isAdmin = decodeURIComponent((new RegExp('[?|&]' + 'add' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
 
         $scope.loadStores = function(){
@@ -80,7 +91,7 @@
 
 
         $scope.isValidSku = true;
-        const updateStockDTOList = [];
+        $scope.updateStockDTOList = [];
         $scope.saveStockDetails = function(){
             if($scope.fromStore ==null){
                  window.alert("Invalid From Store");
@@ -99,12 +110,13 @@
                                   "to": $scope.toStore,
                                   "sku": item
                             };
-                        updateStockDTOList.push(data);
+                        $scope.updateStockDTOList.push(data);
                     }
-                    $http.post('http://localhost:8080/stock',updateStockDTOList,{})
+                    $http.post('http://localhost:8080/stock',$scope.updateStockDTOList,{})
                         .then(data => {
                             $scope.message="Data Saved Successfully"
                             $scope.sku=null;
+                            $scope.updateStockDTOList = [];
                         })
                         .catch(error => {
                             console.log(error.value);
@@ -121,9 +133,14 @@
         function validateSKU(value){
             if($scope.skuList.indexOf(value)<0){
                 $scope.isValidSku = false;
+                    window.alert("Invalid SKU"+value);
             }
         }
      });
+
+
+
+
 
 
 
@@ -136,15 +153,48 @@
     <img class="images" src="../resource/classic_logo.png"/>
     <div class="menu_div container">
         <label class="welcome_label">RETAIL STORE TIRUPATI</label>
+        <a href="..\ClassicLeathersHome.html" class="btn btn-primary">Home</a>
+        <a href="..\ClassicLeathersSalesEntry.html" class="btn btn-primary">New Sale</a>
+        <a href="..\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
+        <a href="..\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
+        <a href="..\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
     </div>
 </div>
 <div ng-controller="stockController" class="working_div container">
     <div>
-       <p><input type="checkbox" ng-model="isUpdateStock">  Update Stock</p>
+        <p><input type="checkbox" ng-model="isUpdateStock">&nbsp&nbsp&nbspUPDATE STOCK ENTRY</p>
     </div>
-    <div ng-hide="isUpdateStock"><p>Stock Report</p></div>
+    <div ng-hide="isUpdateStock">
+        <table class="table table-font stockTable">
+            <tr>
+                <th>BRAND</th>
+                <th>ARTICLE</th>
+                <th>39</th>
+                <th>40</th>
+                <th>41</th>
+                <th>42</th>
+                <th>43</th>
+                <th>44</th>
+                <th>45</th>
+                <th>46</th>
+                <th>47</th>
+            </tr>
+            <tr ng-repeat="entry in stockEntries">
+                <td>{{entry.brand}}</td>
+                <td>{{entry.article}}</td>
+                <td>{{entry.size_39}}</td>
+                <td>{{entry.size_40}}</td>
+                <td>{{entry.size_41}}</td>
+                <td>{{entry.size_42}}</td>
+                <td>{{entry.size_43}}</td>
+                <td>{{entry.size_44}}</td>
+                <td>{{entry.size_45}}</td>
+                <td>{{entry.size_46}}</td>
+                <td>{{entry.size_47}}</td>
+            </tr>
+        </table>
+    </div>
     <div ng-show="isUpdateStock">
-        <p>UPDATE STOCK ENTRY</p>
         <table class="table table-font">
             <tr ng-show="isAdmin">
                 <td>Store</td>
@@ -164,7 +214,7 @@
             </tr>
             <tr ng-show="isAdmin">
                 <td>Brand</td>
-                <td> <input type="text" ng-model="newBrand"></td>
+                <td><input type="text" ng-model="newBrand"></td>
             </tr>
             <tr ng-show="isAdmin">
                 <td></td>

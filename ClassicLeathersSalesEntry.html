@@ -29,7 +29,7 @@
         $scope.isSaveDisabled = false;
         $scope.availabilityMap = "";
 
-        $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/availability'})
+        $http({method: 'GET', url: 'http://localhost:8080/stock/availabilityMap'})
             .then(function successCallback(response) {
                     $scope.availabilityMap =response.data;
                     $scope.level_0_category=[];
@@ -80,16 +80,12 @@
                 $scope.colorList = [];
             }
        }
-       $scope.updateColorList = function(){
-            if($scope.skuList!=null && $scope.skuList!=""){
-                $scope.colorList = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
-                        +$scope.selected_level_1_category+"_"+$scope.category];
-            }
-       }
        $scope.updateProductDescription = function(){
-            if($scope.colorList!=null && $scope.colorList!=""){
+            if($scope.skuList!=null && $scope.skuList!=""){
                 $scope.productDetails = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
-                        +$scope.selected_level_1_category+"_"+$scope.category+"_"+$scope.leather][0];
+                        +$scope.selected_level_1_category+"_"+$scope.category][0].split("_")[0];
+                $scope.mrp = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category+"_"
+                        +$scope.selected_level_1_category+"_"+$scope.category][0].split("_")[1];
             }
        }
 
@@ -165,8 +161,6 @@
                     window.alert("Invalid Step In Type");
                 }else if($scope.category==null || $scope.category==""){
                     window.alert("Invalid Category");
-                }else if($scope.leather==null || $scope.leather==""){
-                    window.alert("Invalid leather");
                 }else if($scope.productDetails==null || $scope.productDetails==""){
                     window.alert("Invalid Product Details");
                 }else if($scope.quantity==null || $scope.quantity==""){
@@ -185,6 +179,8 @@
                                       "quantity": $scope.quantity,
                                       "size": $scope.size,
                                       "mrp": $scope.mrp,
+                                      "discount": $scope.discount,
+                                      "salePrice": ($scope.mrp-$scope.discount)*$scope.quantity,
                                       "discount": $scope.discount,
                                       "salePrice": ($scope.mrp-$scope.discount)*$scope.quantity,
                                       "category": $scope.category,
@@ -432,7 +428,7 @@
         <a href=".\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
         <a href=".\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
         <a href=".\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
-        <a href=".\StockReport.html" class="btn btn-primary">Stock</a>
+        <a href=".\retail\stock.html" class="btn btn-primary">Stock</a>
     </div>
 </div>
 <div ng-controller="newSaleController" class="working_div container">
@@ -517,11 +513,8 @@
                 <tr>
                     <th>SKU</th>
                     <th>
-                        <select ng-model="category" ng-change="updateColorList()">
+                        <select ng-model="category" ng-change="updateProductDescription()">
                             <option ng-repeat="x in skuList">{{x}}</option>
-                        </select>
-                        <select ng-model="leather" ng-change="updateProductDescription()">
-                            <option ng-repeat="x in colorList">{{x}}</option>
                         </select>
                     </th>
                 </tr>
@@ -539,21 +532,22 @@
                 </tr>
                 <tr>
                     <th>MRP</th>
-                    <th><input type="text" ng-model="mrp" class="number_input_width"></th>
-                </tr>
-                <tr>
-                    <th>Discount</th>
-                    <th><input type="text" ng-model="discount" value="0" class="number_input_width"></th>
+                    <th>{{mrp}}</th>
                 </tr>
                 <tr>
                     <th>Sale Price</th>
                     <th>
                         <span>{{quantity*(mrp-discount)}} </span>
-                        <input style="float:right;" type="button" ng-click="addProduct()"
-                               value="Add" class="btn btn-primary">
-                        <input style="float:right; margin-right: 5px;" type="button" ng-click="hidePopUp()"
-                               value="Close"
-                               class="btn btn-primary">
+                    </th>
+                </tr>
+                <tr>
+                    <th>Discount</th>
+                    <th><input type="text" ng-model="discount" value="0" class="number_input_width">
+                    <input style="float:right;" type="button" ng-click="addProduct()"
+                           value="Add" class="btn btn-primary">
+                    <input style="float:right; margin-right: 5px;" type="button" ng-click="hidePopUp()"
+                           value="Close"
+                           class="btn btn-primary">
                     </th>
                 </tr>
             </table>
