@@ -13,8 +13,10 @@
      app.controller("presentationController", function($scope,$http) {
 <!----------------------------------------- DAILY SALES GRAPH START------------------------------------------------------- -->
           $scope.monthNumber = (new Date()).getMonth()+1;
+          $scope.year = (new Date()).getFullYear();
+          window.alert($scope.year);
           $scope.loadDailySalesData = function(){
-          $http({method: 'GET', url: 'http://localhost:8080/presentation/dailySales?monthNumber='+$scope.monthNumber})
+          $http({method: 'GET', url: 'http://localhost:8080/presentation/dailySales?monthNumber='+$scope.monthNumber+'&year='+$scope.year})
             .then(function successCallback(response) {
 					$scope.dailySalesDtoList=response.data;
 					google.charts.load('current', {'packages':['corechart']});
@@ -26,13 +28,6 @@
           }
           $scope.loadDailySalesData();
 
-         $scope.updateDailySales = function() {
-             if($scope.monthNumber <= (new Date()).getMonth()+1){
-                $scope.loadDailySalesData();
-            }else{
-                window.alert("Invalid Month Number");
-            }
-         }
          $scope.drawDailySalesChart = function() {
           const resArray = [];
             var totalSales = 0;
@@ -557,8 +552,8 @@
 </div>
 <div ng-controller="presentationController" class="working_div container">
     <div><p>CLASSIC LEATHERS DAILY SALES REPORT</p></div>
-    <p>Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
-        <input type="button" ng-click="updateDailySales()" value="Get Daily Sales"
+    <p>Year : <span ng-bind="year">{{year}}</span> Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
+        <input type="button" ng-click="loadDailySalesData()" value="Get Daily Sales"
                class="btn btn-primary">
     </p>
     <div id="daily_sales_chart" style="width: 100%; height: 350px"></div>
