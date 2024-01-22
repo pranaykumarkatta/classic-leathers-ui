@@ -13,18 +13,22 @@
      app.controller("presentationController", function($scope,$http) {
 <!----------------------------------------- DAILY SALES GRAPH START------------------------------------------------------- -->
           $scope.monthNumber = (new Date()).getMonth()+1;
-          $scope.year = (new Date()).getFullYear();
-          window.alert($scope.year);
+          $scope.year = 2024;
+          $scope.years = [2023,2024];
           $scope.loadDailySalesData = function(){
-          $http({method: 'GET', url: 'http://localhost:8080/presentation/dailySales?monthNumber='+$scope.monthNumber+'&year='+$scope.year})
-            .then(function successCallback(response) {
-					$scope.dailySalesDtoList=response.data;
-					google.charts.load('current', {'packages':['corechart']});
-                    google.charts.setOnLoadCallback($scope.drawDailySalesChart);
-                },function errorCallback(response) {
-					console.log(error.value);
-                }
-            );
+          if($scope.year==2024 && $scope.monthNumber > (new Date()).getMonth()+1 ){
+            window.alert("Invalid Month Selection");
+          }else{
+              $http({method: 'GET', url: 'http://localhost:8080/presentation/dailySales?monthNumber='+$scope.monthNumber+'&year='+$scope.year})
+                .then(function successCallback(response) {
+                        $scope.dailySalesDtoList=response.data;
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback($scope.drawDailySalesChart);
+                    },function errorCallback(response) {
+                        console.log(error.value);
+                    }
+                );
+            }
           }
           $scope.loadDailySalesData();
 
@@ -39,11 +43,15 @@
                 if($scope.dailySalesGraphMaxValue<dailySalesDto.sales){
                     $scope.dailySalesGraphMaxValue = dailySalesDto.sales+5000-(dailySalesDto.sales % 5000);
                 }
-                resArray.push([""+dailySalesDto.day,dailySalesDto.sales,"Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale,avgSale,"Day - "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale]);
+                resArray.push([""+dailySalesDto.day,dailySalesDto.sales,
+                "Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales,avgSale,
+                "Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales]);
             }
 
             for(var i = resArray.length ; i < 31 ; i++){
-                resArray.push([""+(i+1),0,"Day "+dailySalesDto.day+" || Total Sale : "+0+" || Avg Sales: "+avgSale,avgSale,"Day - "+0+" || Total Sale : "+0+" || Avg Sales: "+avgSale]);
+                resArray.push([""+(i+1),0,
+                "Day "+dailySalesDto.day+" || Total Sale : "+0+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales,avgSale,
+                "Day "+0                +" || Total Sale : "+0+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales]);
             }
 
             var dataTable = new google.visualization.DataTable();
@@ -552,7 +560,8 @@
 </div>
 <div ng-controller="presentationController" class="working_div container">
     <div><p>CLASSIC LEATHERS DAILY SALES REPORT</p></div>
-    <p>Year : <span ng-bind="year">{{year}}</span> Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
+    <p>Year : <select class="btn btn-primary" ng-model="year"
+                      ng-options="x for x in years"></select></span> Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
         <input type="button" ng-click="loadDailySalesData()" value="Get Daily Sales"
                class="btn btn-primary">
     </p>
