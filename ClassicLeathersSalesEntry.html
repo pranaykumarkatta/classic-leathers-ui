@@ -169,8 +169,8 @@
                     window.alert("Invalid Size");
                 }else if($scope.mrp==null || $scope.mrp==""){
                     window.alert("Invalid MRP");
-                }else if($scope.discount==null || $scope.discount==""){
-                    window.alert("Invalid Discount");
+                }else if($scope.salePrice==null || $scope.salePrice==""){
+                    window.alert("Invalid Sale Price");
                 }else{
                      $scope.newSalesList.push({"customerName": $scope.customerName,
                                       "gender": $scope.gender,
@@ -179,18 +179,16 @@
                                       "quantity": $scope.quantity,
                                       "size": $scope.size,
                                       "mrp": $scope.mrp,
-                                      "discount": $scope.discount,
-                                      "salePrice": ($scope.mrp-$scope.discount)*$scope.quantity,
-                                      "discount": $scope.discount,
-                                      "salePrice": ($scope.mrp-$scope.discount)*$scope.quantity,
+                                      "salePrice": $scope.salePrice,
+                                      "discount": ($scope.mrp-$scope.salePrice)*$scope.quantity,
                                       "category": $scope.category,
                                       "leather": $scope.leather,
                                       "stepInType": $scope.stepInType,
                                       "brand": $scope.brand
                                       });
-                     $scope.totalPurchaseValue+=($scope.mrp-$scope.discount)*$scope.quantity;
+                     $scope.totalPurchaseValue+=($scope.salePrice)*$scope.quantity;
                      $scope.totalMrpValue+= $scope.mrp*$scope.quantity;
-                     $scope.totalDiscountValue+= $scope.discount*$scope.quantity;
+                     $scope.totalDiscountValue+= ($scope.mrp-$scope.salePrice)*$scope.quantity;
                      $scope.showNewSales=true;
                      $scope.brand="";
                      $scope.selected_level_0_category="";
@@ -202,6 +200,7 @@
                      $scope.size="";
                      $scope.mrp="";
                      $scope.discount="0";
+                     $scope.salePrice="0";
                 }
                 $scope.hidePopUp();
         }
@@ -233,7 +232,7 @@
                         var cashPayment=0;
                         var gPayPayment=0;
                         var swipePayment=0;
-                        var itemPurchaseValue = (item.mrp-item.discount)*item.quantity;
+                        var itemPurchaseValue = (item.salePrice)*item.quantity;
                         if($scope.showMOP2){
                             mop=$scope.mop1+"/"+$scope.mop2;
                             var mop2AmountShare = $scope.mop2Amount/$scope.newSalesList.length;
@@ -268,8 +267,8 @@
                               "quantity": item.quantity,
                               "size": item.size,
                               "mrp": item.mrp,
-                              "discount": item.discount,
-                              "salePrice": (item.mrp-item.discount)*item.quantity,
+                              "salePrice": item.salePrice*item.quantity,
+                              "discount": (item.mrp-item.salePrice)*item.quantity,
                               "modeOfPayment": mop,
                               "cashPayment": cashPayment,
                               "gPayPayment": gPayPayment,
@@ -320,14 +319,14 @@
                          minutes = minutes < 10 ? '0'+minutes : minutes;
                          var dateTimeString = (months[d.getMonth()]) + "-" + d.getDate() + "-" + d.getFullYear() + " " +hours+ ":" + minutes +" " + ampm;
                          var url = "https://api.whatsapp.com/send/?phone=+91"+$scope.mobileNumber+"&text=Dear *"+$scope.customerName+"*,%0A%0A_Thank's for your purchase @ *CLASSIC LEATHERS*_ on " +dateTimeString+ ".%0A%0A"+
-                                        "🎉🎉: WOW !! You have saved 🎊₹ "+(Math.round(($scope.totalMrpValue-$scope.totalDiscountValue)*0.12) +$scope.totalDiscountValue)+"🎊 - on this purchase%0A%0A"+
+                                        "🎉🎉: WOW !! You have saved 🎊₹ "+(Math.round(($scope.totalPurchaseValue)*0.12) +$scope.totalDiscountValue)+"🎊 - on this purchase%0A%0A"+
                                         "*👇 Here is your purchase summary for the Invoice No : "+ $scope.invoiceNumber +"*%0A";
 
                          for(var i = 0, size = $scope.newSalesList.length; i < size ; i++){
                             var item = $scope.newSalesList[i];
-                            var mrp = Math.round((item.mrp-item.discount)*item.quantity*1.12);
-                            var mrp1 = mrp+Number(item.discount*item.quantity);
-                            var url = url+"👉🏻 Product : "+item.productDetails+" of ₹ "+mrp1+" for ₹ "+(item.mrp-item.discount)*item.quantity+"  %0A";
+                            var mrp = Math.round((item.salePrice)*item.quantity*1.12);
+                            var mrp1 = mrp+Number(item.discount);
+                            var url = url+"👉🏻 Product : "+item.productDetails+" of ₹ "+mrp1+" for ₹ "+(item.salePrice)*item.quantity+"  %0A";
                          }
                          url=url+"👉🏻 👉🏻 Total purchase value ₹ "+($scope.totalPurchaseValue)+" %0A%0A"+
                                         "👉🏻 Click https://chat.whatsapp.com/GmUW1z10XzjLJ7lGkgLkXw to join in our WhatsApp community 🥳%0A"+
@@ -537,12 +536,12 @@
                 <tr>
                     <th>Sale Price</th>
                     <th>
-                        <span>{{quantity*(mrp-discount)}} </span>
+                        <input type="text" ng-model="salePrice" value="0" class="number_input_width">
                     </th>
                 </tr>
                 <tr>
                     <th>Discount</th>
-                    <th><input type="text" ng-model="discount" value="0" class="number_input_width">
+                    <th><span>{{(mrp-salePrice)}} </span>
                     <input style="float:right;" type="button" ng-click="addProduct()"
                            value="Add" class="btn btn-primary">
                     <input style="float:right; margin-right: 5px;" type="button" ng-click="hidePopUp()"
