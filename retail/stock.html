@@ -11,16 +11,46 @@
      var app = angular.module("classicLeathers", []);
 
      app.controller("stockController", function($scope,$http) {
+        $scope.sizeFilter="";
+	    $scope.sizes = ["All","39","40","41","42","43","44","45","46","47"];
+	    $scope.sizeFilter=$scope.sizes[0];
 
         <!--     GET STOCK AVAILABILITY DETAILS START-->
                 $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/getStockReport'})
                     .then(function successCallback(response) {
+                            $scope.availableStockEntries=response.data;
                             $scope.stockEntries=response.data;
                              console.log($scope.stockEntries)
                         },function errorCallback(response) {
                             console.log(error.value);
                         }
                );
+
+               $scope.filterSize = function(){
+                $scope.stockEntries=[];
+                var filteredEntries=[];
+                for(var i = 0, size = $scope.availableStockEntries.length; i < size ; i++){
+                    var item =  $scope.availableStockEntries[i];
+                    console.log($scope.sizeFilter.length<3 && $scope.sizeFilter==39 && Number(item.size_39)>0);
+                    if(($scope.sizeFilter.length<3 && $scope.sizeFilter==39 && Number(item.size_39)>0)||
+                    ($scope.sizeFilter.length<3 && $scope.sizeFilter==40 && Number(item.size_40)>0)||
+                    ($scope.sizeFilter.length<3 && $scope.sizeFilter==41 && Number(item.size_41)>0)||
+                    ($scope.sizeFilter.length<3 && $scope.sizeFilter==42 && Number(item.size_42)>0)||
+                    ($scope.sizeFilter.length<3 && $scope.sizeFilter==43 && Number(item.size_43)>0)||
+                    ($scope.sizeFilter.length<3 && $scope.sizeFilter==44 && Number(item.size_44)>0)||
+                    ($scope.sizeFilter.length<3 && $scope.sizeFilter==45 && Number(item.size_45)>0)||
+                    ($scope.sizeFilter.length<3 && $scope.sizeFilter==46 && Number(item.size_46)>0)||
+                    ($scope.sizeFilter.length<3 && $scope.sizeFilter==47 && Number(item.size_47)>0)){
+                          filteredEntries.push(item);
+                    }
+
+                    if(filteredEntries.length>0){
+                        $scope.stockEntries=filteredEntries;
+                    }else{
+                        $scope.stockEntries=$scope.availableStockEntries;
+                    }
+                }
+               }
         <!--     GET STOCK AVAILABILITY DETAILS END-->
 
         $scope.isAdmin = decodeURIComponent((new RegExp('[?|&]' + 'add' + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
@@ -144,6 +174,7 @@
 
 
 
+
     </script>
 
 </head>
@@ -165,6 +196,10 @@
         <p><input type="checkbox" ng-model="isUpdateStock">&nbsp&nbsp&nbspUPDATE STOCK ENTRY</p>
     </div>
     <div ng-hide="isUpdateStock">
+        <p> Search by SKU / Leather: &nbsp <Input type="text" ng-model="stockFilter" placeholder="BRAND SKU LEATHER">
+            &nbsp&nbsp&nbsp<label>
+                &nbsp Size : &nbsp <select ng-model="sizeFilter"
+                                           ng-options="x for x in sizes" ng-change="filterSize()"></select></p>
         <table class="table table-font stockTable">
             <tr>
                 <th>BRAND</th>
@@ -179,7 +214,7 @@
                 <th>46</th>
                 <th>47</th>
             </tr>
-            <tr ng-repeat="entry in stockEntries">
+            <tr ng-repeat="entry in stockEntries | filter:stockFilter">
                 <td>{{entry.brand}}</td>
                 <td>{{entry.article}}</td>
                 <td>{{entry.size_39}}</td>
