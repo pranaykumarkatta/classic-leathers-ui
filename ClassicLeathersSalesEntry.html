@@ -29,7 +29,7 @@
         $scope.isSaveDisabled = false;
         $scope.availabilityMap = "";
 
-        $http({method: 'GET', url: 'http://localhost:8080/stock/TEA'})
+        $http({method: 'GET', url: 'http://localhost:8080/stock/availabilityMap'})
             .then(function successCallback(response) {
                     $scope.availabilityMap =response.data;
                     $scope.level_0_category=[];
