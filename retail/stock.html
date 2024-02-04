@@ -122,6 +122,7 @@
 
         $scope.isValidSku = true;
         $scope.updateStockDTOList = [];
+        $scope.isStockAudit=false;
         $scope.saveStockDetails = function(){
             if($scope.fromStore ==null){
                  window.alert("Invalid From Store");
@@ -142,7 +143,7 @@
                             };
                         $scope.updateStockDTOList.push(data);
                     }
-                    $http.post('http://localhost:8080/stock',$scope.updateStockDTOList,{})
+                    $http.post('http://localhost:8080/stock?isAudit='+$scope.isStockAudit,$scope.updateStockDTOList,{})
                         .then(data => {
                             $scope.message="Data Saved Successfully"
                             $scope.sku=null;
@@ -194,8 +195,9 @@
 <div ng-controller="stockController" class="working_div container">
     <div>
         <p><input type="checkbox" ng-model="isUpdateStock">&nbsp&nbsp&nbspUPDATE STOCK ENTRY</p>
+        <p><input type="checkbox" ng-model="isStockAudit">&nbsp&nbsp&nbspAUDIT STOCK</p>
     </div>
-    <div ng-hide="isUpdateStock">
+    <div ng-hide="isUpdateStock || isStockAudit">
         <p> Search by SKU / Leather: &nbsp <Input type="text" ng-model="stockFilter" placeholder="BRAND SKU LEATHER">
             &nbsp&nbsp&nbsp<label>
                 &nbsp Size : &nbsp <select ng-model="sizeFilter"
@@ -229,7 +231,7 @@
             </tr>
         </table>
     </div>
-    <div ng-show="isUpdateStock">
+    <div ng-show="isUpdateStock || isStockAudit">
         <table class="table table-font">
             <tr ng-show="isAdmin">
                 <td>Store</td>

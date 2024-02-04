@@ -44,19 +44,24 @@
                     $scope.dailySalesGraphMaxValue = dailySalesDto.sales+5000-(dailySalesDto.sales % 5000);
                 }
                 resArray.push([""+dailySalesDto.day,dailySalesDto.sales,
-                "Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales,avgSale,
-                "Day "+dailySalesDto.day+" || Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales]);
+                "Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales+dailySalesDto.sales)/(30-dailySalesDto.day)),
+                Math.round((350000-totalSales+dailySalesDto.sales)/(30-dailySalesDto.day)),"Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales+dailySalesDto.sales)/(30-dailySalesDto.day)),
+                avgSale,"Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales+dailySalesDto.sales)/(30-dailySalesDto.day))]);
             }
-
+            var tempSales = avgSale;
             for(var i = resArray.length ; i < 31 ; i++){
                 resArray.push([""+(i+1),0,
-                "Day "+dailySalesDto.day+" || Total Sale : "+0+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales,avgSale,
-                "Day "+0                +" || Total Sale : "+0+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales]);
+                "Day "+(i+1)+" Total Sale : "+0+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales-tempSales)/(29-i)),
+                Math.round((350000-totalSales-tempSales)/(29-i)),"Day "+(i+1)                +" Total Sale : "+0+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales-tempSales)/(29-i)),
+                avgSale, "Day "+(i+1)                +" Total Sale : "+0+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales-tempSales)/(29-i))]);
+                tempSales=tempSales+avgSale;
             }
 
             var dataTable = new google.visualization.DataTable();
             dataTable.addColumn('string', 'DAY');
             dataTable.addColumn('number', 'Sales');
+            dataTable.addColumn({type: 'string', role: 'tooltip'});
+            dataTable.addColumn('number', 'Projected Average');
             dataTable.addColumn({type: 'string', role: 'tooltip'});
             dataTable.addColumn('number', 'Average Sales');
             dataTable.addColumn({type: 'string', role: 'tooltip'});
@@ -75,7 +80,8 @@
               },
               seriesType: 'bars',
               series: {0: {type: 'bar'},
-              1: {type: 'line'}}
+              1: {type: 'line'},
+              2: {type: 'line'}}
             };
             var chart = new google.visualization.ComboChart(document.getElementById('daily_sales_chart'));
             chart.draw(dataTable, options);
