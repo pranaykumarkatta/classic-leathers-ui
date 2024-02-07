@@ -215,19 +215,22 @@
                 <th>45</th>
                 <th>46</th>
                 <th>47</th>
+                <th>Total</th>
             </tr>
             <tr ng-repeat="entry in stockEntries | filter:stockFilter">
                 <td>{{entry.brand}}</td>
                 <td>{{entry.article}}</td>
-                <td>{{entry.size_39}}</td>
-                <td>{{entry.size_40}}</td>
-                <td>{{entry.size_41}}</td>
-                <td>{{entry.size_42}}</td>
-                <td>{{entry.size_43}}</td>
-                <td>{{entry.size_44}}</td>
-                <td>{{entry.size_45}}</td>
-                <td>{{entry.size_46}}</td>
-                <td>{{entry.size_47}}</td>
+                <td ng-style="{'background-color': (entry.size_39<2)?'#ffcccc':((entry.size_39>=3)?'#62de6f':none)}">{{entry.size_39}}</td>
+                <td ng-style="{'background-color': (entry.size_40<2)?'#ffcccc':((entry.size_40>=3)?'#62de6f':none)}">{{entry.size_40}}</td>
+                <td ng-style="{'background-color': (entry.size_41<2)?'#ffcccc':((entry.size_41>=3)?'#62de6f':none)}">{{entry.size_41}}</td>
+                <td ng-style="{'background-color': (entry.size_42<2)?'#ffcccc':((entry.size_42>=3)?'#62de6f':none)}">{{entry.size_42}}</td>
+                <td ng-style="{'background-color': (entry.size_43<2)?'#ffcccc':((entry.size_43>=3)?'#62de6f':none)}">{{entry.size_43}}</td>
+                <td ng-style="{'background-color': (entry.size_44<2)?'#ffcccc':((entry.size_44>=3)?'#62de6f':none)}">{{entry.size_44}}</td>
+                <td ng-style="{'background-color': (entry.size_45<2)?'#ffcccc':((entry.size_45>=3)?'#62de6f':none)}">{{entry.size_45}}</td>
+                <td ng-style="{'background-color': (entry.size_46<2)?'#ffcccc':((entry.size_46>=3)?'#62de6f':none)}">{{entry.size_46}}</td>
+                <td ng-style="{'background-color': (entry.size_47<2)?'#ffcccc':((entry.size_47>=3)?'#62de6f':none)}">{{entry.size_47}}</td>
+                <td>{{entry.size_39 + entry.size_40+ entry.size_41+ entry.size_42+ entry.size_43+
+                    entry.size_44+ entry.size_45+ entry.size_46+ entry.size_47}}</td>
             </tr>
         </table>
     </div>
