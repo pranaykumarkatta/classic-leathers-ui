@@ -81,10 +81,40 @@
 <!----------------------------------------- DAILY SALES GRAPH END--------------------------------------------------------- -->
 
 <!----------------------------------------- TOTAL SALES GRAPH START------------------------------------------------------- -->
-          $scope.loadTotalSalesData = function(){
-          $http({method: 'GET', url: 'http://localhost:8080/presentation/totalSales'})
+
+      $http({method: 'GET', url: 'http://localhost:8080/stock/availabilityMap'})
             .then(function successCallback(response) {
-					$scope.totalSales=response.data;
+                    $scope.availabilityMap =response.data;
+                    $scope.brandList=$scope.availabilityMap["brand"];
+                    $scope.brandList.splice(0, 0, "All");
+                    $scope.brand=$scope.brandList[0];
+                    $scope.updateTotalGraph();
+                },function errorCallback(response) {
+                    console.log(error.value);
+            }
+      );
+
+       $scope.updateLevel_0_CategoryList = function(){
+            $scope.level_0_category = $scope.availabilityMap[$scope.brand];
+            $scope.level_0_category.splice(0, 0, "All");
+            $scope.selected_level_0_category=$scope.level_0_category[0];
+            $scope.level_1_category=[];
+            $scope.updateTotalGraph();
+       }
+       $scope.updateLevel_1_CategoryList = function(){
+            if($scope.selected_level_0_category!=null && $scope.selected_level_0_category!=""){
+                $scope.level_1_category = $scope.availabilityMap[$scope.brand+"_"+$scope.selected_level_0_category];
+                $scope.level_1_category.splice(0, 0, "All");
+                $scope.selected_level_1_category=$scope.level_1_category[0];
+                $scope.updateTotalGraph();
+            }
+       }
+
+
+          $scope.loadTotalSalesData = function(){
+          $http({method: 'GET', url: 'http://localhost:8080/presentation/presentationDta?filterString='+$scope.brand+"_"+$scope.selected_level_0_category+"_"+$scope.selected_level_1_category})
+            .then(function successCallback(presentationDta) {
+					$scope.totalSales=presentationDta.data;
 					google.charts.load('current', {'packages':['corechart']});
                     google.charts.setOnLoadCallback($scope.drawTotalSalesChart);
                 },function errorCallback(response) {
@@ -92,7 +122,6 @@
                 }
             );
           }
-          $scope.loadTotalSalesData();
           $scope.updateTotalGraph = function(){
               $scope.loadTotalSalesData();
           }
@@ -117,7 +146,7 @@
                 title: 'TOTAL SALES',
                 viewWindow: {
                   min: 0,
-                  max: 80000
+                  max: 125000
                 }
               },
               curveType: 'function',
@@ -128,6 +157,9 @@
           }
 <!----------------------------------------- TOTAL SALES GRAPH END--------------------------------------------------------- -->
      });
+
+
+
 
 
 
@@ -154,13 +186,27 @@
 <div ng-controller="presentationController" class="working_div container">
     <div><p>CLASSIC LEATHERS DAILY SALES REPORT</p></div>
     <p>Year : <select class="btn btn-primary" ng-model="year"
-                      ng-options="x for x in years"></select></span> Month Number : <input type="text" ng-model="monthNumber" class="number_input_width">
+                      ng-options="x for x in years"></select></span> Month Number : <input type="text"
+                                                                                           ng-model="monthNumber"
+                                                                                           class="number_input_width">
         <input type="button" ng-click="loadDailySalesData()" value="Get Daily Sales"
                class="btn btn-primary">
     </p>
     <div id="daily_sales_chart" style="width: 100%; height: 350px"></div>
     <br><br><br><br>
-    <div><p>CLASSIC LEATHERS TOTAL SALES REPORT</p></div>
+    <div><p>CLASSIC LEATHERS TOTAL SALES REPORT</p>
+        <p>
+            Brand || <select ng-model="brand" ng-change="updateLevel_0_CategoryList()">
+            <option ng-repeat="x in brandList">{{x}}</option>
+        </select>
+            Category || <select ng-model="selected_level_0_category" ng-change="updateLevel_1_CategoryList()">
+                <option ng-repeat="x in level_0_category">{{x}}</option>
+            </select>
+            <select ng-model="selected_level_1_category" ng-change="updateTotalGraph()">
+                <option ng-repeat="x in level_1_category">{{x}}</option>
+            </select>
+        </p>
+    </div>
     <div id="total_sales_chart" style="width: 100%; height: 350px"></div>
     <br>
 </div>
