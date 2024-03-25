@@ -44,9 +44,9 @@
                     $scope.dailySalesGraphMaxValue = dailySalesDto.sales+5000-(dailySalesDto.sales % 5000);
                 }
                 resArray.push([""+dailySalesDto.day,dailySalesDto.sales,
-                "Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales+dailySalesDto.sales)/(30-dailySalesDto.day)),
-                Math.round((350000-totalSales+dailySalesDto.sales)/(30-dailySalesDto.day)),"Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales+dailySalesDto.sales)/(30-dailySalesDto.day)),
-                avgSale,"Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((350000-totalSales+dailySalesDto.sales)/(30-dailySalesDto.day))]);
+                "Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((300000-totalSales+dailySalesDto.sales)/(31-dailySalesDto.day)),
+                Math.round((300000-totalSales+dailySalesDto.sales)/(31-dailySalesDto.day)),"Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((300000-totalSales+dailySalesDto.sales)/(31-dailySalesDto.day)),
+                avgSale,"Day "+dailySalesDto.day+" Total Sale : "+dailySalesDto.sales+" || Avg Sales: "+avgSale+" \n Month Sales: "+totalSales+" || Projected Average: "+Math.round((300000-totalSales+dailySalesDto.sales)/(31-dailySalesDto.day))]);
             }
 
             var dataTable = new google.visualization.DataTable();
@@ -89,6 +89,7 @@
                     $scope.brandList.splice(0, 0, "All");
                     $scope.brand=$scope.brandList[0];
                     $scope.updateTotalGraph();
+                    $scope.updateProfitGraph();
                 },function errorCallback(response) {
                     console.log(error.value);
             }
@@ -100,6 +101,7 @@
             $scope.selected_level_0_category=$scope.level_0_category[0];
             $scope.level_1_category=[];
             $scope.updateTotalGraph();
+            $scope.updateProfitGraph();
        }
        $scope.updateLevel_1_CategoryList = function(){
             if($scope.selected_level_0_category!=null && $scope.selected_level_0_category!=""){
@@ -107,12 +109,13 @@
                 $scope.level_1_category.splice(0, 0, "All");
                 $scope.selected_level_1_category=$scope.level_1_category[0];
                 $scope.updateTotalGraph();
+                $scope.updateProfitGraph();
             }
        }
 
 
           $scope.loadTotalSalesData = function(){
-          $http({method: 'GET', url: 'http://localhost:8080/presentation/presentationDta?filterString='+$scope.brand+"_"+$scope.selected_level_0_category+"_"+$scope.selected_level_1_category})
+          $http({method: 'GET', url: 'http://localhost:8080/presentation/totalSales?filterString='+$scope.brand+"_"+$scope.selected_level_0_category+"_"+$scope.selected_level_1_category})
             .then(function successCallback(presentationDta) {
 					$scope.totalSales=presentationDta.data;
 					google.charts.load('current', {'packages':['corechart']});
@@ -156,6 +159,61 @@
             chart.draw(data, options);
           }
 <!----------------------------------------- TOTAL SALES GRAPH END--------------------------------------------------------- -->
+
+
+<!----------------------------------------- PROFIT GRAPH START------------------------------------------------------- -->
+          $scope.profitPercentMaxValue = 0;
+          $scope.loadProfitData = function(){
+          $http({method: 'GET', url: 'http://localhost:8080/presentation/profitGraph?filterString='+$scope.brand+"_"+$scope.selected_level_0_category+"_"+$scope.selected_level_1_category})
+            .then(function successCallback(presentationDta) {
+					$scope.profitData=presentationDta.data;
+					google.charts.load('current', {'packages':['corechart']});
+                    google.charts.setOnLoadCallback($scope.drawProfitChart);
+                },function errorCallback(response) {
+					console.log(error.value);
+                }
+            );
+          }
+          $scope.updateProfitGraph = function(){
+              $scope.loadProfitData();
+          }
+
+          $scope.drawProfitChart = function() {
+          const resArray = [];
+          for(var i = 0, size =  $scope.profitData.length ; i < size ; i++){
+                var str = $scope.profitData[i];
+                if(i==0){
+                    resArray.push(str.split(","));
+                } else{
+                    resArray.push(str.split(",").map(Number));
+                    for(var k=0;k<resArray.length;k++){
+                        if($scope.profitPercentMaxValue<resArray[i][k]){
+                        $scope.profitPercentMaxValue = resArray[i][k] + 50;
+                    }
+
+                }
+                }
+            }
+            data = google.visualization.arrayToDataTable(resArray);
+            var options = {
+              hAxis: {
+                title: 'CATEGORY',
+                format: '0'
+              },
+              vAxis: {
+                title: 'PROFIT PERCENT',
+                viewWindow: {
+                  min: 0,
+                  max: $scope.profitPercentMaxValue
+                }
+              },
+              curveType: 'function',
+              legend: { position: 'bottom' }
+            };
+            var chart = new google.visualization.LineChart(document.getElementById('profit_chart'));
+            chart.draw(data, options);
+          }
+<!----------------------------------------- PROFIT GRAPH END--------------------------------------------------------- -->
      });
 
 
@@ -208,6 +266,7 @@
         </p>
     </div>
     <div id="total_sales_chart" style="width: 100%; height: 350px"></div>
+    <div id="profit_chart" style="width: 100%; height: 350px"></div>
     <br>
 </div>
 </body>
