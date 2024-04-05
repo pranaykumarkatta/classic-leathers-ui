@@ -137,6 +137,12 @@
                     resArray.push(str.split(","));
                 } else{
                     resArray.push(str.split(",").map(Number));
+                    $scope.totalSalesValueByMonth=0
+                    for(var k=0;k<resArray[i].length;k++){
+                        $scope.totalSalesValueByMonth = $scope.totalSalesValueByMonth+resArray[i][k];
+                    }
+                    $scope.totalSalesValueByMonth = $scope.totalSalesValueByMonth-i;
+                    resArray[i][0]=resArray[i][0]+"_"+Math.round($scope.totalSalesValueByMonth);
                 }
             }
             data = google.visualization.arrayToDataTable(resArray);
@@ -149,7 +155,7 @@
                 title: 'TOTAL SALES',
                 viewWindow: {
                   min: 0,
-                  max: 125000
+                  max: 150000
                 }
               },
               curveType: 'function',
@@ -162,7 +168,6 @@
 
 
 <!----------------------------------------- PROFIT GRAPH START------------------------------------------------------- -->
-          $scope.profitPercentMaxValue = 0;
           $scope.loadProfitData = function(){
           $http({method: 'GET', url: 'http://localhost:8080/presentation/profitGraph?filterString='+$scope.brand+"_"+$scope.selected_level_0_category+"_"+$scope.selected_level_1_category})
             .then(function successCallback(presentationDta) {
@@ -181,17 +186,17 @@
           $scope.drawProfitChart = function() {
           const resArray = [];
           for(var i = 0, size =  $scope.profitData.length ; i < size ; i++){
-                var str = $scope.profitData[i];
+               var str = $scope.profitData[i];
                 if(i==0){
                     resArray.push(str.split(","));
                 } else{
                     resArray.push(str.split(",").map(Number));
-                    for(var k=0;k<resArray.length;k++){
-                        if($scope.profitPercentMaxValue<resArray[i][k]){
-                        $scope.profitPercentMaxValue = resArray[i][k] + 50;
+                     $scope.totalProfitByMonth=0
+                    for(var k=0;k<resArray[i].length;k++){
+                     $scope.totalProfitByMonth = $scope.totalProfitByMonth+($scope.totalSales[i].split(",")[k]*(resArray[i][k]/100));
                     }
 
-                }
+                    resArray[i][0]=resArray[i][0]+"_"+(Math.round($scope.totalProfitByMonth)-(($scope.brand=='All')?70000:0));
                 }
             }
             data = google.visualization.arrayToDataTable(resArray);
@@ -204,7 +209,7 @@
                 title: 'PROFIT PERCENT',
                 viewWindow: {
                   min: 0,
-                  max: $scope.profitPercentMaxValue
+                  max: 110
                 }
               },
               curveType: 'function',
