@@ -219,6 +219,55 @@
             chart.draw(data, options);
           }
 <!----------------------------------------- PROFIT GRAPH END--------------------------------------------------------- -->
+
+<!----------------------------------------- STEPIN TYPE GRAPH START------------------------------------------------------- -->
+          $http({method: 'GET', url: 'http://localhost:8080/presentation/salesMediumGraph'})
+            .then(function successCallback(response) {
+					$scope.salesMediumData=response.data;
+					google.charts.load('current', {'packages':['corechart']});
+                    google.charts.setOnLoadCallback($scope.drawSalesMediumChart);
+                },function errorCallback(response) {
+					console.log(error.value);
+                }
+            );
+
+
+          $scope.drawSalesMediumChart = function() {
+          const resArray = [];
+          for(var i = 0, size =  $scope.salesMediumData.length ; i < size ; i++){
+               var str = $scope.salesMediumData[i];
+                if(i==0){
+                    resArray.push(str.split(","));
+                } else{
+                    resArray.push(str.split(",").map(Number));
+                     $scope.totalSalesByMonth=0
+                    for(var k=0;k<resArray[i].length;k++){
+                     $scope.totalSalesByMonth = $scope.totalSalesByMonth+(resArray[i][k]);
+                    }
+
+                    resArray[i][0]=resArray[i][0]+"_"+(Math.round($scope.totalSalesByMonth)-i);
+                }
+            }
+            data = google.visualization.arrayToDataTable(resArray);
+            var options = {
+              hAxis: {
+                title: 'CATEGORY',
+                format: '0'
+              },
+              vAxis: {
+                title: 'PROFIT PERCENT',
+                viewWindow: {
+                  min: 0,
+                  max: 150000
+                }
+              },
+              curveType: 'function',
+              legend: { position: 'bottom' }
+            };
+            var chart = new google.visualization.LineChart(document.getElementById('sales_medium_chart'));
+            chart.draw(data, options);
+          }
+<!----------------------------------------- PROFIT GRAPH END--------------------------------------------------------- -->
      });
 
 
@@ -272,6 +321,7 @@
     </div>
     <div id="total_sales_chart" style="width: 100%; height: 350px"></div>
     <div id="profit_chart" style="width: 100%; height: 350px"></div>
+    <div id="sales_medium_chart" style="width: 100%; height: 350px"></div>
     <br>
 </div>
 </body>
