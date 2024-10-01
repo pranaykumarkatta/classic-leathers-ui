@@ -13,7 +13,7 @@
         $scope.stepInTypeList = ["WALK IN","REFERRAL","INSTAGRAM","EXISTING CUSTOMER"];
         $scope.sizeList = ["NA","35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47"];
         $scope.mopList = ["NA","CASH","G-PAY","SWIPE"];
-        $scope.employeeList = ["PRANAY","KRISHNA","PRASAD","MANI"];
+        $scope.employeeList = ["PRANAY","KRISHNA","MANI","LOKESH","BALAJI"];
         $scope.customerName="";
         $scope.showCustomerDetails = false;
         $scope.isNewCustomer = false;
@@ -171,7 +171,7 @@
                     window.alert("Invalid MRP");
                 }else if($scope.salePrice==null || $scope.salePrice==""){
                     window.alert("Invalid Sale Price");
-                }else if($scope.mrp<$scope.salePrice){
+                }else if(($scope.mrp - $scope.salePrice)<0){
                     window.alert("Invalid MRP/Sale Price");
                 }else{
                      $scope.newSalesList.push({"customerName": $scope.customerName,
