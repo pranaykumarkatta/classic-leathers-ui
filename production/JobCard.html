@@ -26,6 +26,7 @@
       var jobCardEntries =[];
             jobCardEntries[0]={"sku": "SKU",
             "leather": "LEATHER",
+            "size_39_quantity":"39",
             "size_40_quantity":"40",
             "size_41_quantity":"41",
             "size_42_quantity":"42",
@@ -98,6 +99,7 @@
                 $scope.showJobCardDetails=true;
                 jobCardEntries[count]={"sku": $scope.selectedArticle.sku,
                 "leather": $scope.selectedArticle.leather,
+                "size_39_quantity":$scope.size_39_quantity,
                 "size_40_quantity":$scope.size_40_quantity,
                 "size_41_quantity":$scope.size_41_quantity,
                 "size_42_quantity":$scope.size_42_quantity,
@@ -110,13 +112,14 @@
                 "style": $scope.selectedArticle.style,
                 "lining": $scope.selectedArticle.lining,
                 "sole": $scope.selectedArticle.sole,
-                "totalQuantity": Number($scope.size_40_quantity)+Number($scope.size_41_quantity)
+                "totalQuantity": Number($scope.size_39_quantity)+Number($scope.size_40_quantity)+Number($scope.size_41_quantity)
                 +Number($scope.size_42_quantity)+Number($scope.size_43_quantity)+Number($scope.size_44_quantity)
                 +Number($scope.size_45_quantity)+Number($scope.size_46_quantity)+Number($scope.size_47_quantity)
                 };
                 count++;
                 $scope.jobCardEntryList=jobCardEntries;
                 $scope.selectedArticle="";
+                $scope.size_39_quantity="",
                 $scope.size_40_quantity="",
                 $scope.size_41_quantity="",
                 $scope.size_42_quantity="",
@@ -140,6 +143,7 @@
                 jobCardEntries =[];
             jobCardEntries[0]={"sku": "SKU",
             "leather": "LEATHER",
+            "size_39_quantity":"39",
             "size_40_quantity":"40",
             "size_41_quantity":"41",
             "size_42_quantity":"42",
@@ -197,6 +201,7 @@
         <tr>
             <th>SKU</th>
             <th ng-show="selectedBrand == 'TEAKWOOD'">LEATHER</th>
+            <th>39</th>
             <th>40</th>
             <th>41</th>
             <th>42</th>
@@ -222,6 +227,9 @@
             </td>
             <td ng-show="selectedBrand == 'TEAKWOOD'">
                 {{selectedArticle.leather}}
+            </td>
+            <td>
+                <input type="text" ng-model="size_39_quantity" class="number_input_width">
             </td>
             <td>
                 <input type="text" ng-model="size_40_quantity" class="number_input_width">
@@ -286,6 +294,9 @@
             </td>
             <td>
                 {{jobCardEntry.leather}}
+            </td>
+            <td>
+                {{jobCardEntry.size_39_quantity}}
             </td>
             <td>
                 {{jobCardEntry.size_40_quantity}}

@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/body.css">
+    <script type="text/javascript">
+     var app = angular.module("classicLeathers", []);
+
+     app.controller("inventoryController", function($scope,$http) {
+
+     });
+
+
+    </script>
+</head>
+<body class="classicThemeColor" ng-app="classicLeathers">
+<div class="header_div">
+    <img class="images" src="../resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">RETAIL STORE TIRUPATI</label>
+        <a href="..\ClassicLeathersHome.html" class="btn btn-primary">Home</a>
+        <a href="..\ClassicLeathersSalesEntry.html" class="btn btn-primary">New Sale</a>
+        <a href="..\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
+        <a href="..\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
+        <a href="..\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
+    </div>
+    <div ng-controller="inventoryController" class="working_div container">
+        <div class="form-group">
+            <label for="disabledInput" class="col-sm-1 control-label btn btn-primary">Upload</label>
+            <div class="col-sm-3">
+                <input type="file" id="disabledInput" accept=".xlsx, .xls, .csv">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

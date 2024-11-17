@@ -23,7 +23,7 @@
       var drivingStockEntries = [];
       $scope.DrivingShoeFilter="";
       $scope.sizeFilter="";
-	  $scope.sizes = ["All","40","41","42","43","44","45","46","47"];
+	  $scope.sizes = ["All","39","40","41","42","43","44","45","46","47"];
 	  $scope.sizeFilter=$scope.sizes[0];
 	  $scope.showUpdateStock=false;
 	  $scope.isUpdateDisabled=false;
@@ -91,7 +91,8 @@
             item.showItem=true;
             var filterString = item.searchString;
             if(filterString.includes($scope.DrivingShoeFilter.toUpperCase())){
-                if(($scope.sizeFilter.length<3 && $scope.sizeFilter==40 && Number(item.size_40_quantity)>0)||
+                if(($scope.sizeFilter.length<3 && $scope.sizeFilter==39 && Number(item.size_39_quantity)>0)||
+                ($scope.sizeFilter.length<3 && $scope.sizeFilter==40 && Number(item.size_40_quantity)>0)||
                 ($scope.sizeFilter.length<3 && $scope.sizeFilter==41 && Number(item.size_41_quantity)>0)||
                 ($scope.sizeFilter.length<3 && $scope.sizeFilter==42 && Number(item.size_42_quantity)>0)||
                 ($scope.sizeFilter.length<3 && $scope.sizeFilter==43 && Number(item.size_43_quantity)>0)||
@@ -256,6 +257,7 @@
                 "sku": $scope.category,
                 "leather": $scope.leather,
                 "productDescription": $scope.productDetails,
+                "size_39_quantity": $scope.size_39_quantity,
                 "size_40_quantity": $scope.size_40_quantity,
                 "size_41_quantity": $scope.size_41_quantity,
                 "size_42_quantity": $scope.size_42_quantity,
@@ -264,7 +266,7 @@
                 "size_45_quantity": $scope.size_45_quantity,
                 "size_46_quantity": $scope.size_46_quantity,
                 "size_47_quantity": $scope.size_47_quantity,
-                "totalQuantity": $scope.size_40_quantity+$scope.size_41_quantity+$scope.size_42_quantity+$scope.size_43_quantity+
+                "totalQuantity": $scope.size_39_quantity+$scope.size_40_quantity+$scope.size_41_quantity+$scope.size_42_quantity+$scope.size_43_quantity+
                                  $scope.size_44_quantity+$scope.size_45_quantity+$scope.size_46_quantity+$scope.size_47_quantity,
                 "costPrice": $scope.cost,
             };
@@ -337,6 +339,7 @@
                 <th>BRAND</th>
                 <th>SKU</th>
                 <th>LEATHER</th>
+                <th>39</th>
                 <th>40</th>
                 <th>41</th>
                 <th>42</th>
@@ -352,6 +355,13 @@
                 <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.brand}}</td>
                 <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.sku}}</td>
                 <td ng-show="drivingStockEntry.showEntry">{{drivingStockEntry.leather}}</td>
+                <td ng-show="drivingStockEntry.showEntry"
+                    ng-style="{'background-color': (drivingStockEntry.size_39_quantity<2)?'#ffcccc':((drivingStockEntry.size_39_quantity>=3)?'#62de6f':none)}">
+                    <div data-toggle="tooltip" data-placement="top"
+                         title="{{drivingStockEntry.size_39_SalesStockInfo}}">
+                        {{drivingStockEntry.size_39_quantity}}
+                    </div>
+                </td>
                 <td ng-show="drivingStockEntry.showEntry"
                     ng-style="{'background-color': (drivingStockEntry.size_40_quantity<2)?'#ffcccc':((drivingStockEntry.size_40_quantity>=3)?'#62de6f':none)}">
                     <div data-toggle="tooltip" data-placement="top"
@@ -448,6 +458,7 @@
                 <th>BRAND</th>
                 <th>SKU</th>
                 <th>LEATHER</th>
+                <th>39</th>
                 <th>40</th>
                 <th>41</th>
                 <th>42</th>
@@ -467,6 +478,9 @@
                 </td>
                 <td>
                     {{salesData.leather}}
+                </td>
+                <td>
+                    {{salesData.size_39_quantity}}
                 </td>
                 <td>
                     {{salesData.size_40_quantity}}
@@ -493,7 +507,7 @@
                     {{salesData.size_47_quantity}}
                 </td>
                 <td>
-                    {{salesData.size_40_quantity + salesData.size_41_quantity + salesData.size_42_quantity +
+                    {{salesData.size_39_quantity + salesData.size_40_quantity + salesData.size_41_quantity + salesData.size_42_quantity +
                     salesData.size_43_quantity + salesData.size_44_quantity + salesData.size_45_quantity +
                     salesData.size_46_quantity + salesData.size_47_quantity}}
                 </td>
@@ -545,7 +559,8 @@
                 <th>Product Details &nbsp&nbsp&nbsp&nbsp&nbsp {{productDetails}}</th>
             </tr>
             <tr>
-                <th>40 <input type="number" ng-model="size_40_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <th>39 <input type="number" ng-model="size_39_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    40 <input type="number" ng-model="size_40_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     41 <input type="number" ng-model="size_41_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     42 <input type="number" ng-model="size_42_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     43 <input type="number" ng-model="size_43_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
@@ -553,7 +568,7 @@
                     45 <input type="number" ng-model="size_45_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     46 <input type="number" ng-model="size_46_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     47 <input type="number" ng-model="size_47_quantity" class="number_input_width">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    Total : <span>{{size_40_quantity+size_41_quantity+size_42_quantity+
+                    Total : <span>{{size_39_quantity+ize_40_quantity+size_41_quantity+size_42_quantity+
                     size_43_quantity+size_44_quantity+size_45_quantity+
                     size_46_quantity+size_47_quantity}}</span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     Cost <input type="text" ng-model="cost" class="number_input_width"> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
