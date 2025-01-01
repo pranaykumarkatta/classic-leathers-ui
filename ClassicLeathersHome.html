@@ -13,10 +13,10 @@
      app.controller("presentationController", function($scope,$http) {
 <!----------------------------------------- DAILY SALES GRAPH START------------------------------------------------------- -->
           $scope.monthNumber = (new Date()).getMonth()+1;
-          $scope.year = 2024;
-          $scope.years = [2023,2024];
+          $scope.year = 2025;
+          $scope.years = [2023,2024,2025];
           $scope.loadDailySalesData = function(){
-          if($scope.year==2024 && $scope.monthNumber > (new Date()).getMonth()+1 ){
+          if($scope.year==2025 && $scope.monthNumber > (new Date()).getMonth()+1 ){
             window.alert("Invalid Month Selection");
           }else{
               $http({method: 'GET', url: 'http://localhost:8080/presentation/dailySales?monthNumber='+$scope.monthNumber+'&year='+$scope.year})

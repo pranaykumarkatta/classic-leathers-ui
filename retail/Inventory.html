@@ -11,8 +11,32 @@
      var app = angular.module("classicLeathers", []);
 
      app.controller("inventoryController", function($scope,$http) {
+        $scope.isUploadDisabled = false;
+       $scope.fileUpload = function(file){
+        $scope.uploadedFile = file.files[0];
+       }
+       $scope.uploadSkuFile = function(){
+       $scope.isUploadDisabled = false;
+        var fd = new FormData();
+        fd.append('file', $scope.uploadedFile);
+        $http.post('http://localhost:8080/inventory/sku', fd, {
+            transformRequest: angular.identity,
+            headers: { 'Content-Type': undefined,  'Accept': 'application/xhtml+xml;charset=UTF-8' }
+          }).then(data => {
+                $scope.message="Data Uploaded Successfully"
+                            setTimeout(() => {
+<!--                                window.location.reload();-->
+                            }, 5000);
+            });
+       }
 
      });
+
+
+
+
+
+
 
 
     </script>
@@ -29,12 +53,12 @@
         <a href="..\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
     </div>
     <div ng-controller="inventoryController" class="working_div container">
-        <div class="form-group">
-            <label for="disabledInput" class="col-sm-1 control-label btn btn-primary">Upload</label>
-            <div class="col-sm-3">
-                <input type="file" id="disabledInput" accept=".xlsx, .xls, .csv">
-            </div>
-        </div>
+        <table>
+            <tr>
+                <td><input type="file" onchange="angular.element(this).scope().fileUpload(this)" class="btn"></td>
+                <td><a type="button" ng-click="uploadSkuFile()" class="btn btn-primary" ng-disabled="isUploadDisabled" > Upload</a>  <label ng-bind="message"></label> </td>
+            </tr>
+        </table>
     </div>
 </div>
 
