@@ -19,7 +19,7 @@
        $scope.isUploadDisabled = false;
         var fd = new FormData();
         fd.append('file', $scope.uploadedFile);
-        $http.post('http://localhost:8080/inventory/sku', fd, {
+        $http.post('http://localhost:8080/upload', fd, {
             transformRequest: angular.identity,
             headers: { 'Content-Type': undefined,  'Accept': 'application/xhtml+xml;charset=UTF-8' }
           }).then(data => {
@@ -55,7 +55,7 @@
     <div ng-controller="inventoryController" class="working_div container">
         <table>
             <tr>
-                <td><input type="file" onchange="angular.element(this).scope().fileUpload(this)" class="btn"></td>
+                <td><input type="file" onchange="angular.element(this).scope().fileUpload(this)" multiple class="btn"></td>
                 <td><a type="button" ng-click="uploadSkuFile()" class="btn btn-primary" ng-disabled="isUploadDisabled" > Upload</a>  <label ng-bind="message"></label> </td>
             </tr>
         </table>

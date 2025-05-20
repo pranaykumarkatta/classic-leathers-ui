@@ -1,0 +1,96 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/body.css">
+
+    <script>
+
+    </script>
+</head>
+<body class="classicThemeColor" ng-app="classicLeathers">
+
+<div class="header_div">
+    <img class="images" src="../resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <label class="welcome_label">RETAIL STORE TIRUPATI</label>
+        <a href=".\ClassicLeathersHome.html" class="btn btn-primary">Home</a>
+        <a href=".\ClassicLeathersSalesEntry.html" class="btn btn-primary">New Sale</a>
+        <a href=".\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
+        <a href=".\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
+        <a href=".\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
+    </div>
+</div>
+<div class="working_div container">
+<p style="margin-left: 30%">
+    Tracking Number <input type="text" class="custom-control-input" id="trackingNumber" >
+    Return <input type="checkbox" class="custom-control-input" id="isReturn" >
+    <br><br>
+    <video id="preview" autoplay muted playsinline width="400"></video>
+    <br>  <br>
+    <button style="margin-left: 15%;" id="startBtn" class="btn btn-primary">Start</button>
+    <button id="stopBtn" disabled class="btn btn-primary">Stop & Upload</button>
+</p>
+    <script>
+    const preview = document.getElementById('preview');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    async function startCamera() {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      preview.srcObject = stream;
+
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          recordedChunks.push(e.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const formData = new FormData();
+        var fileName= document.getElementById('trackingNumber');
+         const checkbox = document.getElementById('isReturn');
+            if (checkbox.checked) {
+                fileName='ret_'+fileName+'.mp4';
+            } else {
+                fileName='fwd_'+fileName+'.mp4';
+            }
+            console.log(fileName);
+        formData.append('file', blob, fileName);
+
+        const response = await fetch('http://localhost:8080/vms/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        const message = await response.text();
+        alert(message);
+        recordedChunks = [];
+      };
+    }
+
+    startBtn.onclick = () => {
+      mediaRecorder.start();
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+    };
+
+    stopBtn.onclick = () => {
+      mediaRecorder.stop();
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+    };
+
+    startCamera().catch(err => alert('Error accessing webcam: ' + err));
+  </script>
+</div>
+</body>
+</html>

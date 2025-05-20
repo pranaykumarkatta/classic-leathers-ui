@@ -1,0 +1,74 @@
+<html>
+<head>
+    <title>Classic Leathers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="./resource/classic_logo_icon.png">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/body.css">
+    <script>
+      var app = angular.module("classicLeathers", []);
+      app.controller("newSaleController", function($scope,$http) {
+      $scope.genderList = ["MALE", "FEMALE"];
+      $scope.isSaveDisabled = false;
+      $scope.message="";
+           $scope.saveSalesEntry = function(){
+           $scope.isSaveDisabled = true;
+           var dataList = [];
+                        var data={"customerName": $scope.customerName,
+                              "gender": $scope.gender,
+                              "mobileNumber": $scope.mobileNumber,
+                              "stepInType": $scope.city,
+                              "productDetails": $scope.sku,
+                              "cashPayment": $scope.cash,
+                              "gPayPayment": $scope.gPay,
+                        };
+                        console.log(data)
+                        dataList.push(data);
+                        $http.post('http://localhost:8080/retailSalesReport/stall',dataList,{})
+                      .then(data => {
+                            $scope.message="Data Saved Successfully"
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 3000);
+                        })
+                        .catch(error => {
+                            console.log(error.value);
+                        });
+           }
+      });
+
+
+
+    </script>
+</head>
+<body class="classicThemeColor" ng-app="classicLeathers">
+<div class="header_div">
+    <img class="images" src="./resource/classic_logo.png"/>
+    <div class="menu_div container">
+        <a href=".\retail\stock.html" class="btn btn-primary">Stock</a>
+        <a href=".\retail\Ambur_stock.html" class="btn btn-primary">Ambur</a>
+        <a href=".\retail\Melvisharam_stock.html" class="btn btn-primary">Melvisharam</a>
+    </div>
+</div>
+<div ng-controller="newSaleController" class="working_div container">
+    <table class="table table-font">
+        <b>{{message}}</b>
+        <tr>
+            <td>Mobile : <input type="text" ng-model="mobileNumber" class="text_input_width">
+            <td>Name : <input type="text" ng-model="customerName" class="text_input_width">
+            <td>City : <input type="text" ng-model="city" class="text_input_width">
+            <td>Gender : <select ng-model="gender" ng-options="x for x in genderList"
+                                 style="width: 75px"></select></td>
+            <td>SKU:</td>
+            <td><textarea ng-model="sku" rows="5" cols="20"></textarea></td>
+            <td>G-Pay : <input type="text" ng-model="gPay" class="text_input_width"></td>
+            <td>Cash : <input type="text" ng-model="cash" class="text_input_width"></td>
+            <td><input type="button" ng-click="saveSalesEntry()" value="Save"
+                       class="btn btn-primary" ng-disabled="isSaveDisabled"></td>
+        </tr>
+
+    </table>
+</div>
+</body>
+</html>

@@ -16,7 +16,7 @@
 	    $scope.sizeFilter=$scope.sizes[0];
 
         <!--     GET STOCK AVAILABILITY DETAILS START-->
-                $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/getStockReport'})
+                $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/getStockAuditReport'})
                     .then(function successCallback(response) {
                             $scope.availableStockEntries=response.data;
                             $scope.stockEntries=response.data;
@@ -190,8 +190,6 @@
         <a href="..\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
         <a href="..\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
         <a href="..\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
-        <a href="..\retail\Ambur_stock.html" class="btn btn-primary">Ambur</a>
-        <a href="..\retail\Melvisharam_stock.html" class="btn btn-primary">Melvisharam</a>
     </div>
 </div>
 <div ng-controller="stockController" class="working_div container">

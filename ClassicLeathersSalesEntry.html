@@ -261,7 +261,25 @@
                             }if($scope.mop1==$scope.mopList[3]){
                                swipePayment = itemPurchaseValue;
                             }
-                        }
+                        } var data={"customerName": $scope.customerName,
+                              "gender": $scope.gender,
+                              "mobileNumber": $scope.mobileNumber,
+                              "productDetails": item.productDetails,
+                              "quantity": item.quantity,
+                              "size": item.size,
+                              "mrp": item.mrp,
+                              "salePrice": item.salePrice*item.quantity,
+                              "discount": (item.mrp-item.salePrice)*item.quantity,
+                              "modeOfPayment": mop,
+                              "cashPayment": cashPayment,
+                              "gPayPayment": gPayPayment,
+                              "swipePayment": swipePayment,
+                              "updatedBy": $scope.updatedBy,
+                              "category": item.category,
+                              "leather": item.leather,
+                              "stepInType": item.stepInType,
+                              "brand": item.brand
+                        };
                         var data={"customerName": $scope.customerName,
                               "gender": $scope.gender,
                               "mobileNumber": $scope.mobileNumber,

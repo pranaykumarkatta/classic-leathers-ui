@@ -16,7 +16,7 @@
 	    $scope.sizeFilter=$scope.sizes[0];
 
         <!--     GET STOCK AVAILABILITY DETAILS START-->
-                $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/getStockReport'})
+                $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/getAmburStockReport'})
                     .then(function successCallback(response) {
                             $scope.availableStockEntries=response.data;
                             $scope.stockEntries=response.data;
@@ -143,7 +143,7 @@
                             };
                         $scope.updateStockDTOList.push(data);
                     }
-                    $http.post('http://localhost:8080/stock?isAudit='+$scope.isStockAudit,$scope.updateStockDTOList,{})
+                    $http.post('http://localhost:8080/stock/ambur?isAudit='+$scope.isStockAudit,$scope.updateStockDTOList,{})
                         .then(data => {
                             $scope.message="Data Saved Successfully"
                             $scope.sku=null;
@@ -185,12 +185,8 @@
     <img class="images" src="../resource/classic_logo.png"/>
     <div class="menu_div container">
         <label class="welcome_label">RETAIL STORE TIRUPATI</label>
-        <a href="..\ClassicLeathersHome.html" class="btn btn-primary">Home</a>
-        <a href="..\ClassicLeathersSalesEntry.html" class="btn btn-primary">New Sale</a>
-        <a href="..\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
-        <a href="..\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
-        <a href="..\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
-        <a href="..\retail\Ambur_stock.html" class="btn btn-primary">Ambur</a>
+        <a href="..\StallSalesEntry.html" class="btn btn-primary">New Sale</a>
+        <a href="..\retail\stock.html" class="btn btn-primary">Stock</a>
         <a href="..\retail\Melvisharam_stock.html" class="btn btn-primary">Melvisharam</a>
     </div>
 </div>
