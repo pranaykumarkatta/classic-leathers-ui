@@ -13,8 +13,8 @@
      app.controller("presentationController", function($scope,$http) {
 <!----------------------------------------- DAILY SALES GRAPH START------------------------------------------------------- -->
           $scope.monthNumber = (new Date()).getMonth()+1;
-          $scope.year = 2025;
-          $scope.years = [2023,2024,2025];
+          $scope.year = 2026;
+          $scope.years = [2023,2024,2025,2026];
           $scope.loadDailySalesData = function(){
           if($scope.year==2025 && $scope.monthNumber > (new Date()).getMonth()+1 ){
             window.alert("Invalid Month Selection");
@@ -293,6 +293,7 @@
         <a href=".\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
         <a href=".\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
         <a href=".\retail\stock.html" class="btn btn-primary">Stock</a>
+        <a href="..\retail\inventory.html" class="btn btn-primary">WH_Stock</a>
     </div>
 </div>
 <div ng-controller="presentationController" class="working_div container">

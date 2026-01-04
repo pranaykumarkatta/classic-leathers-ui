@@ -16,7 +16,7 @@
 	    $scope.sizeFilter=$scope.sizes[0];
 
         <!--     GET STOCK AVAILABILITY DETAILS START-->
-                $http({method: 'GET', url: 'http://localhost:8080/retailStockReport/getStockReport'})
+                $http({method: 'GET', url: 'http://localhost:8080/inventory/getInventoryReport'})
                     .then(function successCallback(response) {
                             $scope.availableStockEntries=response.data;
                             $scope.stockEntries=response.data;
@@ -143,7 +143,7 @@
                             };
                         $scope.updateStockDTOList.push(data);
                     }
-                    $http.post('http://localhost:8080/stock?isAudit='+$scope.isStockAudit,$scope.updateStockDTOList,{})
+                    $http.post('http://localhost:8080/inventory?isAudit='+$scope.isStockAudit +'&fileName=TPT_WH_INVENTORY',$scope.updateStockDTOList,{})
                         .then(data => {
                             $scope.message="Data Saved Successfully"
                             $scope.sku=null;
@@ -184,13 +184,14 @@
 <div class="header_div">
     <img class="images" src="../resource/classic_logo.png"/>
     <div class="menu_div container">
-        <label class="welcome_label">RETAIL STORE TIRUPATI</label>
+        <label class="welcome_label">WAREHOUSE TIRUPATI</label>
         <a href="..\ClassicLeathersHome.html" class="btn btn-primary">Home</a>
         <a href="..\ClassicLeathersSalesEntry.html" class="btn btn-primary">New Sale</a>
         <a href="..\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
         <a href="..\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
         <a href="..\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
-        <a href="..\retail\inventory.html" class="btn btn-primary">WH_Stock</a>
+        <a href="..\retail\stock.html" class="btn btn-primary">Stock</a>
+
 <!--        <a href="..\retail\Ambur_stock.html" class="btn btn-primary">Ambur</a>-->
 <!--        <a href="..\retail\Melvisharam_stock.html" class="btn btn-primary">Melvisharam</a>-->
     </div>
@@ -204,7 +205,10 @@
         <p> Search by SKU / Leather: &nbsp <Input type="text" ng-model="stockFilter" placeholder="BRAND SKU LEATHER">
             &nbsp&nbsp&nbsp<label>
                 &nbsp Size : &nbsp <select ng-model="sizeFilter"
-                                           ng-options="x for x in sizes" ng-change="filterSize()"></select></p>
+                                           ng-options="x for x in sizes" ng-change="filterSize()"></select></label>
+            <a target="_blank" href="http://localhost:8080/inventory/exportInventoryReport" class="btn btn-primary">Export Inventory</a>
+            <a target="_blank" href="http://localhost:8080/inventory/compareUnicommerceInventory" class="btn btn-primary">Compare Inventory</a>
+        </p>
         <table class="table table-font stockTable">
             <tr>
                 <th>BRAND</th>
