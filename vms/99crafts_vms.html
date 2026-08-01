@@ -1,97 +1,269 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Classic Leathers</title>
+
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="shortcut icon" type="image/png" href="../resource/classic_logo_icon.png">
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <link rel="shortcut icon" type="image/png"
+          href="../resource/classic_logo_icon.png">
+
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/body.css">
 
-    <script>
+    <style>
+        body{
+            overflow:hidden;
+        }
 
-    </script>
+        .recWrap{
+            text-align:center;
+        }
+
+        #preview{
+            max-height:60vh;
+            border:1px solid #ccc;
+        }
+
+        /* Recording status row */
+        #recordRow{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:12px;
+            margin-top:12px;
+            min-height:30px;
+        }
+
+        #rec{
+            display:none;
+            color:red;
+            font-size:24px;
+            font-weight:bold;
+            animation:blink 1s infinite;
+        }
+
+        @keyframes blink{
+            50%{
+                opacity:0;
+            }
+        }
+
+        #uploadStatus{
+            color:#006400;
+            font-weight:bold;
+            font-size:18px;
+            min-width:250px;
+            text-align:left;
+        }
+
+        #trackingNumber{
+            width:320px;
+            text-align:center;
+            display:inline-block;
+        }
+    </style>
 </head>
+
 <body class="classicThemeColor" ng-app="classicLeathers">
 
 <div class="header_div">
     <img class="images" src="../resource/classic_logo.png"/>
+
     <div class="menu_div container">
         <label class="welcome_label">RETAIL STORE TIRUPATI</label>
-        <a href=".\ClassicLeathersHome.html" class="btn btn-primary">Home</a>
-        <a href=".\ClassicLeathersSalesEntry.html" class="btn btn-primary">New Sale</a>
-        <a href=".\ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
-        <a href=".\ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
-        <a href=".\ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
+
+        <a href="./ClassicLeathersHome.html" class="btn btn-primary">Home</a>
+        <a href="./ClassicLeathersSalesEntry.html" class="btn btn-primary">New Sale</a>
+        <a href="./ClassicLeathersTimeSheet.html" class="btn btn-primary">Time Sheet</a>
+        <a href="./ClassicLeathersMonthlySales.html" class="btn btn-primary">Sales</a>
+        <a href="./ClassicLeathersExpense.html" class="btn btn-primary">Expense</a>
     </div>
 </div>
-<div class="working_div container">
-<p style="margin-left: 30%">
-    Tracking Number <input type="text" class="custom-control-input" id="trackingNumber" >
-    Return <input type="checkbox" class="custom-control-input" id="isReturn" >
+
+<div class="working_div container recWrap">
+
+    <br>
+
+    Tracking Number
+    <input id="trackingNumber" class="form-control">
+
+    Return
+    <input type="checkbox" id="isReturn">
+
+    <button id="stopBtn" class="btn btn-primary" disabled>
+        Stop & Upload
+    </button>
+
     <br><br>
-    <video id="preview" autoplay muted playsinline width="400"></video>
-    <br>  <br>
-    <button style="margin-left: 15%;" id="startBtn" class="btn btn-primary">Start</button>
-    <button id="stopBtn" disabled class="btn btn-primary">Stop & Upload</button>
-</p>
-    <script>
-    const preview = document.getElementById('preview');
-    const startBtn = document.getElementById('startBtn');
-    const stopBtn = document.getElementById('stopBtn');
 
-    let mediaRecorder;
-    let recordedChunks = [];
+    <video id="preview" autoplay muted playsinline></video>
 
-    async function startCamera() {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      preview.srcObject = stream;
+    <!-- Status Row BELOW video -->
+    <div id="recordRow">
+        <div id="rec">🔴 REC</div>
+        <div id="uploadStatus"></div>
+    </div>
 
-      mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          recordedChunks.push(e.data);
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+</div>
+
+<script>
+
+const preview=document.getElementById('preview');
+const tracking=document.getElementById('trackingNumber');
+const ret=document.getElementById('isReturn');
+const stopBtn=document.getElementById('stopBtn');
+const rec=document.getElementById('rec');
+const uploadStatus=document.getElementById('uploadStatus');
+
+let mr;
+let chunks=[];
+let current="";
+
+async function init(){
+
+    let stream=await navigator.mediaDevices.getUserMedia({
+        video:true,
+        audio:true
+    });
+
+    preview.srcObject=stream;
+
+    mr=new MediaRecorder(stream);
+
+    mr.ondataavailable=e=>{
+        if(e.data.size){
+            chunks.push(e.data);
         }
-      };
+    };
 
-      mediaRecorder.onstop = async () => {
-        const blob = new Blob(recordedChunks, { type: 'video/webm' });
-        const formData = new FormData();
-        var fileName= document.getElementById('trackingNumber');
-         const checkbox = document.getElementById('isReturn');
+    tracking.focus();
+}
 
-            if (checkbox.checked) {
-                fileName='ret_'+fileName.value+'.mp4';
-            } else {
-                fileName='fwd_'+fileName.value+'.mp4';
+function start(){
+
+    if(mr.state==="inactive"){
+
+        chunks=[];
+
+        mr.start();
+
+        rec.style.display="block";
+
+        stopBtn.disabled=false;
+
+        uploadStatus.textContent="Recording : " + current;
+    }
+}
+
+function stop(){
+
+    return new Promise(resolve=>{
+
+        if(mr.state!=="recording"){
+            resolve();
+            return;
+        }
+
+        mr.onstop=async()=>{
+
+            rec.style.display="none";
+
+            stopBtn.disabled=true;
+
+            let fd=new FormData();
+
+            fd.append(
+                "file",
+                new Blob(chunks,{type:"video/webm"}),
+                (ret.checked?"ret_":"fwd_")+current+".mp4"
+            );
+
+            try{
+
+                await fetch(
+                    "http://localhost:8080/vms/upload",
+                    {
+                        method:"POST",
+                        body:fd
+                    }
+                );
+
+                uploadStatus.textContent="✓ Uploaded Successfully";
+
+            }catch(e){
+
+                uploadStatus.textContent="✗ Upload Failed";
             }
-            console.log(fileName);
-        formData.append('file', blob, fileName);
 
-        const response = await fetch('http://localhost:8080/vms/upload', {
-          method: 'POST',
-          body: formData
-        });
+            chunks=[];
 
-        const message = await response.text();
-        alert(message);
-        recordedChunks = [];
-      };
+            resolve();
+
+        };
+
+        mr.stop();
+
+    });
+
+}
+
+tracking.addEventListener("keydown",async function(e){
+
+    if(e.key!=="Enter"){
+        return;
     }
 
-    startBtn.onclick = () => {
-      mediaRecorder.start();
-      startBtn.disabled = true;
-      stopBtn.disabled = false;
-    };
+    e.preventDefault();
 
-    stopBtn.onclick = () => {
-      mediaRecorder.stop();
-      startBtn.disabled = false;
-      stopBtn.disabled = true;
-    };
+    let value=tracking.value.trim();
 
-    startCamera().catch(err => alert('Error accessing webcam: ' + err));
-  </script>
-</div>
+    if(!value){
+        return;
+    }
+
+    if(current){
+        await stop();
+    }
+
+    current=value;
+
+    tracking.value=current;
+
+    tracking.select();
+
+    start();
+
+});
+
+stopBtn.onclick=async function(){
+
+    await stop();
+
+    current="";
+
+    tracking.value="";
+
+    tracking.focus();
+
+};
+
+window.onclick=function(){
+    tracking.focus();
+};
+
+init();
+
+</script>
+
 </body>
 </html>
